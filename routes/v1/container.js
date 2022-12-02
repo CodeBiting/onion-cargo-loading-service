@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const logger = require("../api/logger");
+const logger = require("../../api/logger");
 
 /**
  * [GET] /container: retorna tots els contenidors del client

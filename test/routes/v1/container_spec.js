@@ -3,7 +3,7 @@
  * 
  * To run the test:
  * 1. Start the server `npm start`
- * 2. Execute test `mocha test/routes/container_spec.js --timeout 2000`
+ * 2. Execute test `mocha test/routes/v1/container_spec.js --timeout 2000`
  */
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -11,7 +11,7 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL= 'http://localhost:3000';
+const URL= 'http://localhost:3000/v1';
 
 describe('API Container ',()=>{
   it('should return all containers', (done) => {
