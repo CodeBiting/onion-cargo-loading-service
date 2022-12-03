@@ -9,7 +9,6 @@ var debug = require('debug')('onion-cargo-loading-service:server');
 var http = require('http');
 const logger = require("../api/logger");
 
-
 /**
  * Get port from environment and store in Express.
  */
@@ -96,17 +95,17 @@ function onListening() {
 /**
  * Exit gracefully
  */
- process.on('SIGINT', onCloseGracefully);
- process.on('SIGTERM', onCloseGracefully);
+process.on('SIGINT', onCloseGracefully);
+process.on('SIGTERM', onCloseGracefully);
  
- function onCloseGracefully() {
-   logger.info('SIGTERM signal received.');
-   logger.info('Closing http server.');
-   server.close(() => {
-     logger.info('Http server closed.');
+function onCloseGracefully() {
+  logger.info('SIGTERM signal received.');
+  logger.info('Closing http server.');
+  server.close(() => {
+    logger.info('Http server closed.');
 
-     // TODO: close database connections
+    // TODO: close database connections
  
-     process.exit(0);
-   });
- }
+    process.exit(0);
+  });
+}
