@@ -1,17 +1,24 @@
-var createError = require('http-errors');
+//var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
+
 const logger = require("./api/logger");
 
-var containerRouterV1 = require('./routes/v1/container');
+//var expressOpenAPI = require('express-openapi');
+var openapi = require('express-openapi');
+var swaggerUi = require('swagger-ui-express');
+//import { initialize } from 'express-openapi';
+//import v1ContainerService from './api-v1/services/containerService';
+//import v1ApiDoc from './api-v1/api-doc';
+
 
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'pug');
 
 const morganFormat = process.env.NODE_ENV !== 'production' ? 'dev' : 'combined';
 app.use(
@@ -42,8 +49,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/v1/container', containerRouterV1);
-
+/*
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -59,5 +65,26 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+*/
+
+// OpenAPI routes
+openapi.initialize({
+  app: app,
+  apiDoc: require('./api-v1/api-doc'),
+  paths: "./api-v1/paths",
+});
+
+// OpenAPI UI
+app.use(
+  "/api-documentation",
+  swaggerUi.serve,
+  swaggerUi.setup(null, {
+    swaggerOptions: {
+      // S'ha de posar la ruta amb la versió, tal i com s'indica al atribut basePath del fitxer api-v1/api-doc.js
+      url: "http://localhost:3000/v1/api-docs",
+    },
+  })
+);
+logger.info(`API Documentation in http://localhost:3000/api-documentation/`);
 
 module.exports = app;
