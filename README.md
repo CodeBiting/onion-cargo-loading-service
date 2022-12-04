@@ -38,7 +38,8 @@ Mes info a:
 - <https://www.freecodecamp.org/espanol/news/como-hacer-tu-primer-pull-request-en-github/>
 - <https://betterprogramming.pub/improve-your-pull-requests-and-code-review-in-6-easy-steps-ecf6dfa1c6d5>
 - <https://www.paradigmadigital.com/dev/testeo-api-rest-mocha-chai-http/>
-- -<https://www.freecodecamp.org/news/how-to-build-explicit-apis-with-openapi/>
+- <https://www.freecodecamp.org/news/how-to-build-explicit-apis-with-openapi/>
+- <https://github.com/kogosoftwarellc/open-api/tree/master/packages/express-openapi#readme>
 
 ## Log de canvis
 

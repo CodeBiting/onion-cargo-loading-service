@@ -1,6 +1,6 @@
 const logger = require("../../api/logger");
 
-module.exports = function () {
+module.exports = function (containerService) {
 
   let operations = {
     GET,
@@ -10,18 +10,7 @@ module.exports = function () {
   };
 
   function GET(req, res, next) {
-    let containers = [
-      {
-        id: 1,
-        code: 'C1',
-        description: 'Container 1',
-        width: 1,
-        length: 1,
-        height: 1,
-        maxWeight: 1,
-      }
-    ];
-
+    let containers = containerService.getContainers();
     res.status(200).json(containers);
   }
 
