@@ -10,8 +10,8 @@ const logger = require("./api/logger");
 var openapi = require('express-openapi');
 var swaggerUi = require('swagger-ui-express');
 //import { initialize } from 'express-openapi';
-//import v1ContainerService from './api-v1/services/containerService';
-//import v1ApiDoc from './api-v1/api-doc';
+var v1ContainerService = require('./api-v1/services/containerService');
+var v1ApiDoc = require('./api-v1/api-doc');
 
 
 var app = express();
@@ -70,7 +70,10 @@ app.use(function(err, req, res, next) {
 // OpenAPI routes
 openapi.initialize({
   app: app,
-  apiDoc: require('./api-v1/api-doc'),
+  apiDoc: v1ApiDoc,
+  dependencies: {
+    containerService: v1ContainerService
+  },
   paths: "./api-v1/paths",
 });
 
