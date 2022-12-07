@@ -23,6 +23,8 @@ const DEFAULT_PORT = '8080';  // Port del contenidor que espera Cloud Run
 var port = normalizePort(process.env.PORT || DEFAULT_PORT);
 app.set('port', port);
 
+logger.info(`Server port on ${port}`);
+
 /**
  * Create HTTP server.
  */

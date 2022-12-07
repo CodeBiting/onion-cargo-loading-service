@@ -109,6 +109,49 @@ Mes info a:
 - <https://www.freecodecamp.org/news/how-to-build-explicit-apis-with-openapi/>
 - <https://github.com/kogosoftwarellc/open-api/tree/master/packages/express-openapi#readme>
 
+## Desplegar
+
+### Desplegar amb PM2
+
+### Desplegar amb docker
+
+Construim la nova imatge a partir del fitxer Dockerfile:
+
+```bash
+# Mirem quines imatges tenim en local
+$ docker images
+
+# Creem una imatge en local a partir del Dockerfile
+# docker build --tag <nom de la nova imatge> <ruta del fitxer dockerfile>
+# Posem una nova versio cada vegada
+$ docker build --tag  codebiting/onion-cargo-loading:v1  .
+
+# Verifiquem que la imatge s’ha creat correctament, per això mirem si la imatge existeix.
+$ docker images
+
+# Executem la imatge en mode interactiu
+$ docker run -it -p 8080:8080 -d codebiting/onion-cargo-loading:v1
+
+# Verifiquem que el contenidor està actiu, amb els ports correctes i mirem els logs que deixa:
+$ docker ps
+$ docker logs <container id>
+$ docker inspcet <container id>
+# Veure tots els contenidors (els finalitzats i els en execució)
+$ docker ps -a
+
+# Comprovem que l’aplicació funciona executant un navegador web l’adreça:
+[http://<my.servlet.host>:8080/api-documentation](http://localhost:8080/api-documentation/)
+
+# Entrem a dins del contenidor pel que sigui:
+$ docker exec -it <container id> /bin/bash
+# Si esta parat ho podem fer d aquesta manera
+$ docker start -ai <container id>
+
+# Parem l’execució del contenidor. Podem fer-ho de dues maneres diferents:
+$ docker stop <container id>
+$ docker kill <container id>
+```
+
 ## Log de canvis
 
 V 0.0.0 - Característiques
