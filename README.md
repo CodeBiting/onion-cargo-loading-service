@@ -2,8 +2,76 @@
 
 ## Descripció
 
-Projecte ExpressJS amb vistes PUG i logging amb Morgan i Winston configurats
-per logar a fitxers.
+Projecte d'un servei web per determinar si es poden encabir diversos elements
+en un contenidor i si es així en quina disposició i ordre.
+El servei s'ha de poder desplegar en diferents configuracions:
+
+- Un servidor Ubunbtu amb PM2
+- Un servidor Ubuntu amb docker compose
+- Un o diversos servidors Ubuntu amb docker swarm
+- Kubernetes
+- Google Run (Serverless)
+
+El servei es desenvoluparà amb NodeJS, ExpressJS
+El loggin es farà amb Morgan i Winston.
+Les API REST es faran amb Open API i swagger.
+
+### Disseny de les API REST
+
+Per dissenyar les API REST s'ha de tenir en compte:
+
+- El nivell de granularitat: si la granularitat és molt fina s'exposaran molts
+  recursos i obligarà a fer moltes crides per relitzar una operació, en canvi
+  si la granularitat és molt grossa hi haurà poca flexibilitat i dificultarà la
+  reutilització de l'API. S'ha de triar un equilibri entre:
+  - La mida de la resposta
+  - El número de crides de la API
+  - Mantenibiilitat i reusabilitat
+  - Escalabilitat
+  - Necessitats del negoci
+- Basar el disseny en els objectes del negoci i no en taules de la BD
+- Fer servir HATEOAS per donar d'inteligència al client, que a partir d'una
+  crida sigui capaç de fer altres crides.
+- Gestionar els errors de forma consistent, centralitzar els errors en un
+  array JSON pot ser una bona idea. <https://www.rfc-editor.org/rfc/rfc7807>.
+
+Exemple de crida amb HATEOAS:
+
+```javascript
+{
+ “id”: 1,
+ “name”: “Blog”,
+ “links”: [
+  {
+   “href”: “1/posts”,
+   “rel”: “posts”,
+   “type” : “GET”
+   }, 
+  {
+   “href”: “1/comments”,
+   “rel”: “comments”,
+   “type” : “GET”
+   }
+ ]
+}
+```
+
+Exemple d'array d'errors:
+
+```javascript
+{
+ “errors”: [
+   {
+   “code”: “10003”,
+   “message”: “invalid address field”
+   },
+   {
+   “code”: “10004”,
+   “message”: “birthday field is requried”
+   }
+   ]
+ }
+```
 
 ## Com treballar amb el projecte
 
