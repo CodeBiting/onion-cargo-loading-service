@@ -2,7 +2,7 @@ const apiDoc = {
   swagger: "2.0",
   basePath: "/v1",  // S'ha de posar la ruta amb la versió v1 en l'atribut url de swagger en el fitxer app.js
   info: {
-    title: "Container app API.",
+    title: "Cargo Loading app API.",
     version: "1.0.0",
   },
   definitions: {
@@ -35,6 +35,21 @@ const apiDoc = {
         },
       },
       required: ["id", "code", "width", "length", "height", "maxWeight"],
+    },
+    Healthcheck: {
+      type: "object",
+      properties: {
+        number: {
+          type: "number",
+        },
+        code: {
+          type: "string",
+        },
+        description: {
+          type: "string",
+        },
+      },
+      required: ["number", "code"],
     },
   },
   paths: {},

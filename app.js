@@ -7,11 +7,11 @@ var morgan = require('morgan');
 const logger = require("./api/logger");
 
 //var expressOpenAPI = require('express-openapi');
-var openapi = require('express-openapi');
-var swaggerUi = require('swagger-ui-express');
+//var openapi = require('express-openapi');
+//var swaggerUi = require('swagger-ui-express');
 //import { initialize } from 'express-openapi';
-var v1ContainerService = require('./api-v1/services/containerService');
-var v1ApiDoc = require('./api-v1/api-doc');
+//var v1ContainerService = require('./api-v1/services/containerService');
+//var v1ApiDoc = require('./api-v1/api-doc');
 
 
 var app = express();
@@ -67,6 +67,7 @@ app.use(function(err, req, res, next) {
 });
 */
 
+/*
 // OpenAPI routes
 openapi.initialize({
   app: app,
@@ -84,10 +85,11 @@ app.use(
   swaggerUi.setup(null, {
     swaggerOptions: {
       // S'ha de posar la ruta amb la versió, tal i com s'indica al atribut basePath del fitxer api-v1/api-doc.js
-      url: "http://localhost:3000/v1/api-docs",
+      url: "http://localhost:8080/v1/api-docs",
     },
   })
 );
-logger.info(`API Documentation in http://localhost:3000/api-documentation/`);
+logger.info(`API Documentation in http://localhost:8080/api-documentation/`);
+*/
 
 module.exports = app;
