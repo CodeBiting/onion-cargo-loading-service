@@ -15,6 +15,7 @@ El servei s'ha de poder desplegar en diferents configuracions:
 El servei es desenvoluparà amb NodeJS, ExpressJS
 El loggin es farà amb Morgan i Winston.
 Les API REST es faran amb Open API i swagger.
+Les dades es guardaran en una BD MySql.
 
 ### Disseny de les API REST
 
@@ -99,7 +100,8 @@ module.exports = {
 }
 ```
 
-Per veure totes les rutes del projecte executar-lo amb: `DEBUG=express:* node bin/www`
+Per veure totes les rutes del projecte executar-lo amb la camanda:
+`DEBUG=express:* node bin/www`
 
 Mes info a:
 
@@ -109,13 +111,29 @@ Mes info a:
 - <https://www.freecodecamp.org/news/how-to-build-explicit-apis-with-openapi/>
 - <https://github.com/kogosoftwarellc/open-api/tree/master/packages/express-openapi#readme>
 
-## Desplegar
+## Desplegar amb PM2 en un VPS
 
-### Desplegar amb PM2
+Característiques:
 
-### Desplegar amb docker
+1. Un sol servidor
+2. Configuració senzilla
+3. Poca escalabilitat
+4. Entorns no aïllats
 
-Construim la nova imatge a partir del fitxer Dockerfile:
+![Diagrama amb el servei en un servidor Ubuntu amb Nginx i PM2](./doc/images/deploy-pm2.svg)
+
+Per tal de deplegar l'aplicació amb PM2 en un servidor farem servir un script
+que ens desplegui tots els components necessaris en un servidor Ubuntu de
+clouding.io
+
+En el mateix servidor hi instalarem una BD MySQL per guardar les dades.
+
+<https://help.clouding.io/hc/es/articles/360017803619-C%C3%B3mo-desplegar-una-aplicaci%C3%B3n-NodeJS-en-Ubuntu-20-04>
+
+## Construim una imatge del contenidor i l'executem
+
+Per poder desplegar amb docker compose, swarm kubernetes o Cloud Run primer hem
+de crear l'aplicació en un contenidor.
 
 ```bash
 # Mirem quines imatges tenim en local
@@ -151,6 +169,43 @@ $ docker start -ai <container id>
 $ docker stop <container id>
 $ docker kill <container id>
 ```
+
+## Executem el contenidor amb docker compose
+
+<https://docs.docker.com/compose/>
+<https://docs.docker.com/compose/production/>
+<https://www.educative.io/blog/docker-compose-tutorial>
+
+Característiques:
+
+1. Un sol servidor
+2. Configuració senzilla, però més complicada que amb PM2, per gestionar 
+   diversos contenidors
+3. Poca escalabilitat
+4. Entorns aïllats
+
+Per tal de deplegar l'aplicació amb docker compose en un servidor farem servir
+un script que ens desplegui tots els components necessaris en un servidor
+Ubuntu de clouding.io
+
+Al mateix servidor hi instalarem un docker amb MySQL per guardar-hi les dades.
+
+![Diagrama amb el servei en un servidor Ubuntu amb Nginx i Docker Compose](./doc/images/deploy-docker-compose.svg)
+
+## Executem el contenidor amb docker swarm
+
+<https://docs.docker.com/engine/swarm/>
+
+Característiques:
+
+1. Un o diversos servidors
+2. Configuració complexa
+3. Escalabilitat
+4. Entorns aïllats
+
+## Executem el contenidor amb kubernetes
+
+## Executem el contenidor amb Cloud Run
 
 ## Log de canvis
 
