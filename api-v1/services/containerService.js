@@ -7,6 +7,15 @@ let containers = [
     length: 1,
     height: 1,
     maxWeight: 1,
+  },
+  {
+    id: 2,
+    code: 'C2',
+    description: 'Container 2',
+    width: 2,
+    length: 1,
+    height: 1,
+    maxWeight: 1,
   }
 ];
 

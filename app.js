@@ -49,11 +49,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/*
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+
+// catch 404 NOT FOUND and forward to error handler
+// Ho comntem ja que totes les URL de openapi fallen en primera instància
+//app.use(function(req, res, next) {
+//  //next(createError(404));
+//  logger.info(`404 NOT FOUND ${req.url}`);
+//  next();
+//});
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -62,34 +65,10 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  //res.status(err.status || 500);
+  //res.render('error');
+  logger.error(`Error ${req.url} - ${err.status || 500} - ${err.message}`);
+  res.send();
 });
-*/
-
-/*
-// OpenAPI routes
-openapi.initialize({
-  app: app,
-  apiDoc: v1ApiDoc,
-  dependencies: {
-    containerService: v1ContainerService
-  },
-  paths: "./api-v1/paths",
-});
-
-// OpenAPI UI
-app.use(
-  "/api-documentation",
-  swaggerUi.serve,
-  swaggerUi.setup(null, {
-    swaggerOptions: {
-      // S'ha de posar la ruta amb la versió, tal i com s'indica al atribut basePath del fitxer api-v1/api-doc.js
-      url: "http://localhost:8080/v1/api-docs",
-    },
-  })
-);
-logger.info(`API Documentation in http://localhost:8080/api-documentation/`);
-*/
 
 module.exports = app;

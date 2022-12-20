@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="370mm"
+   viewBox="0 0 210 370"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (1:1.1+202202050950+0a00cf5339)"
+   sodipodi:docname="solutions.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.75187991"
+     inkscape:cx="796.00478"
+     inkscape:cy="514.04486"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     height="320mm" />
+  <defs
+     id="defs2">
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11494" />
+    </marker>
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458" />
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458-3" />
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458-35" />
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458-3-6" />
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11494-9" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker11894"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11892" />
+    </marker>
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458-3-6-1" />
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458-35-2" />
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458-3-6-0" />
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-2-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11494-9-3" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker26310"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path26308" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11494-5" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker26316"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path26314" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-rule:evenodd;stroke-width:0.264583"
+       id="rect43935"
+       width="113.67877"
+       height="10.319605"
+       x="1.467571"
+       y="1.2430055"
+       ry="3.3294108" />
+    <rect
+       style="fill:#ffffff;fill-rule:evenodd;stroke-width:0.316197"
+       id="rect43935-5"
+       width="162.35727"
+       height="10.319605"
+       x="1.3147756"
+       y="77.461952"
+       ry="3.3294108" />
+    <rect
+       style="fill:#ffffff;fill-rule:evenodd;stroke-width:0.337823"
+       id="rect43935-0"
+       width="185.32536"
+       height="10.319605"
+       x="1.9512318"
+       y="217.67743"
+       ry="3.3294108" />
+    <g
+       id="g26275"
+       transform="translate(0,3.1750001)">
+      <g
+         id="g11421"
+         transform="translate(81.134754,-32.118438)">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.264583"
+           id="rect846"
+           width="64.401726"
+           height="62.376423"
+           x="48.234802"
+           y="41.369038"
+           ry="3.3294108" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,-39.773798,-8.1934099)"
+           id="text4456"
+           style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458)"><tspan
+             x="410.875"
+             y="244.1055"
+             id="tspan44172">MySql</tspan></text>
+        <g
+           id="g49143"
+           transform="translate(-14.754931,149.67612)">
+          <path
+             id="rect47776"
+             style="fill:#345d7f;fill-opacity:1;fill-rule:evenodd;stroke-width:0.761915"
+             d="m 293.16016,-298.77344 v 76.76563 h 2.98046 a 65.799022,18.227351 0 0 0 62.99219,12.99414 65.799022,18.227351 0 0 0 62.99219,-12.99414 h 2.81055 v -76.76563 z"
+             transform="scale(0.26458333)" />
+          <ellipse
+             style="fill:#6c9bbd;fill-opacity:1;stroke:#000000;stroke-width:0.143375;stroke-miterlimit:4;stroke-dasharray:none"
+             id="path44386"
+             ry="4.8226533"
+             rx="17.409325"
+             cy="-78.971336"
+             cx="95.425659" />
+        </g>
+      </g>
+      <g
+         id="g6195-6"
+         transform="translate(-59.4434,-27.043614)">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.264583"
+           id="rect846-7"
+           width="64.401726"
+           height="62.376423"
+           x="99.039749"
+           y="35.805233"
+           ry="3.3294108" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,-0.25898186,1.6624732)"
+           id="text4456-5"
+           style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-3)"><tspan
+             x="410.875"
+             y="244.1055"
+             id="tspan44174">cargo-loading</tspan></text>
+      </g>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="M 3.9348832,40.598476 C 38.755485,40.252724 38.755485,40.252724 38.755485,40.252724"
+         id="path11489" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 103.9536,41.047292 c 24.84342,-0.08943 24.84342,-0.08943 24.84342,-0.08943"
+         id="path11759" />
+    </g>
+    <g
+       id="g26296"
+       transform="translate(0,2.1166667)">
+      <g
+         id="g11421-1"
+         transform="translate(82.119948,46.309642)">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.264583"
+           id="rect846-2"
+           width="64.401726"
+           height="62.376423"
+           x="48.234802"
+           y="41.369038"
+           ry="3.3294108" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,-39.773798,-8.1934099)"
+           id="text4456-7"
+           style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-35)"><tspan
+             x="410.875"
+             y="244.1055"
+             id="tspan44176">MySql</tspan></text>
+        <g
+           id="g49143-0"
+           transform="translate(-14.754931,149.67612)">
+          <path
+             id="rect47776-9"
+             style="fill:#345d7f;fill-opacity:1;fill-rule:evenodd;stroke-width:0.761915"
+             d="m 293.16016,-298.77344 v 76.76563 h 2.98046 a 65.799022,18.227351 0 0 0 62.99219,12.99414 65.799022,18.227351 0 0 0 62.99219,-12.99414 h 2.81055 v -76.76563 z"
+             transform="scale(0.26458333)" />
+          <ellipse
+             style="fill:#6c9bbd;fill-opacity:1;stroke:#000000;stroke-width:0.143375;stroke-miterlimit:4;stroke-dasharray:none"
+             id="path44386-3"
+             ry="4.8226533"
+             rx="17.409325"
+             cy="-78.971336"
+             cx="95.425659" />
+        </g>
+      </g>
+      <g
+         id="g6195-6-6"
+         transform="translate(-58.458208,51.384466)">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.264583"
+           id="rect846-7-0"
+           width="64.401726"
+           height="62.376423"
+           x="99.039749"
+           y="35.805233"
+           ry="3.3294108" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,-0.25898186,1.6624732)"
+           id="text4456-5-6"
+           style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-3-6)"><tspan
+             x="410.875"
+             y="244.1055"
+             id="tspan44178">cargo-loading</tspan></text>
+      </g>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-2)"
+         d="M 4.9200782,119.02656 C 39.740678,118.68081 39.740678,118.68081 39.740678,118.68081"
+         id="path11489-2" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-2)"
+         d="m 104.93879,119.47537 c 24.84342,-0.0894 24.84342,-0.0894 24.84342,-0.0894"
+         id="path11759-6" />
+      <g
+         id="g26143"
+         transform="translate(0.44407936,-15.503773)">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.206"
+           id="rect846-7-0-7"
+           width="64.401726"
+           height="37.812107"
+           x="39.643234"
+           y="186.78148"
+           ry="2.0182631" />
+        <text
+           xml:space="preserve"
+           style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+           x="46.48632"
+           y="208.76877"
+           id="text25398"><tspan
+             sodipodi:role="line"
+             id="tspan25396"
+             style="stroke-width:0.264583"
+             x="46.48632"
+             y="208.76877">authentication</tspan></text>
+      </g>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 65.546421,149.95026 c 0.259067,21.52556 0.259067,21.52556 0.259067,21.52556"
+         id="path26178" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 103.52255,190.63863 c 54.50046,-40.20797 54.50046,-40.20797 54.50046,-40.20797"
+         id="path26180" />
+    </g>
+    <g
+       id="g30103">
+      <g
+         id="g11421-1-2"
+         transform="translate(81.130155,188.65976)">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.264583"
+           id="rect846-2-2"
+           width="64.401726"
+           height="62.376423"
+           x="48.234802"
+           y="41.369038"
+           ry="3.3294108" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,-39.773798,-8.1934099)"
+           id="text4456-7-8"
+           style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-35-2)"><tspan
+             x="410.875"
+             y="244.1055"
+             id="tspan44180">MySql</tspan></text>
+        <g
+           id="g49143-0-9"
+           transform="translate(-14.754931,149.67612)">
+          <path
+             id="rect47776-9-7"
+             style="fill:#345d7f;fill-opacity:1;fill-rule:evenodd;stroke-width:0.761915"
+             d="m 293.16016,-298.77344 v 76.76563 h 2.98046 a 65.799022,18.227351 0 0 0 62.99219,12.99414 65.799022,18.227351 0 0 0 62.99219,-12.99414 h 2.81055 v -76.76563 z"
+             transform="scale(0.26458333)" />
+          <ellipse
+             style="fill:#6c9bbd;fill-opacity:1;stroke:#000000;stroke-width:0.143375;stroke-miterlimit:4;stroke-dasharray:none"
+             id="path44386-3-3"
+             ry="4.8226533"
+             rx="17.409325"
+             cy="-78.971336"
+             cx="95.425659" />
+        </g>
+      </g>
+      <g
+         id="g6195-6-6-6"
+         transform="translate(-59.448001,193.73459)">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.264583"
+           id="rect846-7-0-1"
+           width="64.401726"
+           height="62.376423"
+           x="99.039749"
+           y="35.805233"
+           ry="3.3294108" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,-0.25898186,1.6624732)"
+           id="text4456-5-6-2"
+           style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-3-6-0)"><tspan
+             x="410.875"
+             y="244.1055"
+             id="tspan44182">cargo-loading</tspan></text>
+      </g>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-2-2)"
+         d="M 3.9302854,261.37668 C 38.750885,261.03093 38.750885,261.03093 38.750885,261.03093"
+         id="path11489-2-9" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-2-2)"
+         d="m 103.949,261.82549 c 24.84342,-0.0894 24.84342,-0.0894 24.84342,-0.0894"
+         id="path11759-6-3" />
+      <g
+         id="g26143-1"
+         transform="translate(-0.54571347,126.84635)">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.206"
+           id="rect846-7-0-7-9"
+           width="64.401726"
+           height="37.812107"
+           x="39.643234"
+           y="186.78148"
+           ry="2.0182631" />
+        <text
+           xml:space="preserve"
+           style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+           x="46.48632"
+           y="208.76877"
+           id="text25398-4"><tspan
+             sodipodi:role="line"
+             id="tspan25396-7"
+             style="stroke-width:0.264583"
+             x="46.48632"
+             y="208.76877">authentication</tspan></text>
+      </g>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-7)"
+         d="m 64.556628,292.30038 c 0.259067,21.52556 0.259067,21.52556 0.259067,21.52556"
+         id="path26178-8" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-7)"
+         d="m 102.53276,332.98875 c 54.50046,-40.20797 54.50046,-40.20797 54.50046,-40.20797"
+         id="path26180-4" />
+      <rect
+         style="fill:#aa0000;fill-rule:evenodd;stroke-width:0.274345"
+         id="rect26566"
+         width="65.539597"
+         height="33.537891"
+         x="127.90964"
+         y="317.87469"
+         ry="3.3294108" />
+      <text
+         xml:space="preserve"
+         style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#ffffff;stroke-width:0.264583"
+         x="134.2495"
+         y="336.49976"
+         id="text28806"><tspan
+           sodipodi:role="line"
+           id="tspan28804"
+           style="fill:#ffffff;stroke-width:0.264583"
+           x="134.2495"
+           y="336.49976">redis database</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 104.59793,271.48176 c 49.80801,46.9969 49.80801,46.9969 49.80801,46.9969"
+         id="path29995" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 102.53276,332.98876 c 25.07244,0.39714 25.07244,0.39714 25.07244,0.39714"
+         id="path29997" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583;fill:#000000;fill-opacity:1"
+       x="4.3853374"
+       y="8.6082535"
+       id="text34671"><tspan
+         sodipodi:role="line"
+         id="tspan34669"
+         style="stroke-width:0.264583;fill:#000000;fill-opacity:1"
+         x="4.3853374"
+         y="8.6082535">Servei cargo-loading amb BD</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       x="3.941462"
+       y="85.166458"
+       id="text38923"><tspan
+         sodipodi:role="line"
+         id="tspan38921"
+         style="stroke-width:0.264583"
+         x="3.941462"
+         y="85.166458">Servei cargo-loading + autenticació amb BD</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="4.7274394"
+       y="225.06721"
+       id="text43481"><tspan
+         sodipodi:role="line"
+         id="tspan43479"
+         style="stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+         x="4.7274394"
+         y="225.06721">Servei cargo-loafing + autenticació amb BD i Redis</tspan></text>
+  </g>
+</svg>

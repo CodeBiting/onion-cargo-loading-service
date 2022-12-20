@@ -13,7 +13,7 @@ const apiDoc = {
       type: "object",
       properties: {
         id: {
-          type: "number",
+          type: "integer",
         },
         code: {
           type: "string",
@@ -22,16 +22,16 @@ const apiDoc = {
           type: "string",
         },
         width: {
-          type: "number",
+          type: "integer",
         },
-        legth: {
-          type: "number",
+        length: {
+          type: "integer",
         },
         height: {
-          type: "number",
+          type: "integer",
         },
         maxWeight: {
-          type: "number",
+          type: "integer",
         },
       },
       required: ["id", "code", "width", "length", "height", "maxWeight"],
@@ -40,7 +40,7 @@ const apiDoc = {
       type: "object",
       properties: {
         number: {
-          type: "number",
+          type: "integer",
         },
         code: {
           type: "string",
@@ -52,6 +52,7 @@ const apiDoc = {
       required: ["number", "code"],
     },
   },
+  
   paths: {},
 
   // tags is optional, and is generated / sorted by the tags defined in your path
