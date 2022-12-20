@@ -62,6 +62,12 @@ module.exports = function (containerService) {
       201: {
         description: "Created",
       },
+      400: {
+        description: "Bad request",
+      }, 
+      404: {
+        description: "Not found",
+      }
     },
   };
 
@@ -73,7 +79,7 @@ module.exports = function (containerService) {
         in: "query",
         name: "id",
         required: true,
-        type: "string",
+        type: "integer",
       },
       {
         in: "body",
@@ -99,7 +105,7 @@ module.exports = function (containerService) {
         in: "query",
         name: "id",
         required: true,
-        type: "string",
+        type: "integer",
       },
     ],
     responses: {
