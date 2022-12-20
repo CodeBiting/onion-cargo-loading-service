@@ -4,6 +4,8 @@
 
 Projecte d'un servei web per determinar si es poden encabir diversos elements
 en un contenidor i si es així en quina disposició i ordre.
+El servei ha de poder gestionar peticions de diversos clients, a on cada client
+té uns contenidors preconfigurats diferents.
 El servei s'ha de poder desplegar en diferents configuracions:
 
 - Un servidor Ubunbtu amb PM2
@@ -16,6 +18,27 @@ El servei es desenvoluparà amb NodeJS, ExpressJS
 El loggin es farà amb Morgan i Winston.
 Les API REST es faran amb Open API i swagger.
 Les dades es guardaran en una BD MySql.
+Es farà servir una BD Redis com a cahce de la MySql.
+Es testejarà amb mocha i artillery.
+
+Posteriorment s'afegirà un altre servei per gestionar les claus de connexió
+dels clients, obtenir estadístiques de connexió, poder bloquejar claus,
+renovar-les i crear-ne de noves.
+
+Com a útlim punt s'agefirà una base de dades Redis per tal de guardar en
+memòria els contenidors preconfigurats i les claus de connexió dels clients
+per agilitzar l'aplicació.
+
+![Diagrama amb les solucions](./doc/images/solutions.svg)
+
+Es vol comprobar si una aplicació serverless feta amb contenidors realment té 
+els següents avantatges:
+
+- Ús de contenidors ofereix més flexibilitat i rapidesa
+- Serverless simplifica la configuració i l'escalabilitat
+- Millora la productivitat dels desenvolupadors
+- Facilita la recol·lecció de dades per poder obtenir coneixement i s'hi pot aplicar ML
+- Redueix els costos d'infraestructura i informàtica
 
 ### Disseny de les API REST
 
@@ -111,7 +134,9 @@ Mes info a:
 - <https://www.freecodecamp.org/news/how-to-build-explicit-apis-with-openapi/>
 - <https://github.com/kogosoftwarellc/open-api/tree/master/packages/express-openapi#readme>
 
-## Desplegar amb PM2 en un VPS
+## Desplegament
+
+### Desplegar amb PM2 en un VPS
 
 Característiques:
 
@@ -128,9 +153,40 @@ clouding.io
 
 En el mateix servidor hi instalarem una BD MySQL per guardar les dades.
 
-<https://help.clouding.io/hc/es/articles/360017803619-C%C3%B3mo-desplegar-una-aplicaci%C3%B3n-NodeJS-en-Ubuntu-20-04>
+Opcions d'escalabilitat:
 
-## Construim una imatge del contenidor i l'executem
+1. Enlloc de crear els serveis al PM2 un a un, es pot fer servir el fitxer
+   ecosystem que permet crear-los tots de cops i fer servir múltiples
+   instàncies d'una mateixa app amb un balencejador de càrrega del PM2.
+2. Es pot iniciar els serveis PM2 amb la opció -i que els crea en mode cluster,
+   es a dir, un servei per cada CPU del servidor: `pm2 start app.js -i max`
+3. Es poden aixecar nous servidors i desplegar noves instàncies, però es
+   necessita un balencejador de càrrega entre tots els servidors.
+
+Exemple opció escalabilitat 1, amb fitxer ecosystem:
+
+```javascript
+{
+  "apps" : [{
+    "name"        : "worker-app",
+    "script"      : "./worker.js",
+    "watch"       : true,
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "env_production" : {
+       "NODE_ENV": "production"
+    }
+  },{
+    "name"       : "api-app",
+    "script"     : "./api.js",
+    "instances"  : 4,
+    "exec_mode"  : "cluster"
+  }]
+}
+```
+
+### Construim una imatge del contenidor i l'executem
 
 Per poder desplegar amb docker compose, swarm kubernetes o Cloud Run primer hem
 de crear l'aplicació en un contenidor.
@@ -170,7 +226,7 @@ $ docker stop <container id>
 $ docker kill <container id>
 ```
 
-## Executem el contenidor amb docker compose
+### Executem el contenidor amb docker compose
 
 <https://docs.docker.com/compose/>
 <https://docs.docker.com/compose/production/>
@@ -192,7 +248,7 @@ Al mateix servidor hi instalarem un docker amb MySQL per guardar-hi les dades.
 
 ![Diagrama amb el servei en un servidor Ubuntu amb Nginx i Docker Compose](./doc/images/deploy-docker-compose.svg)
 
-## Executem el contenidor amb docker swarm
+### Executem el contenidor amb docker swarm
 
 <https://docs.docker.com/engine/swarm/>
 
@@ -203,9 +259,38 @@ Característiques:
 3. Escalabilitat
 4. Entorns aïllats
 
-## Executem el contenidor amb kubernetes
+### Executem el contenidor amb kubernetes
 
-## Executem el contenidor amb Cloud Run
+### Executem el contenidor amb Cloud Run
+
+## Comparativa dels diferents modes de desplegament
+
+| Mode de desplegament | Màxima escalabilitat | Temps per canviar l'escalabilitat |
+|-|-|-
+| PM2 | De 1 a N serveis per servidor | Segons a minuts: s'ha de modificar l'ecosystem i reiniciar PM2 |
+| Docker compose | | |
+| Docker swarm | | |
+| Kubernetes | | |
+| Cloud Run | | |
+
+## Comparativa dels tests amb artillery
+
+Escenaris:
+
+1. Un client fa N consultes per segon durant 60 segons
+2. Un client durant 60 segons fan de 1 a Y consultes per segon
+3. X clients fan N consultes per segon durant 60 segons
+4. X clients durant 60 segons fan de 1 a Y cosultes per segon
+
+| Mode de desplegament | Escenari 1 | Escenari 2 | Escenari 3 | Escenari 4 |
+|-|-|-|-|-|
+| PM2 1 servei |  |  |  |  |
+| PM2 mode cluster + Redis |  |  |  |  |
+| Docker compose | | |  |  |
+| Docker compose + Redis | | |  |  |
+| Docker swarm + Redis | | |  |  |
+| Kubernetes + Redis | | |  |  |
+| Cloud Run + Redis | | |  |  |
 
 ## Log de canvis
 
