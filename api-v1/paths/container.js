@@ -10,8 +10,19 @@ module.exports = function (containerService) {
   };
 
   function GET(req, res, next) {
-    let containers = containerService.getContainers();
-    res.status(200).json(containers);
+    if (req.query.id) {
+      // Retornem un contenidor concret
+      let container = containerService.getContainer(req.query.id);
+      if (container === undefined) {
+        res.status(404).json();
+      } else {
+        res.status(200).json(container);
+      }
+    } else {
+      // Retornem tots els contenidors
+      let containers = containerService.getContainers();
+      res.status(200).json(containers);
+    }
   }
 
   function POST(req, res, next) {

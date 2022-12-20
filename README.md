@@ -18,20 +18,20 @@ El servei es desenvoluparà amb NodeJS, ExpressJS
 El loggin es farà amb Morgan i Winston.
 Les API REST es faran amb Open API i swagger.
 Les dades es guardaran en una BD MySql.
-Es farà servir una BD Redis com a cahce de la MySql.
+Es farà servir una BD Redis com a cache de la MySql.
 Es testejarà amb mocha i artillery.
 
 Posteriorment s'afegirà un altre servei per gestionar les claus de connexió
 dels clients, obtenir estadístiques de connexió, poder bloquejar claus,
 renovar-les i crear-ne de noves.
 
-Com a útlim punt s'agefirà una base de dades Redis per tal de guardar en
+Com a útlim punt s'afegirà una base de dades Redis per tal de guardar en
 memòria els contenidors preconfigurats i les claus de connexió dels clients
 per agilitzar l'aplicació.
 
 ![Diagrama amb les solucions](./doc/images/solutions.svg)
 
-Es vol comprobar si una aplicació serverless feta amb contenidors realment té 
+Es vol comprobar si una aplicació serverless feta amb contenidors realment té
 els següents avantatges:
 
 - Ús de contenidors ofereix més flexibilitat i rapidesa
@@ -50,11 +50,11 @@ Per dissenyar les API REST s'ha de tenir en compte:
   reutilització de l'API. S'ha de triar un equilibri entre:
   - La mida de la resposta
   - El número de crides de la API
-  - Mantenibiilitat i reusabilitat
+  - Mantenibilitat i reusabilitat
   - Escalabilitat
   - Necessitats del negoci
 - Basar el disseny en els objectes del negoci i no en taules de la BD
-- Fer servir HATEOAS per donar d'inteligència al client, que a partir d'una
+- Fer servir HATEOAS per dotar d'inteligència al client, que a partir d'una
   crida sigui capaç de fer altres crides.
 - Gestionar els errors de forma consistent, centralitzar els errors en un
   array JSON pot ser una bona idea. <https://www.rfc-editor.org/rfc/rfc7807>.

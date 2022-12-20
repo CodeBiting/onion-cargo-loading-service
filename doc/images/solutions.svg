@@ -3,8 +3,8 @@
 
 <svg
    width="210mm"
-   height="370mm"
-   viewBox="0 0 210 370"
+   height="500mm"
+   viewBox="0 0 210 500"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (1:1.1+202202050950+0a00cf5339)"
@@ -24,15 +24,15 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.75187991"
-     inkscape:cx="796.00478"
-     inkscape:cy="514.04486"
+     inkscape:cx="602.48983"
+     inkscape:cy="1365.2446"
      inkscape:window-width="1848"
      inkscape:window-height="1016"
      inkscape:window-x="72"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
-     height="320mm" />
+     height="470mm" />
   <defs
      id="defs2">
     <marker
@@ -175,6 +175,102 @@
          d="M 0,0 5,-5 -12.5,0 5,5 Z"
          id="path26314" />
     </marker>
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458-35-2-3" />
+    <rect
+       x="410.87402"
+       y="220.51237"
+       width="189.61172"
+       height="82.471176"
+       id="rect4458-3-6-0-6" />
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-2-2-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11494-9-3-5" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker4810"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path4808" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-7-3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11494-5-5" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker4816"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path4814" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-6"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path11494-2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker4822"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path4820" />
+    </marker>
   </defs>
   <g
      inkscape:label="Capa 1"
@@ -204,6 +300,14 @@
        x="1.9512318"
        y="217.67743"
        ry="3.3294108" />
+    <rect
+       style="fill:#ffffff;fill-rule:evenodd;stroke-width:0.337823"
+       id="rect43935-0-8"
+       width="185.32536"
+       height="10.319605"
+       x="0.33486021"
+       y="355.1481"
+       ry="3.3294108" />
     <g
        id="g26275"
        transform="translate(0,3.1750001)">
@@ -225,7 +329,7 @@
            style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458)"><tspan
              x="410.875"
              y="244.1055"
-             id="tspan44172">MySql</tspan></text>
+             id="tspan20014">MySql</tspan></text>
         <g
            id="g49143"
            transform="translate(-14.754931,149.67612)">
@@ -261,7 +365,7 @@
            style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-3)"><tspan
              x="410.875"
              y="244.1055"
-             id="tspan44174">cargo-loading</tspan></text>
+             id="tspan20016">cargo-loading</tspan></text>
       </g>
       <path
          style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
@@ -293,7 +397,7 @@
            style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-35)"><tspan
              x="410.875"
              y="244.1055"
-             id="tspan44176">MySql</tspan></text>
+             id="tspan20018">MySql</tspan></text>
         <g
            id="g49143-0"
            transform="translate(-14.754931,149.67612)">
@@ -329,7 +433,7 @@
            style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-3-6)"><tspan
              x="410.875"
              y="244.1055"
-             id="tspan44178">cargo-loading</tspan></text>
+             id="tspan20020">cargo-loading</tspan></text>
       </g>
       <path
          style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-2)"
@@ -391,7 +495,7 @@
            style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-35-2)"><tspan
              x="410.875"
              y="244.1055"
-             id="tspan44180">MySql</tspan></text>
+             id="tspan20022">MySql</tspan></text>
         <g
            id="g49143-0-9"
            transform="translate(-14.754931,149.67612)">
@@ -427,7 +531,7 @@
            style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-3-6-0)"><tspan
              x="410.875"
              y="244.1055"
-             id="tspan44182">cargo-loading</tspan></text>
+             id="tspan20024">cargo-loading</tspan></text>
       </g>
       <path
          style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-2-2)"
@@ -498,13 +602,13 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583;fill:#000000;fill-opacity:1"
+       style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke-width:0.264583"
        x="4.3853374"
        y="8.6082535"
        id="text34671"><tspan
          sodipodi:role="line"
          id="tspan34669"
-         style="stroke-width:0.264583;fill:#000000;fill-opacity:1"
+         style="fill:#000000;fill-opacity:1;stroke-width:0.264583"
          x="4.3853374"
          y="8.6082535">Servei cargo-loading amb BD</tspan></text>
     <text
@@ -528,6 +632,142 @@
          id="tspan43479"
          style="stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
          x="4.7274394"
-         y="225.06721">Servei cargo-loafing + autenticació amb BD i Redis</tspan></text>
+         y="225.06721">Servei cargo-loading + autenticació amb BD i Redis</tspan></text>
+    <g
+       id="g11421-1-2-1"
+       transform="translate(77.934252,327.15421)">
+      <g
+         id="g19877">
+        <rect
+           style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.264583"
+           id="rect846-2-2-2"
+           width="64.401726"
+           height="62.376423"
+           x="48.234802"
+           y="41.369038"
+           ry="3.3294108" />
+      </g>
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-39.773798,-8.1934099)"
+         id="text4456-7-8-7"
+         style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-35-2-3)"><tspan
+           x="410.875"
+           y="244.1055"
+           id="tspan20026">MySql</tspan></text>
+      <g
+         id="g49143-0-9-0"
+         transform="translate(-14.754931,149.67612)">
+        <path
+           id="rect47776-9-7-9"
+           style="fill:#345d7f;fill-opacity:1;fill-rule:evenodd;stroke-width:0.761915"
+           d="m 293.16016,-298.77344 v 76.76563 h 2.98046 a 65.799022,18.227351 0 0 0 62.99219,12.99414 65.799022,18.227351 0 0 0 62.99219,-12.99414 h 2.81055 v -76.76563 z"
+           transform="scale(0.26458333)" />
+        <ellipse
+           style="fill:#6c9bbd;fill-opacity:1;stroke:#000000;stroke-width:0.143375;stroke-miterlimit:4;stroke-dasharray:none"
+           id="path44386-3-3-3"
+           ry="4.8226533"
+           rx="17.409325"
+           cy="-78.971336"
+           cx="95.425659" />
+      </g>
+    </g>
+    <g
+       id="g6195-6-6-6-6"
+       transform="translate(-65.596658,394.78263)">
+      <rect
+         style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.264583"
+         id="rect846-7-0-1-0"
+         width="64.401726"
+         height="62.376423"
+         x="99.039749"
+         y="35.805233"
+         ry="3.3294108" />
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-0.25898186,1.6624732)"
+         id="text4456-5-6-2-6"
+         style="font-size:26.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect4458-3-6-0-6)"><tspan
+           x="410.875"
+           y="244.1055"
+           id="tspan20028">cargo-loading</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-2-2-7)"
+       d="M 0.7343826,399.87113 C 35.554982,399.52538 35.554982,399.52538 35.554982,399.52538"
+       id="path11489-2-9-2" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-2-2-7)"
+       d="m 100.7531,400.31994 c 24.84342,-0.0894 24.84342,-0.0894 24.84342,-0.0894"
+       id="path11759-6-3-6" />
+    <g
+       id="g26143-1-1"
+       transform="translate(-3.9171346,193.97467)">
+      <rect
+         style="fill:#00ffff;fill-rule:evenodd;stroke-width:0.206"
+         id="rect846-7-0-7-9-8"
+         width="64.401726"
+         height="37.812107"
+         x="39.643234"
+         y="186.78148"
+         ry="2.0182631" />
+      <text
+         xml:space="preserve"
+         style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+         x="46.48632"
+         y="208.76877"
+         id="text25398-4-7"><tspan
+           sodipodi:role="line"
+           id="tspan25396-7-9"
+           style="stroke-width:0.264583"
+           x="46.48632"
+           y="208.76877">authentication</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.513553;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-7-3)"
+       d="m 64.136175,418.86308 c 0.303466,10.95932 0.303466,10.95932 0.303466,10.95932"
+       id="path26178-8-2" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-7-3)"
+       d="M 99.336857,471.4832 C 153.83732,431.27523 153.83732,431.27523 153.83732,431.27523"
+       id="path26180-4-0" />
+    <rect
+       style="fill:#aa0000;fill-rule:evenodd;stroke-width:0.274345"
+       id="rect26566-2"
+       width="65.539597"
+       height="33.537891"
+       x="124.71374"
+       y="456.36914"
+       ry="3.3294108" />
+    <text
+       xml:space="preserve"
+       style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#ffffff;stroke-width:0.264583"
+       x="131.05359"
+       y="474.9942"
+       id="text28806-3"><tspan
+         sodipodi:role="line"
+         id="tspan28804-7"
+         style="fill:#ffffff;stroke-width:0.264583"
+         x="131.05359"
+         y="474.9942">redis database</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-6)"
+       d="m 101.40203,409.97621 c 49.80801,46.9969 49.80801,46.9969 49.80801,46.9969"
+       id="path29995-5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-6)"
+       d="m 99.336857,471.48321 c 25.072443,0.39714 25.072443,0.39714 25.072443,0.39714"
+       id="path29997-9" />
+    <text
+       xml:space="preserve"
+       style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+       x="1.5315397"
+       y="363.56165"
+       id="text43481-2"><tspan
+         sodipodi:role="line"
+         id="tspan43479-2"
+         style="stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+         x="1.5315397"
+         y="363.56165">Autenticació + Servei cargo-loading amb BD i Redis</tspan></text>
   </g>
 </svg>
