@@ -29,6 +29,13 @@ Com a útlim punt s'afegirà una base de dades Redis per tal de guardar en
 memòria els contenidors preconfigurats i les claus de connexió dels clients
 per agilitzar l'aplicació.
 
+Hem de tenir en compte les diferents opcions de desplegament de les BD, ja que
+les podrem tenir <https://cloud.google.com/blog/products/databases/to-run-or-not-to-run-a-database-on-kubernetes-what-to-consider>:
+
+- En un o diversos VPS dedicats
+- A dins de Kubernetes
+- Fer servir BD autogestionades pel proveïdor de cloud, p.e. Cloud SQL o Memorystore for Redis
+
 ![Diagrama amb les solucions](./doc/images/solutions.svg)
 
 Es vol comprobar si una aplicació serverless feta amb contenidors realment té
