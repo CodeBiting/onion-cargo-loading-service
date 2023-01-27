@@ -104,6 +104,65 @@ Exemple d'array d'errors:
  }
 ```
 
+### Com afegir una versió nova de la API
+
+Passos:
+
+- Crea una carpeta nova amb nom "api-vXXXX"
+- Clona els fitxers de la versió anterior a la nova carpeta
+- Modifica les API segons calgui
+- Edita el fitxer "bin/www" per afegir la nova versió de la següent manera:
+
+```javascript
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('onion-cargo-loading-service:server');
+var http = require('http');
+const logger = require("../api/logger");
+var openapi = require('express-openapi');
+var swaggerUi = require('swagger-ui-express');
+
+// VERSIÓ 1
+var v1ContainerService = require('../api-v1/services/containerService');
+var v1ApiDoc = require('../api-v1/api-doc');
+
+// VERSIÓ 2
+var v2ContainerService = require('../api-v2/services/containerService');
+var v2ApiDoc = require('../api-v2/api-doc');
+
+...
+
+// INICIALITZEM LA VERSIÓ 2
+openapi.initialize({
+  app: app,
+  apiDoc: v2ApiDoc,
+  dependencies: {
+    containerService: v2ContainerService
+  },
+  paths: "./api-v2/paths",
+});
+
+// OpenAPI UI
+app.use(
+  "/api-documentation",
+  swaggerUi.serve,
+  swaggerUi.setup(null, {
+    swaggerOptions: {
+      // S'ha de posar la ruta amb la versió, tal i com s'indica al atribut basePath del fitxer api-v1/api-doc.js
+      url: `http://localhost:${port}/v2/api-docs`,
+    },
+  })
+);
+
+...
+
+```
+
 ## Com treballar amb el projecte
 
 Pojecte hostatjat al GitHub, per col·laborar treballar de la següent manera:
@@ -242,7 +301,7 @@ $ docker kill <container id>
 Característiques:
 
 1. Un sol servidor
-2. Configuració senzilla, però més complicada que amb PM2, per gestionar 
+2. Configuració senzilla, però més complicada que amb PM2, per gestionar
    diversos contenidors
 3. Poca escalabilitat
 4. Entorns aïllats
