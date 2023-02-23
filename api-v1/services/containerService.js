@@ -20,10 +20,16 @@ let containers = [
 ];
 
 const containerService = {
+  
   getContainer(id) {
-    // Comparem amb == ja que l'id que rebem és un string
-    return containers.find(o => o.id == id);
+    if (id == "") {
+      return undefined;
+    } else {
+      // Comparem amb == ja que l'id que rebem és un string
+      return containers.find(o => o.id == id);
+    }
   },
+  
   getContainers() {
     return containers;
   }

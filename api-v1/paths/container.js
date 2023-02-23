@@ -1,4 +1,6 @@
 const logger = require("../../api/logger");
+const ApiResult = require("../../api/ApiResult");
+
 
 module.exports = function (containerService) {
 
@@ -10,18 +12,39 @@ module.exports = function (containerService) {
   };
 
   function GET(req, res, next) {
-    if (req.query.id) {
-      // Retornem un contenidor concret
-      let container = containerService.getContainer(req.query.id);
-      if (container === undefined) {
-        res.status(404).json();
+    //logger.info(`About to update container id: ${req.query.id}`)
+    try {
+      //Comprovem que l'Id no ha estat proporcionat
+      if (req.query.id === undefined) {
+        // Retornem tots els contenidors
+        let containers = containerService.getContainers();
+        res.status(200).json(new ApiResult("OK", containers, null));
+        //Comprovem que l'Id no estigui buit
+      } else if (req.query.id === "") {
+        res.status(404).json(new ApiResult("ERROR", null, [{
+          code:'CONTAINER-001',
+          message:'Input Id empty',
+          detail: 'Ensure that the input Id is not empty', 
+          help:'https://example.com/help/error/CONTAINER-001'}]));
       } else {
-        res.status(200).json(container);
+        // Retornem un contenidor concret
+        let container = containerService.getContainer(req.query.id);
+        if (container === undefined) {  
+          res.status(404).json(new ApiResult("ERROR", null, [{
+            code:'CONTAINER-001',
+            message:'Incorrect Id, this id does not exist', 
+            detail: 'Ensure that the Id included in the request are correct', 
+            help:'https://example.com/help/error/CONTAINER-001'}]));
+        } else {
+          res.status(200).json(new ApiResult("OK", container, null));
+        }
       }
-    } else {
-      // Retornem tots els contenidors
-      let containers = containerService.getContainers();
-      res.status(200).json(containers);
+    } catch (ex) {
+      res.status(500).json(new ApiResult("ERROR", null, [{
+        code :'CONTAINER-001',
+        message:  'Internal server error', 
+        detail: 'Server has an internal error with the request', 
+        help:'https://example.com/help/error/CONTAINER-001'}]));
     }
   }
 
