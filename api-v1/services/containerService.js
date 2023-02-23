@@ -20,7 +20,7 @@ let containers = [
 ];
 
 const containerService = {
-  
+
   getContainer(id) {
     if (id == "") {
       return undefined;
@@ -32,7 +32,45 @@ const containerService = {
   
   getContainers() {
     return containers;
+  },
+
+  postContainer(container){
+
+    const nextId = containers.reduce((maxId, container) => Math.max(maxId, container.id), 0) + 1;
+    containers.push({ ...container, id: nextId });
+
+  },
+
+  putContainer(id, newContainerData) {
+    const containerToUpdate = containers.find(container => container.id == id);
+    if (containerToUpdate) {
+      containerToUpdate.code = newContainerData.code || containerToUpdate.code;
+      containerToUpdate.description = newContainerData.description || containerToUpdate.description;
+      containerToUpdate.width = newContainerData.width || containerToUpdate.width;
+      containerToUpdate.length = newContainerData.length || containerToUpdate.length;
+      containerToUpdate.height = newContainerData.height || containerToUpdate.height;
+      containerToUpdate.maxWeight = newContainerData.maxWeight || containerToUpdate.maxWeight;
+      return containerToUpdate;
+    } else {
+      return undefined;
+    }
+  },
+
+  deleteContainer(id) {
+    if (id == "") {
+      return undefined;
+    } else {
+      const index = containers.findIndex(o => o.id == id); 
+      if (index >= 0) {
+        containers.splice(index, 1); 
+        return true;
+      } else {
+        return false; 
+      }
+    }
   }
+
 };
+
 
 module.exports = containerService;

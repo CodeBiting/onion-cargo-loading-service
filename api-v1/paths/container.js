@@ -14,12 +14,9 @@ module.exports = function (containerService) {
   function GET(req, res, next) {
     //logger.info(`About to update container id: ${req.query.id}`)
     try {
-      //Comprovem que l'Id no ha estat proporcionat
       if (req.query.id === undefined) {
-        // Retornem tots els contenidors
         let containers = containerService.getContainers();
         res.status(200).json(new ApiResult("OK", containers, null));
-        //Comprovem que l'Id no estigui buit
       } else if (req.query.id === "") {
         res.status(404).json(new ApiResult("ERROR", null, [{
           code:'CONTAINER-001',
@@ -27,7 +24,6 @@ module.exports = function (containerService) {
           detail: 'Ensure that the input Id is not empty', 
           help:'https://example.com/help/error/CONTAINER-001'}]));
       } else {
-        // Retornem un contenidor concret
         let container = containerService.getContainer(req.query.id);
         if (container === undefined) {  
           res.status(404).json(new ApiResult("ERROR", null, [{
@@ -49,19 +45,127 @@ module.exports = function (containerService) {
   }
 
   function POST(req, res, next) {
-    logger.info(`About to create container: ${JSON.stringify(req.body)}`);
-    res.status(201).json();
+    try {
+      let newContainer = req.body;
+      containerService.postContainer(newContainer);
+      res.status(201).json(new ApiResult("OK", newContainer, null));
+    } catch (ex) {
+      res.status(500).json(new ApiResult("ERROR", null, [{
+        code :'CONTAINER-001',
+        message:  'Internal server error', 
+        detail: 'Server has an internal error with the request', 
+        help:'https://example.com/help/error/CONTAINER-001'}]));
+    }
   }
+  
 
   function PUT(req, res, next) {
-    logger.info(`About to update container id: ${req.query.id}`);
-    res.status(200).json();
+    try {
+      if (!req.query.id || req.query.id === "") {
+        res.status(404).json(new ApiResult("ERROR", null, [{
+          code: 'CONTAINER-001',
+          message: 'Input Id empty',
+          detail: 'Ensure that the input Id is not empty',
+          help: 'https://example.com/help/error/CONTAINER-001'
+        }]));
+        return;
+      }
+  
+      const id = req.query.id;
+      const container = containerService.getContainer(id);
+  
+      if (!container) {
+        res.status(404).json(new ApiResult("ERROR", null, [{
+          code: 'CONTAINER-001',
+          message: 'Incorrect Id, this id does not exist',
+          detail: 'Ensure that the Id included in the request are correct',
+          help: 'https://example.com/help/error/CONTAINER-001'
+        }]));
+        return;
+      }
+  
+      const updatedContainer = req.body;
+  
+      if (!updatedContainer) {
+        res.status(400).json(new ApiResult("ERROR", null, [{
+          code: 'CONTAINER-001',
+          message: 'Missing or invalid request body',
+          detail: 'Ensure that the request body is not empty and is a valid container object',
+          help: 'https://example.com/help/error/CONTAINER-001'
+        }]));
+        return;
+      }
+  
+      const success = containerService.putContainer(id, updatedContainer);
+  
+      if (success) {
+        res.status(200).json(new ApiResult("OK", null, null));
+      } else {
+        res.status(404).json(new ApiResult("ERROR", null, [{
+          code: 'CONTAINER-001',
+          message: 'Incorrect Id, this id does not exist',
+          detail: 'Ensure that the Id included in the request is correct',
+          help: 'https://example.com/help/error/CONTAINER-001'
+        }]));
+      }
+    } catch (ex) {
+      res.status(500).json(new ApiResult("ERROR", null, [{
+        code: 'CONTAINER-001',
+        message: 'Internal server error',
+        detail: 'Server has an internal error with the request',
+        help: 'https://example.com/help/error/CONTAINER-001'
+      }]));
+    }
   }
 
   function DELETE(req, res, next) {
-    logger.info(`About to delete container id: ${req.query.id}`);
-    res.status(200).json();
+    try {
+      if (!req.query.id || req.query.id === "") {
+        res.status(404).json(new ApiResult("ERROR", null, [{
+          code: 'CONTAINER-001',
+          message: 'Input Id empty',
+          detail: 'Ensure that the input Id is not empty',
+          help: 'https://example.com/help/error/CONTAINER-001'
+        }]));
+        return;
+      }
+  
+      const id = req.query.id;
+      const container = containerService.getContainer(id);
+  
+      if (!container) {
+        res.status(404).json(new ApiResult("ERROR", null, [{
+          code: 'CONTAINER-001',
+          message: 'Incorrect Id, this id does not exist',
+          detail: 'Ensure that the Id included in the request are correct',
+          help: 'https://example.com/help/error/CONTAINER-001'
+        }]));
+        return;
+      }
+  
+      const success = containerService.deleteContainer(id);
+  
+      if (success) {
+        res.status(200).json(new ApiResult("OK", null, null));
+      } else {
+        res.status(404).json(new ApiResult("ERROR", null, [{
+          code: 'CONTAINER-001',
+          message: 'Incorrect Id, this id does not exist',
+          detail: 'Ensure that the Id included in the request is correct',
+          help: 'https://example.com/help/error/CONTAINER-001'
+        }]));
+      }
+    } catch (ex) {
+      res.status(500).json(new ApiResult("ERROR", null, [{
+        code: 'CONTAINER-001',
+        message: 'Internal server error',
+        detail: 'Server has an internal error with the request',
+        help: 'https://example.com/help/error/CONTAINER-001'
+      }]));
+    }
   }
+
+  
 
   GET.apiDoc = {
     summary: "Fetch containers.",
