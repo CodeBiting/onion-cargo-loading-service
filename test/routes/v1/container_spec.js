@@ -46,9 +46,17 @@ describe('API Container ',()=>{
       expect(res).to.have.status(200);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.data).to.be.eql({
+        id: 1,
+        code: 'C1',
+        description: 'Container 1',
+        width: 1,
+        length: 1,
+        height: 1,
+        maxWeight: 1,
+      })
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
-      
       done();
     });
   });
@@ -108,15 +116,44 @@ describe('API Container ',()=>{
 
   it('should update a container', (done) => {
     chai.request(URL)
-    .put('/container?id=1')
+    .post('/container')
     .send(CONTAINER_NEW)
     .end(function(err, res) {
-      expect(res).to.have.status(200);
+      expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
+      //console.log(res.body);
+      chai.request(URL)
+      .put(`/container?id=${res.body.data.id}`)
+      .send({
+        id:1,
+        code: 'C1',
+        description: 'Container 1',
+        width: 1,
+        length: 1,
+        height: 1,
+        maxWeight: 1,
+      })
+      .end(function(err, res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        //console.log(res.body);
+        expect(res.body.data).to.be.deep.equal({
+          id: res.body.data.id,
+          code: 'C1',
+          description: 'Container 1',
+          width: 1,
+          length: 1,
+          height: 1,
+          maxWeight: 1,
+        })
+        done();
+      });
     });
   });
 
@@ -166,14 +203,25 @@ describe('API Container ',()=>{
 
   it('should delete a container', (done) => {
     chai.request(URL)
-    .delete('/container?id=1')
+    .post('/container')
+    .send(CONTAINER_NEW)
     .end(function(err, res) {
-      expect(res).to.have.status(200);
+      expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
-      expect(res.body.errors).to.deep.equal([]);
-      done();
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      //console.log(res.body);
+      chai.request(URL)
+      .delete(`/container?id=${res.body.data.id}`)
+      .end(function(err, res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.deep.equal([]);
+        done();
+      });
     });
   });
 

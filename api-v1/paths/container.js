@@ -47,8 +47,9 @@ module.exports = function (containerService) {
   function POST(req, res, next) {
     try {
       let newContainer = req.body;
-      containerService.postContainer(newContainer);
-      res.status(201).json(new ApiResult("OK", newContainer, null));
+      let containerCreated = containerService.postContainer(newContainer);
+      console.log(containerCreated);
+      res.status(201).json(new ApiResult("OK", containerCreated, null));
     } catch (ex) {
       res.status(500).json(new ApiResult("ERROR", null, [{
         code :'CONTAINER-001',
@@ -84,9 +85,9 @@ module.exports = function (containerService) {
         return;
       }
   
-      const updatedContainer = req.body;
+      const containerNewData = req.body;
   
-      if (!updatedContainer) {
+      if (!containerNewData) {
         res.status(400).json(new ApiResult("ERROR", null, [{
           code: 'CONTAINER-001',
           message: 'Missing or invalid request body',
@@ -96,10 +97,10 @@ module.exports = function (containerService) {
         return;
       }
   
-      const success = containerService.putContainer(id, updatedContainer);
+      const containerUpdated = containerService.putContainer(id, containerNewData);
   
-      if (success) {
-        res.status(200).json(new ApiResult("OK", null, null));
+      if (containerUpdated) {
+        res.status(200).json(new ApiResult("OK", containerUpdated , null));
       } else {
         res.status(404).json(new ApiResult("ERROR", null, [{
           code: 'CONTAINER-001',

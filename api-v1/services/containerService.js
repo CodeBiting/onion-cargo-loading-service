@@ -38,6 +38,7 @@ const containerService = {
 
     const nextId = containers.reduce((maxId, container) => Math.max(maxId, container.id), 0) + 1;
     containers.push({ ...container, id: nextId });
+    return containers[containers.length-1];
 
   },
 
@@ -50,10 +51,8 @@ const containerService = {
       containerToUpdate.length = newContainerData.length || containerToUpdate.length;
       containerToUpdate.height = newContainerData.height || containerToUpdate.height;
       containerToUpdate.maxWeight = newContainerData.maxWeight || containerToUpdate.maxWeight;
-      return containerToUpdate;
-    } else {
-      return undefined;
     }
+    return containerToUpdate;
   },
 
   deleteContainer(id) {
