@@ -51,6 +51,79 @@ const apiDoc = {
       },
       required: ["number", "code"],
     },
+
+    User: {
+      type: "object",
+      properties: {
+        id: {
+          type: "integer",
+        },
+        code: {
+          type: "string",
+        },
+        description: {
+          type: "string",
+        },
+        width: {
+          type: "integer",
+        },
+        length: {
+          type: "integer",
+        },
+        height: {
+          type: "integer",
+        },
+        maxWeight: {
+          type: "integer",
+        },
+      },
+      required: ["id", "code", "width", "length", "height", "maxWeight"],
+    },
+
+    Gestor:{
+      type: "object",
+      properties:{
+        id: {
+          type: "number",
+        },
+        nom: {
+          type: "string",
+        },
+        token: {
+          type: "integer",
+        },
+      },
+      required: ["id", "nom", "token"],
+    },
+
+    Client: {
+      type: "object",
+      properties: {
+        id: {
+          type: "number",
+        },
+        code: {
+          type: "string",
+        },
+        dateStart: {
+          type: "string",
+        },
+        dateFinal: {
+          type: "string",
+        },
+        active: {
+          type: "boolean",
+        },
+        token: {
+          type: "string",
+        },
+        notes: {
+          type: "string",
+        },
+      },
+      required: ["id", "code", "dateStart", "dateFinal", "active", "token", "notes"],
+    },
+    
   },
   
   paths: {},

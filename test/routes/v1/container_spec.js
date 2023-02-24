@@ -11,7 +11,7 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL= 'http://localhost:8080/v1';
+const URL= 'http://localhost:8082/v1';
 
 const CONTAINER_NEW = {
   "id": 0,
@@ -28,7 +28,7 @@ describe('API Container ',()=>{
     chai.request(URL)
     .get('/container')
     .end(function(err, res) {
-      //console.log(res.body);
+      console.log(res.body);
       expect(res).to.have.status(200);
       expect(res.body).to.be.an('array');
       done();

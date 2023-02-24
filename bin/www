@@ -12,9 +12,12 @@ var openapi = require('express-openapi');
 var swaggerUi = require('swagger-ui-express');
 
 var v1ContainerService = require('../api-v1/services/containerService');
+var v1UserService = require('../api-v1/services/userService');
+var v1GestorService = require('../api-v1/services/gestorService');
+var v1ClientService = require('../api-v1/services/clientService');
 var v1ApiDoc = require('../api-v1/api-doc');
 
-const DEFAULT_PORT = '8080';  // Port del contenidor que espera Cloud Run
+const DEFAULT_PORT = '8082';  // Port del contenidor que espera Cloud Run
 
 /**
  * Get port from environment and store in Express.
@@ -44,7 +47,10 @@ openapi.initialize({
   app: app,
   apiDoc: v1ApiDoc,
   dependencies: {
-    containerService: v1ContainerService
+    containerService: v1ContainerService,
+    userService: v1UserService,
+    gestorService: v1GestorService,
+    clientService: v1ClientService,
   },
   paths: "./api-v1/paths",
 });
