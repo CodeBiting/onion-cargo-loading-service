@@ -6,14 +6,50 @@ const apiDoc = {
     version: "1.0.0",
   },
   definitions: {
-    Error: {
+    ApiResult: {
       additionalProperties: true,
+      type: "object",
+      properties:{
+        status: {
+          type: "integer",
+        },
+        data:{
+          type: "array",
+          items: {
+            type: "object",
+            description : "array of objects returned"
+          } 
+        },
+        errors:{
+          type: "array",
+          items: { 
+            type : "object",
+            description : "name of the object",
+            properties: {
+              code: {
+                type: "string"
+              },
+              message: {
+                type: "string"
+              },
+              detail: {
+                type: "string"
+              },
+              help: {
+                type: "string"
+              }
+            }
+          }
+        },
+      },
+      required: ["status","data", "errors"]
     },
     Container: {
       type: "object",
       properties: {
         id: {
           type: "integer",
+          format:"int64"
         },
         code: {
           type: "string",
@@ -23,15 +59,19 @@ const apiDoc = {
         },
         width: {
           type: "integer",
+          format:"int64"
         },
         length: {
           type: "integer",
+          format:"int64"
         },
         height: {
           type: "integer",
+          format:"int64"
         },
         maxWeight: {
           type: "integer",
+          format: "int64"
         },
       },
       required: ["id", "code", "width", "length", "height", "maxWeight"],
@@ -41,6 +81,7 @@ const apiDoc = {
       properties: {
         number: {
           type: "integer",
+          format:"int64"
         },
         code: {
           type: "string",

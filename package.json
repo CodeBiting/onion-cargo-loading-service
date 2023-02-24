@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "node ./node_modules/mocha/bin/mocha"
+    "test": "node ./node_modules/mocha/bin/mocha",
+    "nodemon": "nodemon ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -24,22 +25,7 @@
     "eslint": "8.28.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.26.0",
-    "mocha": "^10.1.0"
-  },
-  "description": "Projecte d'un servei web per determinar si es poden encabir diversos elements\r en un contenidor i si es així en quina disposició i ordre.\r El servei ha de poder gestionar peticions de diversos clients, a on cada client\r té uns contenidors preconfigurats diferents.\r El servei s'ha de poder desplegar en diferents configuracions:",
-  "main": "app.js",
-  "directories": {
-    "doc": "doc",
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Djj27jordi/onion-cargo-loading-service.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Djj27jordi/onion-cargo-loading-service/issues"
-  },
-  "homepage": "https://github.com/Djj27jordi/onion-cargo-loading-service#readme"
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.20"
+  }
 }
