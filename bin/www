@@ -8,11 +8,6 @@ var app = require('../app');
 var debug = require('debug')('onion-cargo-loading-service:server');
 var http = require('http');
 const logger = require("../api/logger");
-var openapi = require('express-openapi');
-var swaggerUi = require('swagger-ui-express');
-
-var v1ContainerService = require('../api-v1/services/containerService');
-var v1ApiDoc = require('../api-v1/api-doc');
 
 const DEFAULT_PORT = '8080';  // Port del contenidor que espera Cloud Run
 
@@ -38,29 +33,6 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-// OpenAPI routes
-openapi.initialize({
-  app: app,
-  apiDoc: v1ApiDoc,
-  dependencies: {
-    containerService: v1ContainerService
-  },
-  paths: "./api-v1/paths",
-});
-
-// OpenAPI UI
-app.use(
-  "/api-documentation",
-  swaggerUi.serve,
-  swaggerUi.setup(null, {
-    swaggerOptions: {
-      // S'ha de posar la ruta amb la versió, tal i com s'indica al atribut basePath del fitxer api-v1/api-doc.js
-      url: `http://localhost:${port}/v1/api-docs`,
-    },
-  })
-);
-logger.info(`API Documentation in http://localhost:${port}/api-documentation/`);
 
 /**
  * Normalize a port into a number, string, or false.

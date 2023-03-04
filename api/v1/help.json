@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "code": "NOT-FOUND-ERROR-001",
+    "message": "",
+    "detail": ""
+  },
+  {
+    "id": 2,
+    "code": "GENERIC-ERROR-001",
+    "message": "",
+    "detail": ""
+  }
+]

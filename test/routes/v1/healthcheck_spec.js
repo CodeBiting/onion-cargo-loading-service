@@ -1,9 +1,9 @@
 /**
- * Created by jordi on 02/12/2022.
+ * Created by jordi on 04/03/2023.
  * 
  * To run the test:
  * 1. Start the server `npm start`
- * 2. Execute test `mocha test/routes/v1/container_spec.js --timeout 2000`
+ * 2. Execute test `mocha test/routes/v1/healthcheck_spec.js --timeout 2000`
  */
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -14,17 +14,7 @@ chai.use(chaiHttp);
 const URL= 'http://localhost:8080/v1';
 const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
-const CONTAINER_NEW = {
-  "id": 0,
-  "code": "new",
-  "description": "new",
-  "width": 0,
-  "length": 0,
-  "height": 0,
-  "maxWeight": 0
-};
-
-describe('API Container ',()=>{
+describe('API Healthcheck ',()=>{
   it('should return all containers', (done) => {
     chai.request(URL)
     .get('/container')
