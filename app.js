@@ -1,4 +1,7 @@
+global.__base = __dirname + '/';
+
 //var createError = require('http-errors');
+var bodyParser = require('body-parser');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -6,19 +9,26 @@ var morgan = require('morgan');
 
 const logger = require("./api/logger");
 
-//var expressOpenAPI = require('express-openapi');
-//var openapi = require('express-openapi');
-//var swaggerUi = require('swagger-ui-express');
-//import { initialize } from 'express-openapi';
-//var v1ContainerService = require('./api-v1/services/containerService');
-//var v1ApiDoc = require('./api-v1/api-doc');
+const apiDocsV1 = require('./routes/v1/api-docs');
 
+const healtchcheckRouterV1 = require('./routes/v1/healthcheck');
+const containerRouterV1 = require('./routes/v1/container');
 
 var app = express();
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
 
 // view engine setup
 //app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'pug');
+
+app.use('/v1/api-docs', apiDocsV1);
+
+app.use('/v1/healthcheck', healtchcheckRouterV1);
+app.use('/v1/container', containerRouterV1);
 
 const morganFormat = process.env.NODE_ENV !== 'production' ? 'dev' : 'combined';
 app.use(

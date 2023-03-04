@@ -1,3 +1,33 @@
+/**
+ * @swagger
+ *   definitions:
+ *     ApiResult:
+ *       additionalProperties: true
+ *       type: "object"
+ *       properties:
+ *         status:
+ *           type: "integer"
+ *         data:
+ *           type: "array"
+ *           items:
+ *             type: "object"
+ *             description : "array of objects returned"
+ *         errors:
+ *           type: "array"
+ *           items: 
+ *             type : "object"
+ *             description : "name of the object"
+ *             properties:
+ *               code:
+ *                 type: "string"
+ *               message:
+ *                 type: "string"
+ *               detail:
+ *                 type: "string"
+ *               help:
+ *                 type: "string"
+ *       required: ["status","data", "errors"]
+ */
 class ApiResult {
     /**
      * 

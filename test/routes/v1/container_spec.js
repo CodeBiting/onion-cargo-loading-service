@@ -12,6 +12,7 @@ const expect = require('chai').expect;
 chai.use(chaiHttp);
 
 const URL= 'http://localhost:8080/v1';
+const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const CONTAINER_NEW = {
   "id": 0,
@@ -74,7 +75,7 @@ describe('API Container ',()=>{
         code:"CONTAINER-001",
         message:"Incorrect Id, this id does not exist",
         detail:"Ensure that the Id included in the request are correct",
-        help:"https://example.com/help/error/CONTAINER-001"
+        help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
     });
@@ -93,7 +94,7 @@ describe('API Container ',()=>{
         code:"CONTAINER-001",
         message:"Input Id empty",
         detail:"Ensure that the input Id is not empty",
-        help:"https://example.com/help/error/CONTAINER-001"
+        help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
     });
@@ -112,7 +113,6 @@ describe('API Container ',()=>{
       done();
     });
   });
-  
 
   it('should update a container', (done) => {
     chai.request(URL)
@@ -127,8 +127,8 @@ describe('API Container ',()=>{
       //console.log(res.body);
       chai.request(URL)
       .put(`/container?id=${res.body.data.id}`)
+      .set('content-type', 'application/json')
       .send({
-        id:1,
         code: 'C1',
         description: 'Container 1',
         width: 1,
@@ -137,6 +137,7 @@ describe('API Container ',()=>{
         maxWeight: 1,
       })
       .end(function(err, res) {
+        //console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');
@@ -172,7 +173,7 @@ describe('API Container ',()=>{
         code:"CONTAINER-001",
         message:"Incorrect Id, this id does not exist",
         detail:"Ensure that the Id included in the request are correct",
-        help:"https://example.com/help/error/CONTAINER-001"
+        help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
     });
@@ -192,7 +193,7 @@ describe('API Container ',()=>{
         code:"CONTAINER-001",
         message:"Input Id empty",
         detail:"Ensure that the input Id is not empty",
-        help:"https://example.com/help/error/CONTAINER-001"
+        help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
     });
@@ -238,7 +239,7 @@ describe('API Container ',()=>{
         code:"CONTAINER-001",
         message:"Incorrect Id, this id does not exist",
         detail:"Ensure that the Id included in the request are correct",
-        help:"https://example.com/help/error/CONTAINER-001"
+        help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
     });
@@ -257,7 +258,7 @@ describe('API Container ',()=>{
         code:"CONTAINER-001",
         message:"Input Id empty",
         detail:"Ensure that the input Id is not empty",
-        help:"https://example.com/help/error/CONTAINER-001"
+        help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
     });
