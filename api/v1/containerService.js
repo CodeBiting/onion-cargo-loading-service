@@ -56,16 +56,12 @@ const containerService = {
   },
 
   deleteContainer(id) {
-    if (id == "") {
-      return undefined;
+    const index = containers.findIndex(o => o.id == id); 
+    if (index >= 0) {
+      let conatinerDeleted = containers.splice(index, 1); 
+      return conatinerDeleted[0];
     } else {
-      const index = containers.findIndex(o => o.id == id); 
-      if (index >= 0) {
-        containers.splice(index, 1); 
-        return true;
-      } else {
-        return false; 
-      }
+      return undefined; 
     }
   }
 

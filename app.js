@@ -8,11 +8,16 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 
 const logger = require("./api/logger");
+const ApiResult = require(`${__base}api/ApiResult`);
+const ApiError = require(`${__base}api/ApiError`);
 
+// API V1
 const apiDocsV1 = require('./routes/v1/api-docs');
-
 const healtchcheckRouterV1 = require('./routes/v1/healthcheck');
 const containerRouterV1 = require('./routes/v1/container');
+const helpRouterV1 = require('./routes/v1/help');
+
+const HELP_BASE_URL = '/v1/help/error';
 
 var app = express();
 
@@ -29,6 +34,7 @@ app.use('/v1/api-docs', apiDocsV1);
 
 app.use('/v1/healthcheck', healtchcheckRouterV1);
 app.use('/v1/container', containerRouterV1);
+app.use('/v1/help', helpRouterV1);
 
 const morganFormat = process.env.NODE_ENV !== 'production' ? 'dev' : 'combined';
 app.use(
@@ -62,11 +68,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // catch 404 NOT FOUND and forward to error handler
 // Ho comntem ja que totes les URL de openapi fallen en primera instància
-//app.use(function(req, res, next) {
-//  //next(createError(404));
-//  logger.info(`404 NOT FOUND ${req.url}`);
-//  next();
-//});
+app.use(function(req, res, next) {
+  let status = 404;
+  logger.error(`ExpressJS Error Handler : [${req.method}] ${req.protocol}://${req.get('host')}${req.url} : ${status} : Not found`);
+  let error = new ApiError('NOT-FOUND-ERROR-001', 'Not found', '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/NOT-FOUND-ERROR-001`);
+  res.status(status).json(new ApiResult("ERROR", null, [ error ]));
+});
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -74,11 +81,10 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  //res.status(err.status || 500);
-  //res.render('error');
-  logger.error(`Error ${req.url} - ${err.status || 500} - ${err.message}`);
-  res.send();
+  let status = err.status || 500;
+  logger.error(`ExpressJS Error Handler : [${req.method}] ${req.protocol}://${req.get('host')}${req.url} : ${status} : ${err.message}`);
+  let error = new ApiError('GENERIC-ERROR-001', err.message, '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/GENERIC-ERROR-001`);
+  res.status(status).json(new ApiResult("ERROR", null, [ error ]));
 });
 
 module.exports = app;
