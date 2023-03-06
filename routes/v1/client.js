@@ -4,86 +4,86 @@ var router = express.Router();
 const logger = require(`${__base}api/logger`);
 const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
-const containerService = require(`${__base}api/v1/containerService`);
+const clientService = require(`${__base}api/v1/clientService`);
 
 const HELP_BASE_URL = '/v1/help/error';
 
 /**
  * @swagger
  *   definitions:
- *   Container:
+ *   Client:
  *     type: object
  *     properties:
  *       id:
  *         type: integer
  *       code:
  *         type: string
- *       description:
+ *       dateStart:
  *         type: string
- *       width:
- *         type: integer
- *       length:
- *         type: integer
- *       height:
- *         type: integer
- *       maxWeight:
- *         type: integer
-  *     required: ["id", "code", "width", "length", "height", "maxWeight"]
+ *       dateFinal:
+ *         type: string
+ *       active:
+ *         type: boolean
+ *       token:
+ *         type: string
+ *       notes:
+ *         type: string
+  *     required: ["id", "code"]
  */
 
 /**
  * @swagger 
- * /v1/container:
+ * /v1/client:
  *   get:
- *     summary: Returns containers
- *     description: Returns all the containers
+ *     summary: Returns clients
+ *     description: Returns all the clients
  *     produces:
  *       - application/json
  *     responses:
  *       200:
- *         description: ApiResult object with all containers found in data attribute
+ *         description: ApiResult object with all clients found in data attribute
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               $ref: '#/definitions/ApiResult'
-  */
+ */
 router.get('/', function(req, res, next) {
-  //logger.info(`About to update container id: ${req.params.id}`)
+  //logger.info(`About to update client id: ${req.params.id}`)
   let errors = [];
   let status = 200;
-  let containers = null;
+  let clients = null;
   try {
-    containers = containerService.getContainers();
+    clients = clientService.getClients();
   } catch (ex) {
     status = 500;
-    errors.push(new ApiError('CONTAINER-001', 
+    errors.push(new ApiError('CLIENT-001', 
       'Internal server error',
       'Server has an internal error with the request', 
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
 
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), containers, errors));
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), clients, errors));
 });
 
 /**
  * @swagger 
- * /v1/container/{id}:
+ * /v1/client/{id}:
  *   get:
- *     summary: Returns containers
- *     description: Returns one container
+ *     summary: Returns clients
+ *     description: Returns one client
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: path
  *         name: id
- *         description: ID of the container to update
+ *         description: ID of the client to update
  *         schema:
  *           type: integer
  *         required: false
  *     responses:
  *       200:
- *         description: ApiResult object with all containers found in data attribute
+ *         description: ApiResult object with all clients found in data attribute
  *         content:
  *           application/json:
  *             schema:
@@ -91,47 +91,47 @@ router.get('/', function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
   */
 router.get('/:id', function(req, res, next) {
-  logger.info(`About to update container id: ${req.params.id}`)
+  logger.info(`About to update client id: ${req.params.id}`)
   let errors = [];
   let status = 200;
-  let container = null;
+  let client = null;
   try {
-    container = containerService.getContainer(req.params.id);
-    if (container === undefined) {  
+    client = clientService.getClient(req.params.id);
+    if (client === undefined) {  
       status = 404;
-      errors.push(new ApiError('CONTAINER-001', 
+      errors.push(new ApiError('CLIENT-001', 
         'Incorrect Id, this id does not exist', 
         'Ensure that the Id included in the request are correct', 
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
     }
   } catch (ex) {
     status = 500;
-    errors.push(new ApiError('CONTAINER-001', 
+    errors.push(new ApiError('CLIENT-001', 
       'Internal server error',
       'Server has an internal error with the request', 
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
 
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), container, errors));
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), client, errors));
 });
 
 /**
  * @swagger 
- * /v1/container:
+ * /v1/client:
  *   post:
- *     summary: Creates a new container
- *     description: Creates a new container
+ *     summary: Creates a new client
+ *     description: Creates a new client
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: body
- *         name: Container object
- *         description: The container to create
+ *         name: Client object
+ *         description: The client to create
  *         schema:
- *           $ref: '#/definitions/Container'
+ *           $ref: '#/definitions/Client'
  *     responses:
  *       200:
- *         description: ApiResult object with created container in data attribute
+ *         description: ApiResult object with created client in data attribute
  *         content:
  *           application/json:
  *             schema:
@@ -141,41 +141,41 @@ router.get('/:id', function(req, res, next) {
 router.post('/', function(req, res, next) {
   let errors = [];
   try {
-    let containerCreated = containerService.postContainer(req.body);
-    //console.log(containerCreated);
-    res.status(201).json(new ApiResult("OK", containerCreated, null));
+    let clientCreated = clientService.postClient(req.body);
+    //console.log(clientCreated);
+    res.status(201).json(new ApiResult("OK", clientCreated, null));
   } catch (ex) {
-    errors.push(new ApiError('CONTAINER-001',
+    errors.push(new ApiError('CLIENT-001',
       'Internal server error', 
       'Server has an internal error with the request', 
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
     res.status(500).json(new ApiResult("ERROR", null, errors));
   }
 });
 
 /**
  * @swagger 
- * /v1/container/{id}:
+ * /v1/client/{id}:
  *   put:
- *     summary: Updates a container
- *     description: Updates a container
+ *     summary: Updates a client
+ *     description: Updates a client
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: path
  *         name: id
- *         description: ID of the container to update
+ *         description: ID of the client to update
  *         schema:
  *           type: integer
  *         required: true
  *       - in: body
- *         name: Container object
- *         description: The container to update
+ *         name: Client object
+ *         description: The client to update
  *         schema:
- *           $ref: '#/definitions/Container'
+ *           $ref: '#/definitions/Client'
  *     responses:
  *       200:
- *         description: ApiResult object with updated container in data attribute
+ *         description: ApiResult object with updated client in data attribute
  *         content:
  *           application/json:
  *             schema:
@@ -187,53 +187,53 @@ router.put('/:id', function(req, res, next) {
 
   try {
     const id = req.params.id;
-    const containerNewData = req.body;
+    const clientNewData = req.body;
 
-    if (!containerNewData) {
-      errors.push(new ApiError('CONTAINER-001',
+    if (!clientNewData) {
+      errors.push(new ApiError('CLIENT-001',
         'Missing or invalid request body',
-        'Ensure that the request body is not empty and is a valid container object',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+        'Ensure that the request body is not empty and is a valid client object',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
       return res.status(400).json(new ApiResult("ERROR", null, errors));
     }
 
-    const containerUpdated = containerService.putContainer(id, containerNewData);
-    if (containerUpdated) {
-      res.status(200).json(new ApiResult("OK", containerUpdated , null));
+    const clientUpdated = clientService.putClient(id, clientNewData);
+    if (clientUpdated) {
+      res.status(200).json(new ApiResult("OK", clientUpdated , null));
     } else {
-      errors.push(new ApiError('CONTAINER-001',
+      errors.push(new ApiError('CLIENT-001',
         'Incorrect Id, this id does not exist',
         'Ensure that the Id included in the request is correct',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
       return res.status(404).json(new ApiResult("ERROR", null, errors));
     }
   } catch (ex) {
-    errors.push(new ApiError('CONTAINER-001',
+    errors.push(new ApiError('CLIENT-001',
       'Internal server error',
       'Server has an internal error with the request',
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
     return res.status(500).json(new ApiResult("ERROR", null, errors));
   }
 });
 
 /**
  * @swagger 
- * /v1/container/{id}:
+ * /v1/client/{id}:
  *   delete:
- *     summary: Updates a container
- *     description: Updates a container
+ *     summary: Updates a client
+ *     description: Updates a client
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: path
  *         name: id
- *         description: ID of the container to update
+ *         description: ID of the client to update
  *         schema:
  *           type: integer
  *         required: true
  *     responses:
  *       200:
- *         description: ApiResult object with deleted container in data attribute
+ *         description: ApiResult object with deleted client in data attribute
  *         content:
  *           application/json:
  *             schema:
@@ -244,24 +244,24 @@ router.delete('/:id', function(req, res, next) {
   try {
     const id = req.params.id;
 
-    const containerDeleted = containerService.deleteContainer(id);
+    const clientDeleted = clientService.deleteClient(id);
 
-    if (containerDeleted) {
-      res.status(200).json(new ApiResult("OK", containerDeleted, null));
+    if (clientDeleted) {
+      res.status(200).json(new ApiResult("OK", clientDeleted, null));
     } else {
       res.status(404).json(new ApiResult("ERROR", null, [{
-        code: 'CONTAINER-001',
+        code: 'CLIENT-001',
         message: 'Incorrect Id, this id does not exist',
         detail: 'Ensure that the Id included in the request is correct',
-        help: `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+        help: `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`
       }]));
     }
   } catch (ex) {
     res.status(500).json(new ApiResult("ERROR", null, [{
-      code: 'CONTAINER-001',
+      code: 'CLIENT-001',
       message: 'Internal server error',
       detail: 'Server has an internal error with the request',
-      help: `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+      help: `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`
     }]));
   }
 });

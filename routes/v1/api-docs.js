@@ -31,6 +31,7 @@ const swaggerOptions = {
   apis: [
     './routes/v1/healthcheck.js',
     './routes/v1/container.js',
+    './routes/v1/client.js',
     './routes/v1/help.js',
     './api/ApiResult.js',
   ]
