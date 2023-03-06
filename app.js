@@ -15,6 +15,7 @@ const ApiError = require(`${__base}api/ApiError`);
 const apiDocsV1 = require('./routes/v1/api-docs');
 const healtchcheckRouterV1 = require('./routes/v1/healthcheck');
 const containerRouterV1 = require('./routes/v1/container');
+const clientRouterV1 = require('./routes/v1/client');
 const helpRouterV1 = require('./routes/v1/help');
 
 const HELP_BASE_URL = '/v1/help/error';
@@ -34,6 +35,7 @@ app.use('/v1/api-docs', apiDocsV1);
 
 app.use('/v1/healthcheck', healtchcheckRouterV1);
 app.use('/v1/container', containerRouterV1);
+app.use('/v1/client', clientRouterV1);
 app.use('/v1/help', helpRouterV1);
 
 const morganFormat = process.env.NODE_ENV !== 'production' ? 'dev' : 'combined';
