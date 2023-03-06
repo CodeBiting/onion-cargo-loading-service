@@ -47,6 +47,8 @@ els següents avantatges:
 - Facilita la recol·lecció de dades per poder obtenir coneixement i s'hi pot aplicar ML
 - Redueix els costos d'infraestructura i informàtica
 
+## Metodologies i convencions
+
 ### Disseny de les API REST
 
 Per dissenyar les API REST s'ha de tenir en compte:
@@ -102,6 +104,18 @@ Exemple d'array d'errors:
    }
    ]
  }
+```
+
+### Versionat de les API
+
+Es segueix <https://semver.org/>
+
+```text
+Given a version number MAJOR.MINOR.PATCH, increment the:
+
+MAJOR version when you make incompatible API changes
+MINOR version when you add functionality in a backwards compatible manner
+PATCH version when you make backwards compatible bug fixes
 ```
 
 ### Com afegir una versió nova de la API
