@@ -24,7 +24,7 @@ const clientService = {
     return clients;
   },
 
-  postclient(client) {
+  postClient(client) {
     const nextId = clients.reduce((maxId, client) => Math.max(maxId, client.id), 0) + 1;
     clients.push({ ...client, id: nextId });
     return clients[clients.length-1];

@@ -47,6 +47,8 @@ els següents avantatges:
 - Facilita la recol·lecció de dades per poder obtenir coneixement i s'hi pot aplicar ML
 - Redueix els costos d'infraestructura i informàtica
 
+## Metodologies i convencions
+
 ### Disseny de les API REST
 
 Per dissenyar les API REST s'ha de tenir en compte:
@@ -104,64 +106,29 @@ Exemple d'array d'errors:
  }
 ```
 
+### Versionat de les API
+
+Es segueix <https://semver.org/>
+
+```text
+Given a version number MAJOR.MINOR.PATCH, increment the:
+
+MAJOR version when you make incompatible API changes
+MINOR version when you add functionality in a backwards compatible manner
+PATCH version when you make backwards compatible bug fixes
+```
+
 ### Com afegir una versió nova de la API
+
+**Important**: crear una nova versió només quan sigui necessari i es trenqui compatibilitat amb la versió anterior.
 
 Passos:
 
-- Crea una carpeta nova amb nom "api-vXXXX"
-- Clona els fitxers de la versió anterior a la nova carpeta
-- Modifica les API segons calgui
-- Edita el fitxer "bin/www" per afegir la nova versió de la següent manera:
-
-```javascript
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
-
-var app = require('../app');
-var debug = require('debug')('onion-cargo-loading-service:server');
-var http = require('http');
-const logger = require("../api/logger");
-var openapi = require('express-openapi');
-var swaggerUi = require('swagger-ui-express');
-
-// VERSIÓ 1
-var v1ContainerService = require('../api-v1/services/containerService');
-var v1ApiDoc = require('../api-v1/api-doc');
-
-// VERSIÓ 2
-var v2ContainerService = require('../api-v2/services/containerService');
-var v2ApiDoc = require('../api-v2/api-doc');
-
-...
-
-// INICIALITZEM LA VERSIÓ 2
-openapi.initialize({
-  app: app,
-  apiDoc: v2ApiDoc,
-  dependencies: {
-    containerService: v2ContainerService
-  },
-  paths: "./api-v2/paths",
-});
-
-// OpenAPI UI
-app.use(
-  "/api-documentation",
-  swaggerUi.serve,
-  swaggerUi.setup(null, {
-    swaggerOptions: {
-      // S'ha de posar la ruta amb la versió, tal i com s'indica al atribut basePath del fitxer api-v1/api-doc.js
-      url: `http://localhost:${port}/v2/api-docs`,
-    },
-  })
-);
-
-...
-
-```
+- Crea una carpeta nova pels controladors a dins de ./routes/vX
+  - A dins de routes hi ha un `api-docs.js` que conté la documentació de la api
+- Crea una carpeta nova pel models consumits pels controladors a dins de ./api/vX
+- Clona els fitxers de la versió anterior a les noves carpetes i modifica el que calgui
+- Edita el fitxer "app" per afegir les rutes als nous controladors
 
 ## Com treballar amb el projecte
 
