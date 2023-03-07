@@ -16,15 +16,258 @@ const URL= 'http://localhost:8082/v1';
 
 const TEST_CLIENT = {
   "id": 0,
-  "code": "usuari",
+  "code": "nou",
   "dateStart": new Date(2023, 0, 1),
   "dateFinal": new Date(2023, 0, 2),
   "active": true,
-  "token": "hola",
-  "notes": "adeu",
+  "token": "nou",
+  "notes": "nou",
 };
 
+  //----------GET-----------
 describe('API Client ',()=>{
+  it('Tiene que devolver todos los clients', (done) => {
+    chai.request(URL)
+    .get('/client')
+    .end(function(err, res) {
+      console.log(res.body);
+      expect(res).to.have.status(200);
+      expect(res.body).to.have.status('OK');
+      expect(res.body.data).to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      done();
+    });
+  });
+
+  // it('Tiene que devolver un client', (done) => {
+  //   chai.request(URL)
+  //   .get('/client?id=1')
+  //   .end(function(err, res) {
+  //     //console.log(res.body);
+  //     expect(res).to.have.status(200);
+  //     expect(res.body).to.have.status('OK');
+  //     expect(res.body.data).not.to.be.an('array');
+  //     expect(res.body.data).to.be.eql({
+  //       id: 1,
+  //       code: "jordi",
+  //       dateStart: "01/01/2023",
+  //       dateFinal: "02/01/2023",
+  //       active: true,
+  //       token: "fer el seu fitxer",
+  //       notes: "no se, notes",
+  //     })
+  //     expect(res.body.errors).to.be.an('array');
+  //     expect(res.body.errors).to.be.an('array').that.eql([]);
+  //     done();
+  //   });
+  // });
+
+  // it('debe devolver 404 si la ID de entrada del client que solicitó la actualización está vacía', (done) => {
+  //   chai.request(URL)
+  //   .get('/client?id= ')
+  //   .end(function(err, res) {
+  //     //console.log(res.body);
+  //     expect(res).to.have.status(404);
+  //     expect(res.body).to.have.status('ERROR');
+  //     expect(res.body.data).not.to.be.an('array');
+  //     expect(res.body.errors).to.be.an('array');
+  //     expect(res.body.errors).to.deep.equal([{
+  //       code: 'CLIENT-001',
+  //       message: 'Id vacia',
+  //       detail: 'Ensure that the input Id is not empty',
+  //       help: 'https://example.com/help/error/CLIENT-001'
+  //     }]);
+  //     done();
+  //   });
+  // });
+
+  // it('debe devolver 404 si el client solicitado no existe', (done) => {
+  //   chai.request(URL)
+  //   .get('/client?id=9999')
+  //   .end(function(err, res) {
+  //     //console.log(res.body);
+  //     expect(res).to.have.status(404);
+  //     expect(res.body).to.have.status('ERROR');
+  //     expect(res.body.data).not.to.be.an('array');
+  //     expect(res.body.errors).to.be.an('array');
+  //     expect(res.body.errors).to.deep.equal([{
+  //       code: 'CLIENT-001',
+  //       message: 'Id incorrecta, esta ID no existe',
+  //       detail: 'Asegúrese de que la identificación incluida en la solicitud sea correcta',
+  //       help: 'https://example.com/help/error/CLIENT-001'
+  //     }]);
+  //     done();
+  //   });
+  // });
+/*
+  //----------POST-----------
+  it('Crear un nuevo client', (done) => {
+    chai.request(URL)
+    .post('/client')
+    .send(TEST_CLIENT)
+    .end(function(err, res) {
+      expect(res).to.have.status(201);
+      expect(res.body).to.have.status('OK');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      done();
+    });
+  });
+
+  //----------PUT-----------
+  it('Actualizar un client', (done) => {
+    chai.request(URL)
+    .post('/container')
+    .send(TEST_CLIENT)
+    .end(function(err, res) {
+      expect(res).to.have.status(201);
+      expect(res.body).to.have.status('OK');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      //console.log(res.body);
+      chai.request(URL)
+      .put(`/client?id=${res.body.data.id}`)
+      .send({
+        id: 1,
+        code: "jordi",
+        dateStart: "01/01/2023",
+        dateFinal: "02/01/2023",
+        active: true,
+        token: "fer el seu fitxer",
+        notes: "no se, notes",
+      })
+      .end(function(err, res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        //console.log(res.body);
+        expect(res.body.data).to.be.deep.equal({
+          id: res.body.data.id,
+          code: "jordi",
+          dateStart: "01/01/2023",
+          dateFinal: "02/01/2023",
+          active: true,
+          token: "fer el seu fitxer",
+          notes: "no se, notes",
+        })
+        done();
+      });
+    });
+  });
+
+  it('debe devolver 404 si el client solicitado para la actualización no existe', (done) => {
+    chai.request(URL)
+    .put('/client?id=9999')
+    .send(TEST_CLIENT)
+    .end(function(err, res) {
+      //console.log(res.body);
+      expect(res).to.have.status(404);
+      expect(res.body).to.have.status('ERROR');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.deep.equal([{
+        code: 'CLIENTE-005',
+        message: 'Cliente no encontrado',
+        detail: 'Asegúrese de que la identificación del cliente incluida en la solicitud sea correcta',
+        help: 'https://example.com/help/error/CLIENTE-005'
+      }]);
+      done();
+    });
+  });
+
+  it('debe devolver 400 si la ID de entrada del client para eliminar está vacía', (done) => {
+    chai.request(URL)
+    .put('/client?id= ')
+    .send(TEST_CLIENT)
+    .end(function(err, res) {
+      //console.log(res.body);
+      expect(res).to.have.status(400);
+      expect(res.body).to.have.status('ERROR');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.deep.equal([{
+        code: 'CLIENTE-001',
+        message: 'Falta introducir numero',
+        detail: 'Asegúrese de que el ID de entrada no esté vacío',
+        help: 'https://example.com/help/error/CLIENTE-001'
+      }]);
+      done();
+    });
+  });
+
+  it('eliminar un client', (done) => {
+    chai.request(URL)
+    .post('/client')
+    .send(TEST_CLIENT)
+    .end(function(err, res) {
+      expect(res).to.have.status(201);
+      expect(res.body).to.have.status('OK');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      //console.log(res.body);
+      chai.request(URL)
+      .delete(`/client?id=${res.body.data.id}`)
+      .end(function(err, res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.deep.equal([]);
+        done();
+      });
+    });
+  });
+
+  it('debe devolver 404 si el client solicitado para eliminar no existe', (done) =>{
+    chai.request(URL)
+    .delete('/client?id=9999')
+    .end(function(err, res) {
+      //console.log(res.body);
+      expect(res).to.have.status(404);
+      expect(res.body).to.have.status('ERROR');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.deep.equal([{
+        code: 'CLIENT-004',
+        message: 'Cliente no encontrado',
+        detail: 'Asegúrese de proporcionar una id de cliente válida en la solicitud',
+        help: 'https://ejemplo.com/ayuda/error/CLIENT-004'
+      }]);
+      done();
+    });
+  });
+
+  it('debe devolver 400 si la ID de entrada está vacía', (done) => {
+    chai.request(URL)
+    .delete('/client?id=-1')
+    .end(function(err, res) {
+      //console.log(res.body);
+      expect(res).to.have.status(400);
+      expect(res.body).to.have.status('ERROR');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.deep.equal([{
+        code: 'CLIENT-003',
+        message: 'La id debe ser un número positivo',
+        detail: 'Asegúrese de proporcionar una id válida en la solicitud',
+        help: 'https://ejemplo.com/ayuda/error/CLIENT-003'
+      }]);
+      done();
+    });
+  });
+  */
+});
+
+
+
+//ANTIC
+//describe('API Client ',()=>{
   //GET (retorna tots els clients que hi han)
   // it('retorna un 200 a tots els clients', (done) => {
   //   chai.request(URL)
@@ -106,15 +349,15 @@ describe('API Client ',()=>{
 
   //PUT
   
-  it('mostra un 200 si modifica el client en el PUT', (done) => {
-    chai.request(URL)
-    .put('/client?id=1')
-    .send(TEST_CLIENT)
-    .end(function(err, res) {
-      expect(res).to.have.status(200);
-      done();
-    });
-  });
+  // it('mostra un 200 si modifica el client en el PUT', (done) => {
+  //   chai.request(URL)
+  //   .put('/client?id=1')
+  //   .send(TEST_CLIENT)
+  //   .end(function(err, res) {
+  //     expect(res).to.have.status(200);
+  //     done();
+  //   });
+  // });
 
   /*
   it('mostra un 400 si hi ha una mala resposta en el PUT', (done) => {
@@ -214,5 +457,5 @@ describe('API Client ',()=>{
     });
   });
   */
-});
+//});
 

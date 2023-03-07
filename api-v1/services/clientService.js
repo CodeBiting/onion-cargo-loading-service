@@ -2,8 +2,8 @@ let clients = [
   {
     id: 1,
     code: "jordi",
-    dateStart: new Date(2023, 0, 1),
-    dateFinal: new Date(2023, 0, 2),
+    dateStart: "01/01/2023",
+    dateFinal: "02/01/2023",
     active: true,
     token: "fer el seu fitxer",
     notes: "no se, notes",
@@ -11,73 +11,47 @@ let clients = [
 ];
 
 const clientService = {
-  getContainer(id) {
+  getClient(id) {
+    if (id == "") {
+      return undefined;
+    } else {
     // Comparem amb == ja que l'id que rebem és un string
     return clients.find(o => o.id == id);
+    }
   },
 
-  getContainers() {
+  getClients() {
     return clients;
   },
 
   postclient(client) {
-    let maxId = 0;
-    for (let i = 0; i < clients.length; i++) {
-      if (clients[i].id > maxId) {
-        maxId = clients[i].id;
-      }
-    }
-    maxId++;
-    client.id = maxId;
-    clients.push(client);
-    
-    if (id < 0) {
-      //throw new Error('id has to be a number');
-      return 2;
-    }
-    let clientFound = clients.find(o => o.id == id);
-    if (clientFound) {
-      clients.splice(clientFound, 1);
+    const nextId = clients.reduce((maxId, client) => Math.max(maxId, client.id), 0) + 1;
+    clients.push({ ...client, id: nextId });
+    return clients[clients.length-1];
+  
+  },
 
-      return 0;
+  putClient(id, client) {
+    const clientToUpdate = clients.find(client => client.id == id);
+    if (clientToUpdate) {
+      clientToUpdate.code = client.code || clientToUpdate.code;
+      clientToUpdate.dateStart = client.dateStart || clientToUpdate.dateStart;
+      clientToUpdate.dateFinal = client.dateFinal || clientToUpdate.dateFinal;
+      clientToUpdate.active = client.active || clientToUpdate.active;
+      clientToUpdate.token = client.token || clientToUpdate.token;
+      clientToUpdate.notes = client.notes || clientToUpdate.notes; 
+    }
+    return clientToUpdate;
+  },
+
+  deleteClient(id) {
+    const index = clients.findIndex(o => o.id == id); 
+    if (index >= 0) {
+      let clientDeleted = clients.splice(index, 1); 
+      return clientDeleted[0];
     } else {
-      //throw new Error(`Container with id=${id} not found`);
-      return 1;
+      return undefined; 
     }
-  },
-
-  putGestor(id, client) {
-    if (isNaN(id)) {
-      return 1;
-    }
-    if (id < 0) {
-      return 2;
-    }
-    let clientFound = clients.find(o => o.id == id);
-    if (!clientFound) {
-      return 3;
-    }
-    clientFound.code = client.code;
-    clientFound.dateStart = client.dateStart;
-    clientFound.dateFinal = client.dateFinal;
-    clientFound.active = client.active;
-    clientFound.token = client.token;
-    clientFound.notes = client.notes;
-    return 0;
-  },
-
-  deleteGestor(id) {
-    if (isNaN(id)) {
-      return 1;
-    }
-    if (id < 0) {
-      return 2;
-    }
-    let clientFound = clients.find(o => o.id == id);
-    if (!clientFound) {
-      return 3;
-    }
-    return 0;
   }
 };
 
