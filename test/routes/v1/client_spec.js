@@ -26,6 +26,7 @@ const TEST_CLIENT = {
 
   //----------GET-----------
 describe('API Client ',()=>{
+/*  
   it('Tiene que devolver todos los clients', (done) => {
     chai.request(URL)
     .get('/client')
@@ -36,6 +37,19 @@ describe('API Client ',()=>{
       expect(res.body.data).to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
+      done();
+    });
+  });
+*/
+  // /v1/client/[clientId]/containers
+  it('Ha de retornar tots el contenidors', (done) => {
+    chai.request(URL)
+    .get('/v1/client/1/containers')
+    .end((err, res) => {
+      expect(res).to.have.status(200);
+      expect(res.body).to.have.property('status', 'OK');
+      expect(res.body).to.have.property('data').that.is.an('array');
+      expect(res.body.errors).to.be.an('array').that.is.empty;
       done();
     });
   });

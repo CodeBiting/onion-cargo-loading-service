@@ -115,6 +115,37 @@ router.get('/:id', function(req, res, next) {
   res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), container, errors));
 });
 
+
+/**
+ * @swagger
+ *   /v1/containers?clientId=[clientId]:
+ */
+
+router.get('/v1/containers', function(req, res, next) {
+  logger.info(`About to update container with clientId: ${req.query.clientId}`)
+  let errors = [];
+  let status = 200;
+  let containers = null;
+  try {
+    containers = containerService.getClientContainers(req.query.clientId);
+    if (containers === undefined) {  
+      status = 404;
+      errors.push(new ApiError('CONTAINER-001', 
+        'Incorrect clientId, no containers found for this clientId', 
+        'Ensure that the clientId included in the request is correct', 
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+    }
+  } catch (ex) {
+    status = 500;
+    errors.push(new ApiError('CONTAINER-001', 
+      'Internal server error',
+      'Server has an internal error with the request', 
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+  }
+
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), containers, errors));
+});
+
 /**
  * @swagger 
  * /v1/container:

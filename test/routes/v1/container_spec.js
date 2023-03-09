@@ -14,7 +14,7 @@ chai.use(chaiHttp);
 const URL= 'http://localhost:8080/v1';
 const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
-const CLIENT_NEW = {
+const CONTAINER_NEW = {
   "id": 0,
   "code": "new",
   "description": "new",
@@ -56,6 +56,21 @@ describe('API Container ',()=>{
         height: 1,
         maxWeight: 1,
       })
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      done();
+    });
+  });
+
+  // /v1/containers?clientId=[clientId]
+  it('Devera de debolver todos los containers a trabes de un clientId determinado', (done) => {
+    chai.request(URL)
+    .get('/v1/containers?clientId=1')
+    .end(function(err, res) {
+      console.log(res.body);
+      expect(res).to.have.status(200);
+      expect(res.body).to.have.status('OK');
+      expect(res.body.data).to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       done();

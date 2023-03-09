@@ -67,6 +67,29 @@ router.get('/', function(req, res, next) {
 });
 
 /**
+ * @swagger
+ *   /v1/client/[clientId]/containers:
+ */
+
+router.get('/v1/client/:clientId/containers', function(req, res, next) {
+  //logger.info(`About to update client id: ${req.params.id}`)
+  let errors = [];
+  let status = 200;
+  let containers = null;
+  try {
+    containers = containerService.getClientContainers(req.params.clientId);
+  } catch (ex) {
+    status = 500;
+    errors.push(new ApiError('CLIENT-001', 
+      'Internal server error',
+      'Server has an internal error with the request', 
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+  }
+
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), containers, errors));
+});
+
+/**
  * @swagger 
  * /v1/client/{id}:
  *   get:
@@ -116,28 +139,28 @@ router.get('/:id', function(req, res, next) {
 });
 
 /**
- * @swagger 
- * /v1/client:
- *   post:
- *     summary: Creates a new client
- *     description: Creates a new client
- *     produces:
- *       - application/json
- *     parameters:
- *       - in: body
- *         name: Client object
- *         description: The client to create
- *         schema:
- *           $ref: '#/definitions/Client'
- *     responses:
- *       200:
- *         description: ApiResult object with created client in data attribute
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               $ref: '#/definitions/ApiResult'
+ * @swagger
+ *   /v1/client/[clientId]/containers:
+ *   Client:
+ *     type: object
+ *     properties:
+ *       id:
+ *         type: integer
+ *       code:
+ *         type: string
+ *       dateStart:
+ *         type: string
+ *       dateFinal:
+ *         type: string
+ *       active:
+ *         type: boolean
+ *       token:
+ *         type: string
+ *       notes:
+ *         type: string
+  *     required: ["id", "code"]
  */
+
 router.post('/', function(req, res, next) {
   let errors = [];
   try {
