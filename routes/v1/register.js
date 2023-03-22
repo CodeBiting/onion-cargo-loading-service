@@ -8,6 +8,9 @@ const registerService = require(`${__base}api/v1/registerService`);
 
 const HELP_BASE_URL = '/v1/help/error';
 
+// Constants to structure logs
+const API_NAME = 'register';
+
 /**
  * @swagger
  *   definitions:
@@ -53,7 +56,6 @@ const HELP_BASE_URL = '/v1/help/error';
  *               $ref: '#/definitions/ApiResult'
   */
 router.get('/', function(req, res, next) {
-  //logger.info(`About to update register id: ${req.params.id}`)
   let errors = [];
   let status = 200;
   let registers = null;
@@ -95,7 +97,6 @@ router.get('/', function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
   */
 router.get('/:id', function(req, res, next) {
-  logger.info(`About to update register id: ${req.params.id}`)
   let errors = [];
   let status = 200;
   let register = null;
@@ -144,17 +145,19 @@ router.get('/:id', function(req, res, next) {
  */
 router.post('/', function(req, res, next) {
   let errors = [];
+  let status = 201;
+  let registerCreated = null;
+
   try {
-    let registerCreated = registerService.postRegister(req.body);
-    //console.log(containerCreated);
-    res.status(201).json(new ApiResult("OK", registerCreated, null));
+    registerCreated = registerService.postRegister(req.body);
   } catch (ex) {
     errors.push(new ApiError('REGISTER-001',
       'Internal server error', 
       'Server has an internal error with the request', 
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
-    res.status(500).json(new ApiResult("ERROR", null, errors));
   }
+
+  res.status(status).json(new ApiResult((status === 201 ? "OK" : "ERROR"), registerCreated, errors));
 });
 
 /**
@@ -188,36 +191,27 @@ router.post('/', function(req, res, next) {
  */
 router.put('/:id', function(req, res, next) {
   let errors = [];
+  let status = 200;
+  let registerUpdated = null;
 
   try {
-    const id = req.params.id;
-    const registerNewData = req.body;
-
-    if (!registerNewData) {
-      errors.push(new ApiError('CONTAINER-001',
-        'Missing or invalid request body',
-        'Ensure that the request body is not empty and is a valid register object',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
-      return res.status(400).json(new ApiResult("ERROR", null, errors));
-    }
-
-    const registerUpdate = registerService.putRegister(id, registerNewData);
-    if (registerUpdate) {
-      res.status(200).json(new ApiResult("OK", registerUpdate , null));
-    } else {
+    registerUpdated = registerService.putRegister(req.params.id, req.body);
+    if (registerUpdated === undefined) {
+      status = 404;
       errors.push(new ApiError('REGISTER-001',
         'Incorrect Id, this id does not exist',
         'Ensure that the Id included in the request is correct',
         `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
-      return res.status(404).json(new ApiResult("ERROR", null, errors));
     }
   } catch (ex) {
+    status = 500;
     errors.push(new ApiError('REGISTER-001',
       'Internal server error',
       'Server has an internal error with the request',
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
-    return res.status(500).json(new ApiResult("ERROR", null, errors));
   }
+
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), registerUpdated, errors));
 });
 
 /**
@@ -245,29 +239,31 @@ router.put('/:id', function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 router.delete('/:id', function(req, res, next) {
+  let errors = [];
+  let status = 200;
+  let registerDeleted = null;
+
   try {
-    const id = req.params.id;
+    registerDeleted = registerService.deleteRegister(req.params.id);
 
-    const registerDeleted = registerService.deleteRegister(id);
-
-    if (registerDeleted) {
-      res.status(200).json(new ApiResult("OK", registerDeleted, null));
-    } else {
-      res.status(404).json(new ApiResult("ERROR", null, [{
-        code: 'REGISTER-001',
-        message: 'Incorrect Id, this id does not exist',
-        detail: 'Ensure that the Id included in the request is correct',
-        help: `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`
-      }]));
+    if (registerDeleted === undefined) {
+      status = 404;
+      errors.push(new ApiError(
+        'REGISTER-001',
+        'Incorrect Id, this id does not exist',
+        'Ensure that the Id included in the request is correct',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
     }
   } catch (ex) {
-    res.status(500).json(new ApiResult("ERROR", null, [{
-      code: 'REGISTER-001',
-      message: 'Internal server error',
-      detail: 'Server has an internal error with the request',
-      help: `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`
-    }]));
+    status = 500;
+    errors.push(new ApiError(
+      'REGISTER-001',
+      'Internal server error',
+      'Server has an internal error with the request',
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
   }
+
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), registerDeleted, errors));
 });
 
 module.exports = router;
