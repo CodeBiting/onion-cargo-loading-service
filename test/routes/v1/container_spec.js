@@ -11,11 +11,12 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL= 'http://localhost:8080/v1';
-const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
+const URL = 'http://localhost:8082/v1';
+const HELP_BASE_URL = 'http://localhost:8082/v1/help/error';
 
 const CONTAINER_NEW = {
   "id": 0,
+  "clientId": 0,
   "code": "new",
   "description": "new",
   "width": 0,
@@ -24,7 +25,9 @@ const CONTAINER_NEW = {
   "maxWeight": 0
 };
 
-describe('API Container ',()=>{
+describe('API Container ', () => {
+  
+  
   it('should return all containers', (done) => {
     chai.request(URL)
     .get('/container')
@@ -49,6 +52,7 @@ describe('API Container ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: 1,
+        clientId: 1,
         code: 'C1',
         description: 'Container 1',
         width: 1,
@@ -63,19 +67,25 @@ describe('API Container ',()=>{
   });
 
   // /v1/containers?clientId=[clientId]
-  it('Devera de debolver todos los containers a trabes de un clientId determinado', (done) => {
+  it('Debería devolver solo los contenedores correspondientes al clientId', (done) => {
+    const clientId = 1; // Cambiar el valor según corresponda
     chai.request(URL)
-    .get('/v1/containers?clientId=1')
-    .end(function(err, res) {
-      console.log(res.body);
-      expect(res).to.have.status(200);
-      expect(res.body).to.have.status('OK');
-      expect(res.body.data).to.be.an('array');
-      expect(res.body.errors).to.be.an('array');
-      expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
-    });
+      .get(`/container?clientId=${clientId}`)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.status).to.equal('OK');
+        expect(res.body.data).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.is.empty;
+  
+        // Verificar que todos los contenedores corresponden al clientId esperado
+        const containers = res.body.data;
+        expect(containers.every(c => c.clientId === clientId)).to.be.true;
+        
+        done();
+      });
   });
+
+  
 
   it('should return 404 if the container requested does not exist', (done) => {
     chai.request(URL)
@@ -125,6 +135,7 @@ describe('API Container ',()=>{
       .put(`/container/${res.body.data.id}`)
       .set('content-type', 'application/json')
       .send({
+        clientId: 1,
         code: 'C1',
         description: 'Container 1',
         width: 1,
@@ -133,7 +144,6 @@ describe('API Container ',()=>{
         maxWeight: 1,
       })
       .end(function(err, res) {
-        //console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');
@@ -142,6 +152,7 @@ describe('API Container ',()=>{
         //console.log(res.body);
         expect(res.body.data).to.be.deep.equal({
           id: res.body.data.id,
+          clientId: 1,
           code: 'C1',
           description: 'Container 1',
           width: 1,
@@ -198,6 +209,7 @@ describe('API Container ',()=>{
     .post('/container')
     .send({
       id: 1,
+      clientId: 1,
       code: 'C2DELETE',
       description: 'Container to delete',
       width: 1,
@@ -212,6 +224,7 @@ describe('API Container ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: res.body.data.id,
+        clientId: 1,
         code: 'C2DELETE',
         description: 'Container to delete',
         width: 1,
@@ -273,7 +286,6 @@ describe('API Container ',()=>{
       
     });
   });
-
+  
 });
 
- 
