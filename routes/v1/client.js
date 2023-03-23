@@ -9,6 +9,9 @@ const containerService = require(`${__base}api/v1/containerService`);
 
 const HELP_BASE_URL = '/v1/help/error';
 
+// Constants to structure logs
+const API_NAME = 'client';
+
 /**
  * @swagger
  *   definitions:
@@ -50,21 +53,21 @@ const HELP_BASE_URL = '/v1/help/error';
  *               $ref: '#/definitions/ApiResult'
  */
 router.get('/', function(req, res, next) {
+  let errors = [];
   let status = 200;
   let clients = null;
-  let error = [];
   try {
     clients = clientService.getClients();
   } catch (ex) {
-    logger.error(ex.message);
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`);
     status = 500;
-    error.push(new ApiError('CLIENT-001', 
+    errors.push(new ApiError('CLIENT-001', 
       'Internal server error',
       `An error occurred while retrieving the clients: ${ex.message}`, 
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
 
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), clients, error));
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), clients, errors));
 });
 
 /**
@@ -134,13 +137,13 @@ router.get('/:id/containers', function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 router.get('/:id', function(req, res, next) {
-  logger.info(`About to update container id: ${req.params.id}`);
   let errors = [];
   let status = 200;
-  let clients = null;
+  let client = null;
   try {
-    clients = clientService.getClient(req.params.id);
-    if (clients === undefined) {  
+    client = clientService.getClient(req.params.id);
+    if (client === undefined) {
+      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Client not found`);
       status = 404;
       errors.push(new ApiError('CLIENT-001', 
       'Incorrect Id, this id does not exist', 
@@ -148,7 +151,7 @@ router.get('/:id', function(req, res, next) {
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
     }
   } catch (ex) {
-    logger.error(ex.message);
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
     status = 500;
     errors.push(new ApiError('CLIENT-001', 
       'Internal server error',
@@ -156,7 +159,7 @@ router.get('/:id', function(req, res, next) {
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
 
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), clients, errors));
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), client, errors));
 });
 
 /**

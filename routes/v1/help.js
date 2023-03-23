@@ -6,6 +6,9 @@ const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const helpData = require(`${__base}/api/v1/help.json`);
 
+// Constants to structure logs
+const API_NAME = 'help';
+
 /**
  * @swagger
  *   definitions:
@@ -71,9 +74,11 @@ router.get('/error/:code', function(req, res, next) {
   let errors = [];
   let status = 200;
   let helpFound = null;
+  
   try {
     helpFound = helpData.find(h => h.code === req.params.code);
-    if (helpFound === undefined) {  
+    if (helpFound === undefined) {
+      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Help not found`)
       status = 404;
       errors.push(new ApiError('HELP-001', 
         'Incorrect code, this code does not exist', 
@@ -81,6 +86,7 @@ router.get('/error/:code', function(req, res, next) {
         ''));
     }
   } catch (ex) {
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
     status = 500;
     errors.push(new ApiError('HELP-002', 
       'Internal server error',

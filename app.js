@@ -16,6 +16,7 @@ const apiDocsV1 = require('./routes/v1/api-docs');
 const healtchcheckRouterV1 = require('./routes/v1/healthcheck');
 const containerRouterV1 = require('./routes/v1/container');
 const clientRouterV1 = require('./routes/v1/client');
+const registerRouterV1 = require('./routes/v1/register');
 const helpRouterV1 = require('./routes/v1/help');
 
 const HELP_BASE_URL = '/v1/help/error';
@@ -27,38 +28,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-// view engine setup
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'pug');
+const morganFormat = process.env.NODE_ENV !== 'production' ? 'dev' : 'combined';
+app.use(
+  morgan(morganFormat, {
+    // Function to determine if logging is skipped, defaults to false
+    // skip: function(req, res) {
+    //   // Skip logging when function has exit (returns status code < 400)
+    //   return res.statusCode < 400;
+    // },
+    stream: {
+      write: (message) => logger.http(message.trim()),
+    },
+  })
+);
 
+// Routes after morgan use to log each call
 app.use('/v1/api-docs', apiDocsV1);
 
 app.use('/v1/healthcheck', healtchcheckRouterV1);
 app.use('/v1/container', containerRouterV1);
 app.use('/v1/client', clientRouterV1);
+app.use('/v1/register', registerRouterV1);
 app.use('/v1/help', helpRouterV1);
-
-const morganFormat = process.env.NODE_ENV !== 'production' ? 'dev' : 'combined';
-app.use(
-  morgan(morganFormat, {
-    skip: function(req, res) {
-      return res.statusCode < 400;
-    },
-    stream: {
-      write: (message) => logger.http(message.trim()),
-    },
-  })
-);
-app.use(
-  morgan(morganFormat, {
-    skip: function(req, res) {
-      return res.statusCode >= 400;
-    },
-    stream: {
-      write: (message) => logger.http(message.trim()),
-    },
-  })
-);
 
 logger.info(`Node environment = ${(process.env.NODE_ENV ? process.env.NODE_ENV : 'development')}`);
 
@@ -72,7 +63,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Ho comntem ja que totes les URL de openapi fallen en primera instància
 app.use(function(req, res, next) {
   let status = 404;
-  logger.error(`ExpressJS Error Handler : [${req.method}] ${req.protocol}://${req.get('host')}${req.url} : ${status} : Not found`);
+  logger.error(`ExpressJS: [${req.method}] ${req.originalUrl}: ${status}: Not found`);
   let error = new ApiError('NOT-FOUND-ERROR-001', 'Not found', '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/NOT-FOUND-ERROR-001`);
   res.status(status).json(new ApiResult("ERROR", null, [ error ]));
 });
@@ -84,7 +75,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   let status = err.status || 500;
-  logger.error(`ExpressJS Error Handler : [${req.method}] ${req.protocol}://${req.get('host')}${req.url} : ${status} : ${err.message}`);
+  logger.error(`ExpressJS: [${req.method}] ${req.originalUrl}: ${status}: ${err.message}`);
   let error = new ApiError('GENERIC-ERROR-001', err.message, '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/GENERIC-ERROR-001`);
   res.status(status).json(new ApiResult("ERROR", null, [ error ]));
 });
