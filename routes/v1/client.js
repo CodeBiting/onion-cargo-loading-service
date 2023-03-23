@@ -5,6 +5,7 @@ const logger = require(`${__base}api/logger`);
 const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const clientService = require(`${__base}api/v1/clientService`);
+const containerService = require(`${__base}api/v1/containerService`);
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -31,7 +32,7 @@ const API_NAME = 'client';
  *         type: string
  *       notes:
  *         type: string
-  *     required: ["id", "code"]
+  *     required: ["id", "code", "dateStart", "dateFinal", "active", "token", "notes"]
  */
 
 /**
@@ -62,7 +63,7 @@ router.get('/', function(req, res, next) {
     status = 500;
     errors.push(new ApiError('CLIENT-001', 
       'Internal server error',
-      'Server has an internal error with the request', 
+      `An error occurred while retrieving the clients: ${ex.message}`, 
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
 
@@ -70,11 +71,53 @@ router.get('/', function(req, res, next) {
 });
 
 /**
+ * @swagger
+ *   /v1/client/{id}/containers:
+ *  get:
+ *     summary: Returns clients
+ *     description: Returns all the clients
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the container to update
+ *         schema:
+ *           type: integer
+ *         required: false
+ *     responses:
+ *       200:
+ *         description: ApiResult object with all clients found in data attribute
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/definitions/ApiResult'
+ */
+
+router.get('/:id/containers', function(req, res, next) {
+  let status = 200;
+  let containers = null;
+  let errors = [];
+  try {
+    containers = containerService.getClientContainers(req.params.id);
+  } catch (ex) {
+    logger.error(ex.message);
+    status = 500;
+    errors.push(new ApiError('CONTAINER-001', 
+    'Internal server error',
+    `An error occurred while retrieving the containers: ${ex.message}`, 
+    `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+  }
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), containers, errors));
+});
+
+/**
  * @swagger 
  * /v1/client/{id}:
  *   get:
  *     summary: Returns clients
- *     description: Returns one client
+ *     description: Returns all the clients
  *     produces:
  *       - application/json
  *     parameters:
@@ -103,16 +146,16 @@ router.get('/:id', function(req, res, next) {
       logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Client not found`);
       status = 404;
       errors.push(new ApiError('CLIENT-001', 
-        'Incorrect Id, this id does not exist', 
-        'Ensure that the Id included in the request are correct', 
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+      'Incorrect Id, this id does not exist', 
+      'Ensure that the Id included in the request are correct', 
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
     }
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
     status = 500;
     errors.push(new ApiError('CLIENT-001', 
       'Internal server error',
-      'Server has an internal error with the request', 
+      `An error occurred while retrieving the clients: ${ex.message}`, 
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
 
@@ -142,22 +185,21 @@ router.get('/:id', function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
+
 router.post('/', function(req, res, next) {
   let errors = [];
-  let status = 201;
   let clientCreated = null;
-
+  let status = 201;
   try {
     clientCreated = clientService.postClient(req.body);
+    
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`);
-    status=500;
+    status = 500;
     errors.push(new ApiError('CLIENT-001',
       'Internal server error', 
       'Server has an internal error with the request', 
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
-
   res.status(status).json(new ApiResult((status === 201 ? "OK" : "ERROR"), clientCreated, errors));
 });
 
@@ -178,7 +220,7 @@ router.post('/', function(req, res, next) {
  *         required: true
  *       - in: body
  *         name: Client object
- *         description: The client to update
+ *         descriptcontainerion: The client to update
  *         schema:
  *           $ref: '#/definitions/Client'
  *     responses:
@@ -191,32 +233,41 @@ router.post('/', function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 router.put('/:id', function(req, res, next) {
+  logger.info(`About to update client id: ${req.params.id}`);
   let errors = [];
   let status = 200;
   let clientUpdated = null;
-
   try {
-    clientUpdated = clientService.putClient(req.params.id, req.body);
-    if (clientUpdated) {
-      res.status(200).json(new ApiResult("OK", clientUpdated , null));
-    } else {
-      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Client not found`);
-      status=404;
+    const id = req.params.id;
+    const clientNewData = req.body;
+
+    if (!clientNewData) {
+      status = 400;
+      errors.push(new ApiError('CLIENT-001',
+        'Missing or invalid request body',
+        'Ensure that the request body is not empty and is a valid client object',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+      return res.status(400).json(new ApiResult("ERROR", clientUpdated === undefined, errors));
+    }
+
+    clientUpdated = clientService.putClient(id, clientNewData);
+    if (clientUpdated === undefined) {
+      logger.info(`About to client not exist id: ${req.params.id}`);
+      status = 404;
       errors.push(new ApiError('CLIENT-001',
         'Incorrect Id, this id does not exist',
         'Ensure that the Id included in the request is correct',
         `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
     }
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
-    status=500;
+    status = 500;
     errors.push(new ApiError('CLIENT-001',
       'Internal server error',
       'Server has an internal error with the request',
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+    return res.status(500).json(new ApiResult("ERROR", clientUpdated === undefined, errors));
   }
-
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), clientUpdated, errors));
+  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), clientUpdated , errors));
 });
 
 /**
@@ -244,33 +295,31 @@ router.put('/:id', function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 router.delete('/:id', function(req, res, next) {
+  logger.info(`About to delete client id: ${req.params.id}`);
   let errors = [];
   let status = 200;
   let clientDeleted = null;
+  try{
+    const id = req.params.id;
 
-  try {
-    clientDeleted = clientService.deleteClient(req.params.id);
+    clientDeleted = clientService.deleteClient(id);
+
     if (clientDeleted === undefined) {
-      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Client not found`);
-      status=404;
-      errors.push(new ApiError(
-        'CLIENT-001',
-        'Incorrect Id, this id does not exist',
-        'Ensure that the Id included in the request is correct',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`
-      ));
-    }
+      logger.info(`About to client not exist id: ${req.params.id}`);
+      status = 404;
+      errors.push(new ApiError('CLIENT-001', 
+      'Incorrect Id, this id does not exist', 
+      'Ensure that the Id included in the request is correct', 
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+    };
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
-    status=500;
-    errors.push(new ApiError(
-      'CLIENT-001',
+    status = 500;
+    errors.push(new ApiError('CLIENT-001',
       'Internal server error',
       'Server has an internal error with the request',
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`
-    ));
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+      return res.status(500).json(new ApiResult("ERROR", clientUpdated === undefined, errors));
   }
-
   res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), clientDeleted, errors));
 });
 

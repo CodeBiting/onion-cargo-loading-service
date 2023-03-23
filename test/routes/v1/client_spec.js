@@ -3,36 +3,36 @@
  * 
  * To run the test:
  * 1. Start the server `npm start`
- * 2. Execute test `mocha test/routes/v1/container_spec.js --timeout 2000`
+ * 2. Execute test `mocha test/routes/v1/client_spec.js --timeout 2000`
  */
+
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL = 'http://localhost:8082/v1';
+const URL= 'http://localhost:8082/v1';
 const HELP_BASE_URL = 'http://localhost:8082/v1/help/error';
 
-const CONTAINER_NEW = {
+const TEST_CLIENT = {
   "id": 0,
-  "clientId": 0,
   "code": "new",
-  "description": "new",
-  "width": 0,
-  "length": 0,
-  "height": 0,
-  "maxWeight": 0
+  "dateStart": new Date(2023, 0, 1),
+  "dateFinal": new Date(2023, 0, 2),
+  "active": true,
+  "token": "new",
+  "notes": "new",
 };
 
-describe('API Container ', () => {
-  
-  
-  it('should return all containers', (done) => {
+  //----------GET-----------
+describe('API Client ',()=>{
+
+  it('Tiene que devolver todos los clients', (done) => {
     chai.request(URL)
-    .get('/container')
+    .get('/client')
     .end(function(err, res) {
-      console.log(res.body);
+      //console.log(res.body);
       expect(res).to.have.status(200);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).to.be.an('array');
@@ -42,9 +42,22 @@ describe('API Container ', () => {
     });
   });
 
-  it('should return one container', (done) => {
+  ///v1/client/[clientId]/containers
+  it('Ha de retornar tots el contenidors', (done) => {
     chai.request(URL)
-    .get('/container/1')
+    .get('/client/1/containers')
+    .end((err, res) => {
+      expect(res).to.have.status(200);
+      expect(res.body).to.have.property('status', 'OK');
+      expect(res.body).to.have.property('data').that.is.an('array');
+      expect(res.body.errors).to.be.an('array').that.is.empty;
+      done();
+    });
+  });
+
+  it('should return one client', (done) => {
+    chai.request(URL)
+    .get('/client/1')
     .end(function(err, res) {
       //console.log(res.body);
       expect(res).to.have.status(200);
@@ -52,13 +65,12 @@ describe('API Container ', () => {
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: 1,
-        clientId: 1,
-        code: 'C1',
-        description: 'Container 1',
-        width: 1,
-        length: 1,
-        height: 1,
-        maxWeight: 1,
+        code: "jordi",
+        dateStart: "01/01/2023",
+        dateFinal: "02/01/2023",
+        active: true,
+        token: "fer el seu fitxer",
+        notes: "no se, notes",
       })
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -66,30 +78,9 @@ describe('API Container ', () => {
     });
   });
 
-  // /v1/containers?clientId=[clientId]
-  it('Debería devolver solo los contenedores correspondientes al clientId', (done) => {
-    const clientId = 1; // Cambiar el valor según corresponda
+  it('should return 404 if the client requested does not exist', (done) => {
     chai.request(URL)
-      .get(`/container?clientId=${clientId}`)
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body.status).to.equal('OK');
-        expect(res.body.data).to.be.an('array');
-        expect(res.body.errors).to.be.an('array').that.is.empty;
-  
-        // Verificar que todos los contenedores corresponden al clientId esperado
-        const containers = res.body.data;
-        expect(containers.every(c => c.clientId === clientId)).to.be.true;
-        
-        done();
-      });
-  });
-
-  
-
-  it('should return 404 if the container requested does not exist', (done) => {
-    chai.request(URL)
-    .get('/container/9999')
+    .get('/client/9999')
     .end(function(err, res) {
       //console.log(res.body);
       expect(res).to.have.status(404);
@@ -97,19 +88,20 @@ describe('API Container ', () => {
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CONTAINER-001",
+        code:"CLIENT-001",
         message:"Incorrect Id, this id does not exist",
         detail:"Ensure that the Id included in the request are correct",
-        help: `${HELP_BASE_URL}/CONTAINER-001`
+        help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
     });
   });
 
-  it('should create a new container', (done) => {
+  //----------POST-----------
+  it('should create a new client', (done) => {
     chai.request(URL)
-    .post('/container')
-    .send(CONTAINER_NEW)
+    .post('/client')
+    .send(TEST_CLIENT)
     .end(function(err, res) {
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
@@ -120,10 +112,11 @@ describe('API Container ', () => {
     });
   });
 
-  it('should update a container', (done) => {
+  //----------PUT-----------
+  it('should update a client', (done) => {
     chai.request(URL)
-    .post('/container')
-    .send(CONTAINER_NEW)
+    .post('/client')
+    .send(TEST_CLIENT)
     .end(function(err, res) {
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
@@ -132,16 +125,16 @@ describe('API Container ', () => {
       expect(res.body.errors).to.be.an('array').that.eql([]);
       //console.log(res.body);
       chai.request(URL)
-      .put(`/container/${res.body.data.id}`)
+      .put(`/client/${res.body.data.id}`)
       .set('content-type', 'application/json')
       .send({
-        clientId: 1,
-        code: 'C1',
-        description: 'Container 1',
-        width: 1,
-        length: 1,
-        height: 1,
-        maxWeight: 1,
+        id: 1,
+        code: "jordi",
+        dateStart: "01/01/2023",
+        dateFinal: "02/01/2023",
+        active: true,
+        token: "fer el seu fitxer",
+        notes: "no se, notes",
       })
       .end(function(err, res) {
         expect(res).to.have.status(200);
@@ -152,24 +145,22 @@ describe('API Container ', () => {
         //console.log(res.body);
         expect(res.body.data).to.be.deep.equal({
           id: res.body.data.id,
-          clientId: 1,
-          code: 'C1',
-          description: 'Container 1',
-          width: 1,
-          length: 1,
-          height: 1,
-          maxWeight: 1,
+          code: "jordi",
+          dateStart: "01/01/2023",
+          dateFinal: "02/01/2023",
+          active: true,
+          token: "fer el seu fitxer",
+          notes: "no se, notes",
         })
         done();
       });
     });
   });
 
-
-  it('should return 404 if the container requested for updating does not exist', (done) => {
+  it('should return 404 if the client requested for updating does not exist', (done) => {
     chai.request(URL)
-    .put('/container/9999')
-    .send(CONTAINER_NEW)
+    .put('/client/9999')
+    .send(TEST_CLIENT)
     .end(function(err, res) {
       //console.log(res.body);
       expect(res).to.have.status(404);
@@ -177,10 +168,10 @@ describe('API Container ', () => {
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CONTAINER-001",
+        code: 'CLIENT-001',
         message:"Incorrect Id, this id does not exist",
         detail:"Ensure that the Id included in the request is correct",
-        help: `${HELP_BASE_URL}/CONTAINER-001`
+        help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
     });
@@ -188,7 +179,7 @@ describe('API Container ', () => {
 
   it('should return 404 if the URL to update a container is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .put('/container/ ')
+    .put('/client/ ')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
@@ -204,18 +195,17 @@ describe('API Container ', () => {
     });
   });
 
-  it('should delete a container', (done) => {
+  it('should delete a client', (done) => {
     chai.request(URL)
     .post('/container')
     .send({
       id: 1,
-      clientId: 1,
-      code: 'C2DELETE',
-      description: 'Container to delete',
-      width: 1,
-      length: 1,
-      height: 1,
-      maxWeight: 1,
+      code: "jordi",
+      dateStart: "01/01/2023",
+      dateFinal: "02/01/2023",
+      active: true,
+      token: "fer el seu fitxer",
+      notes: "no se, notes",
     })
     .end(function(err, res) {
       //console.log(res.body);
@@ -224,13 +214,12 @@ describe('API Container ', () => {
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: res.body.data.id,
-        clientId: 1,
-        code: 'C2DELETE',
-        description: 'Container to delete',
-        width: 1,
-        length: 1,
-        height: 1,
-        maxWeight: 1,
+        code: "jordi",
+        dateStart: "01/01/2023",
+        dateFinal: "02/01/2023",
+        active: true,
+        token: "fer el seu fitxer",
+        notes: "no se, notes",
       })
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -249,9 +238,9 @@ describe('API Container ', () => {
     });
   });
 
-  it('should return 404 if the container requested to delete does not exist', (done) =>{
+  it('should return 404 if the client requested to delete does not exist', (done) =>{
     chai.request(URL)
-    .delete('/container/9999')
+    .delete('/client/9999')
     .end(function(err, res) {
       //console.log(res.body);
       expect(res).to.have.status(404);
@@ -259,18 +248,18 @@ describe('API Container ', () => {
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CONTAINER-001",
+        code:"CLIENT-001",
         message:"Incorrect Id, this id does not exist",
         detail:"Ensure that the Id included in the request is correct",
-        help: `${HELP_BASE_URL}/CONTAINER-001`
+        help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
     });
   });
 
-  it('should return 404 if the URL to delete a container is not found because input ID is empty', (done) => {
+  it('should return 404 if the URL to delete a client is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .delete('/container/ ')
+    .delete('/client/ ')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
@@ -283,9 +272,7 @@ describe('API Container ', () => {
         help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
       }]);
       done();
-      
     });
   });
   
 });
-

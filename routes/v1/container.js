@@ -19,6 +19,8 @@ const API_NAME = 'container';
  *     properties:
  *       id:
  *         type: integer
+ *       clientId:
+ *         type: integer
  *       code:
  *         type: string
  *       description:
@@ -56,7 +58,11 @@ router.get('/', function(req, res, next) {
   let status = 200;
   let containers = null;
   try {
-    containers = containerService.getContainers();
+    if (req.query.clientId) {
+      containers = containerService.getClientContainers(req.query.clientId);
+    } else {
+      containers = containerService.getContainers();
+    }
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
     status = 500;
