@@ -59,7 +59,28 @@ describe('API Help ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"HELP-001",
+        id: 1,
+        code:"NOT-FOUND-ERROR-001",
+        message:"Incorrect code, this code does not exist",
+        detail:"Ensure that the code included in the request are correct",
+        help: ''
+      }]);
+      done();
+    });
+  });
+
+  it('should return 400 if the help code requested does not exist', (done) => {
+    chai.request(URL)
+    .get('/help/error/9999')
+    .end(function(err, res) {
+      //console.log(res.body);
+      expect(res).to.have.status(404);
+      expect(res.body).to.have.status('ERROR');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.deep.equal([{
+        id: 2,
+        code:"NOT-FOUND-ERROR-001",
         message:"Incorrect code, this code does not exist",
         detail:"Ensure that the code included in the request are correct",
         help: ''

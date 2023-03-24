@@ -7,7 +7,13 @@
   },
   {
     "id": 2,
-    "code": "GENERIC-ERROR-001",
+    "code": "GENERIC-ERROR-002",
+    "message": "",
+    "detail": ""
+  },
+  {
+    "id": 3,
+    "code": "INVALID-REQUEST-ERROR-003",
     "message": "",
     "detail": ""
   }
