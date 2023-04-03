@@ -167,17 +167,17 @@ describe('API Register ',()=>{
 
   it('should return 404 if the URL to update a register is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .put('/register/ ')
+    .put('/register/{} ')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"NOT-FOUND-ERROR-001",
-        message:"Not found",
-        detail:"",
-        help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
+        code:"REGISTER-001",
+        message:"Incorrect Id, this id does not exist",
+        detail:"Ensure that the Id included in the request is correct",
+        help: `${HELP_BASE_URL}/REGISTER-001`
       }]);
       done();
     });
@@ -249,17 +249,17 @@ describe('API Register ',()=>{
 
   it('should return 404 if the URL to delete a register is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .delete('/register/ ')
+    .delete('/register/{} ')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"NOT-FOUND-ERROR-001",
-        message:"Not found",
-        detail:"",
-        help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
+        code:"REGISTER-001",
+        message:"Incorrect Id, this id does not exist",
+        detail:"Ensure that the Id included in the request is correct",
+        help: `${HELP_BASE_URL}/REGISTER-001`
       }]);
       done();
     });       

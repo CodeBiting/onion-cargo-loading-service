@@ -37,7 +37,7 @@ let registers = [
     },
     
     postRegister(register){
-  
+      register.date = register.date || new Date();
       const nextId = registers.reduce((maxId, register) => Math.max(maxId, register.id), 0) + 1;
       registers.push({ ...register, id: nextId });
       return registers[registers.length-1];

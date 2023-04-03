@@ -17,6 +17,7 @@
     "pug": "^3.0.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",
+    "uniqid": "^5.4.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {

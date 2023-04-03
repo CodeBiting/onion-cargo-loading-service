@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
 const logger = require(`${__base}api/logger`);
@@ -6,10 +6,10 @@ const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const containerService = require(`${__base}api/v1/containerService`);
 
-const HELP_BASE_URL = '/v1/help/error';
+const HELP_BASE_URL = "/v1/help/error";
 
 // Constants to structure logs
-const API_NAME = 'container';
+const API_NAME = "container";
 
 /**
  * @swagger
@@ -33,11 +33,11 @@ const API_NAME = 'container';
  *         type: integer
  *       maxWeight:
  *         type: integer
-  *     required: ["id", "code", "width", "length", "height", "maxWeight"]
+ *     required: ["id", "code", "width", "length", "height", "maxWeight"]
  */
 
 /**
- * @swagger 
+ * @swagger
  * /v1/container:
  *   get:
  *     summary: Returns containers
@@ -52,11 +52,12 @@ const API_NAME = 'container';
  *             schema:
  *               type: object
  *               $ref: '#/definitions/ApiResult'
-  */
-router.get('/', function(req, res, next) {
+ */
+router.get('/', function (req, res, next) {
   let errors = [];
   let status = 200;
   let containers = null;
+  logger.info(`test-message ${req.requestId}`);
   try {
     if (req.query.clientId) {
       containers = containerService.getClientContainers(req.query.clientId);
@@ -64,19 +65,34 @@ router.get('/', function(req, res, next) {
       containers = containerService.getContainers();
     }
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    logger.error(
+      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
+    );
     status = 500;
-    errors.push(new ApiError('CONTAINER-001', 
-      'Internal server error',
-      'Server has an internal error with the request', 
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+    errors.push(
+      new ApiError(
+        'CONTAINER-001',
+        'Internal server error',
+        'Server has an internal error with the request',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+      )
+    );
   }
 
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), containers, errors));
+  res
+    .status(status)
+    .json(
+      new ApiResult(
+        status === 200 ? "OK" : "ERROR",
+        containers,
+        req.requestId,
+        errors
+      )
+    );
 });
 
 /**
- * @swagger 
+ * @swagger
  * /v1/container/{id}:
  *   get:
  *     summary: Returns containers
@@ -98,35 +114,56 @@ router.get('/', function(req, res, next) {
  *             schema:
  *               type: object
  *               $ref: '#/definitions/ApiResult'
-  */
-router.get('/:id', function(req, res, next) {
+ */
+router.get('/:id', function (req, res, next) {
   let errors = [];
   let status = 200;
   let container = null;
   try {
     container = containerService.getContainer(req.params.id);
-    if (container === undefined) {  
-      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Container not found`)
+    if (container === undefined) {
+      logger.error(
+        `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Container not found`
+      );
       status = 404;
-      errors.push(new ApiError('CONTAINER-001', 
-        'Incorrect Id, this id does not exist', 
-        'Ensure that the Id included in the request are correct', 
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+      errors.push(
+        new ApiError(
+          'CONTAINER-001',
+          'Incorrect Id, this id does not exist',
+          'Ensure that the Id included in the request are correct',
+          `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+        )
+      );
     }
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    logger.error(
+      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`
+    );
     status = 500;
-    errors.push(new ApiError('CONTAINER-001', 
-      'Internal server error',
-      'Server has an internal error with the request', 
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+    errors.push(
+      new ApiError(
+        'CONTAINER-001',
+        'Internal server error',
+        'Server has an internal error with the request',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+      )
+    );
   }
 
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), container, errors));
+  res
+    .status(status)
+    .json(
+      new ApiResult(
+        status === 200 ? "OK" : "ERROR",
+        container,
+        req.requestId,
+        errors
+      )
+    );
 });
 
 /**
- * @swagger 
+ * @swagger
  * /v1/container:
  *   post:
  *     summary: Creates a new container
@@ -148,26 +185,41 @@ router.get('/:id', function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
   let errors = [];
   let status = 201;
   let containerCreated = null;
   try {
     containerCreated = containerService.postContainer(req.body);
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    logger.error(
+      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`
+    );
     status = 500;
-    errors.push(new ApiError('CONTAINER-001',
-      'Internal server error', 
-      'Server has an internal error with the request', 
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+    errors.push(
+      new ApiError(
+        'CONTAINER-001',
+        'Internal server error',
+        'Server has an internal error with the request',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+      )
+    );
   }
 
-  res.status(status).json(new ApiResult((status === 201 ? "OK" : "ERROR"), containerCreated, errors));
+  res
+    .status(status)
+    .json(
+      new ApiResult(
+        status === 201 ? "OK" : "ERROR",
+        containerCreated,
+        req.requestId,
+        errors
+      )
+    );
 });
 
 /**
- * @swagger 
+ * @swagger
  * /v1/container/{id}:
  *   put:
  *     summary: Updates a container
@@ -195,7 +247,7 @@ router.post('/', function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id', function(req, res, next) {
+router.put('/:id', function (req, res, next) {
   let errors = [];
   let status = 200;
   let containerUpdated = null;
@@ -203,27 +255,48 @@ router.put('/:id', function(req, res, next) {
   try {
     containerUpdated = containerService.putContainer(req.params.id, req.body);
     if (containerUpdated === undefined) {
-      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Container not found`)
+      logger.error(
+        `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Container not found`
+      );
       status = 404;
-      errors.push(new ApiError('CONTAINER-001',
-        'Incorrect Id, this id does not exist',
-        'Ensure that the Id included in the request is correct',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+      errors.push(
+        new ApiError(
+          'CONTAINER-001',
+          'Incorrect Id, this id does not exist',
+          'Ensure that the Id included in the request is correct',
+          `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+        )
+      );
     }
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    logger.error(
+      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`
+    );
     status = 500;
-    errors.push(new ApiError('CONTAINER-001',
-      'Internal server error',
-      'Server has an internal error with the request',
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+    errors.push(
+      new ApiError(
+        'CONTAINER-001',
+        'Internal server error',
+        'Server has an internal error with the request',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+      )
+    );
   }
 
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), containerUpdated, errors));
+  res
+    .status(status)
+    .json(
+      new ApiResult(
+        status === 200 ? "OK" : "ERROR",
+        containerUpdated,
+        req.requestId,
+        errors
+      )
+    );
 });
 
 /**
- * @swagger 
+ * @swagger
  * /v1/container/{id}:
  *   delete:
  *     summary: Updates a container
@@ -246,7 +319,7 @@ router.put('/:id', function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', function (req, res, next) {
   let errors = [];
   let status = 200;
   let containerDeleted = null;
@@ -256,27 +329,44 @@ router.delete('/:id', function(req, res, next) {
 
     containerDeleted = containerService.deleteContainer(id);
     if (containerDeleted === undefined) {
-      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Container not found`)
+      logger.error(
+        `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Container not found`
+      );
       status = 404;
-      errors.push(new ApiError(
-        'CONTAINER-001',
-        'Incorrect Id, this id does not exist',
-        'Ensure that the Id included in the request is correct',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
-      ));
+      errors.push(
+        new ApiError(
+          'CONTAINER-001',
+          'Incorrect Id, this id does not exist',
+          'Ensure that the Id included in the request is correct',
+          `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+        )
+      );
     }
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    logger.error(
+      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`
+    );
     status = 500;
-    errors.push(new ApiError(
-      'CONTAINER-001',
-      'Internal server error',
-      'Server has an internal error with the request',
-      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
-    ));
+    errors.push(
+      new ApiError(
+        'CONTAINER-001',
+        'Internal server error',
+        'Server has an internal error with the request',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+      )
+    );
   }
 
-  res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), containerDeleted, errors));
+  res
+    .status(status)
+    .json(
+      new ApiResult(
+        status === 200 ? "OK" : "ERROR",
+        containerDeleted,
+        req.requestId,
+        errors
+      )
+    );
 });
 
 module.exports = router;

@@ -57,10 +57,11 @@ describe('API Help ',()=>{
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        id: 1,
-        code:"NOT-FOUND-ERROR-001",
+        //id: 1,
+        code:"HELP-001",
         message:"Incorrect code, this code does not exist",
         detail:"Ensure that the code included in the request are correct",
         help: ''
@@ -77,10 +78,11 @@ describe('API Help ',()=>{
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        id: 2,
-        code:"NOT-FOUND-ERROR-001",
+        //id: 2,
+        code:"HELP-001",
         message:"Incorrect code, this code does not exist",
         detail:"Ensure that the code included in the request are correct",
         help: ''
@@ -90,5 +92,3 @@ describe('API Help ',()=>{
   });
 
 });
-
- 

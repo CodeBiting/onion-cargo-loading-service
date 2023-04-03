@@ -11,8 +11,8 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL = 'http://localhost:8082/v1';
-const HELP_BASE_URL = 'http://localhost:8082/v1/help/error';
+const URL = 'http://localhost:8080/v1';
+const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const CONTAINER_NEW = {
   "id": 0,
@@ -32,10 +32,11 @@ describe('API Container ', () => {
     chai.request(URL)
     .get('/container')
     .end(function(err, res) {
-      console.log(res.body);
+      //console.log(res.body);
       expect(res).to.have.status(200);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       done();
@@ -60,6 +61,7 @@ describe('API Container ', () => {
         height: 1,
         maxWeight: 1,
       })
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       done();
@@ -75,6 +77,7 @@ describe('API Container ', () => {
         expect(res).to.have.status(200);
         expect(res.body.status).to.equal('OK');
         expect(res.body.data).to.be.an('array');
+        expect(res.body.requestId).to.be.an('string');
         expect(res.body.errors).to.be.an('array').that.is.empty;
   
         // Verificar que todos los contenedores corresponden al clientId esperado
@@ -95,6 +98,7 @@ describe('API Container ', () => {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
         code:"CONTAINER-001",
@@ -114,6 +118,7 @@ describe('API Container ', () => {
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       done();
@@ -128,6 +133,7 @@ describe('API Container ', () => {
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       //console.log(res.body);
@@ -147,6 +153,7 @@ describe('API Container ', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');
+        expect(res.body.requestId).to.be.an('string');
         expect(res.body.errors).to.be.an('array');
         expect(res.body.errors).to.be.an('array').that.eql([]);
         //console.log(res.body);
@@ -175,6 +182,7 @@ describe('API Container ', () => {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
         code:"CONTAINER-001",
@@ -188,17 +196,18 @@ describe('API Container ', () => {
 
   it('should return 404 if the URL to update a container is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .put('/container/ ')
+    .put('/container/{} ')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"NOT-FOUND-ERROR-001",
-        message:"Not found",
-        detail:"",
-        help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
+        code:"CONTAINER-001",
+        message:"Incorrect Id, this id does not exist",
+        detail:"Ensure that the Id included in the request is correct",
+        help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
     });
@@ -232,6 +241,7 @@ describe('API Container ', () => {
         height: 1,
         maxWeight: 1,
       })
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       chai.request(URL)
@@ -257,6 +267,7 @@ describe('API Container ', () => {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
         code:"CONTAINER-001",
@@ -270,17 +281,18 @@ describe('API Container ', () => {
 
   it('should return 404 if the URL to delete a container is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .delete('/container/ ')
+    .delete('/container/{}')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"NOT-FOUND-ERROR-001",
-        message:"Not found",
-        detail:"",
-        help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
+        code:"CONTAINER-001",
+        message:"Incorrect Id, this id does not exist",
+        detail:"Ensure that the Id included in the request is correct",
+        help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
       
@@ -288,4 +300,3 @@ describe('API Container ', () => {
   });
   
 });
-
