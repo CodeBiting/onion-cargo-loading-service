@@ -31,11 +31,11 @@ const API_NAME = 'register';
  *         type: string
  *       status: 
  *         type: integer
- *      requestBody: 
- *          type: string
- *      responseData:
- *          type: string
-  *     required: ["id", "date", "origin", "destiny", "method", "status"]
+ *       requestBody: 
+ *         type: string
+ *       responseData:
+ *         type: string
+ *     required: ["id", "date", "origin", "destiny", "method", "status"]
  */
 
 /**

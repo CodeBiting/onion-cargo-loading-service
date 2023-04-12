@@ -10,6 +10,18 @@ var morgan = require('morgan');
 const logger = require("./api/logger");
 const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
+const config = require(`./config/config`);
+const database = require(`./api/database`);
+
+//Connect MySQL
+database.connect(config.db, function(err) {
+  if (err) {
+      console.log('Unable to connect to MySQL: ' + err);
+      process.exit(1);
+  } else {
+      console.log(`Connected to MySQL ${config.db.database} successfully`);
+  }
+});
 
 // API V1
 const apiDocsV1 = require('./routes/v1/api-docs');
@@ -43,6 +55,7 @@ app.use(
 );
 
 // Routes after morgan use to log each call
+
 app.use('/v1/api-docs', apiDocsV1);
 
 app.use('/v1/healthcheck', healtchcheckRouterV1);

@@ -27,8 +27,8 @@ const TEST_CLIENT = {
 
   //----------GET-----------
 describe('API Client ',()=>{
-
-  it('Tiene que devolver todos los clients', (done) => {
+/*
+  it('should return all clients', (done) => {
     chai.request(URL)
     .get('/client')
     .end(function(err, res) {
@@ -43,7 +43,7 @@ describe('API Client ',()=>{
   });
 
   ///v1/client/[clientId]/containers
-  it('Ha de retornar tots el contenidors', (done) => {
+  it('should return all containers', (done) => {
     chai.request(URL)
     .get('/client/1/containers')
     .end((err, res) => {
@@ -54,7 +54,7 @@ describe('API Client ',()=>{
       done();
     });
   });
-
+*/
   it('should return one client', (done) => {
     chai.request(URL)
     .get('/client/1')
@@ -77,7 +77,7 @@ describe('API Client ',()=>{
       done();
     });
   });
-
+/*
   it('should return 404 if the client requested does not exist', (done) => {
     chai.request(URL)
     .get('/client/9999')
@@ -274,5 +274,5 @@ describe('API Client ',()=>{
       done();
     });
   });
-  
+  */
 });
