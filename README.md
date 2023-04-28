@@ -130,6 +130,79 @@ Passos:
 - Clona els fitxers de la versió anterior a les noves carpetes i modifica el que calgui
 - Edita el fitxer "app" per afegir les rutes als nous controladors
 
+### Com treballar amb la BD MySQL
+
+Per implementar la connexió amb MySql es consideren aquests mòduls per Nodejs i Expressjs:
+
+- mysqljs/mysql: This is a node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% MIT licensed.
+- mysql2: A fast node.js MySQL library with focus on performance. Supports prepared statements, non-utf8 encodings, binary log protocol, compression, ssl and much more.
+- sequelize: easy-to-use and promise-based Node.js ORM tool for Postgres, MySQL, MariaDB, SQLite, DB2, Microsoft SQL Server, and Snowflake. It features solid transaction support, relations, read replication and more.
+- knex.js: A batteries-included, multi-dialect (PostgreSQL, MySQL, CockroachDB, MSSQL, SQLite3, Oracle (including Oracle Wallet Authentication)) query builder for Node.js
+Per implementar-ho es tria fer servir mysql2 pels següents motius:
+
+Prioritzem rendiment sobre compatibilitat, per tant descartem les ORM i query builders ja que afegixen capes i lentitut
+Dels dos drivers MySql triem mysql2 ja que ofereix un rendiment superior i conté els elements bàsics per treballar amb MySql (pool de connexions i transaccions).
+Per tal de treballar de forma concurrent i sense bloqueigs a partir de múltiples serveis contra la mateixa base de dades, per agafar registres i fer-hi operacions de modificació o esborrat es pot fer de diferents maneres (no fer res i el que actualitza l'últim guanya, concurrència optimista en que es suposa que hi haurà pocs conflictes i l'usuari afectat no li farà res tornar-ho a intentar), concurrència pessimista on es suposen molts conflictes i que els usuaris afectats no voldran reintantar-ho.
+
+Nosaltres farem servir concurrència optimista amb versionat.
+
+#### Nodejs, MySQL i Timestamps
+
+Gotcha! Timezones in nodejs and mysql[https://medium.com/@magnusjt/gotcha-timezones-in-nodejs-and-mysql-b39e418c9d3]
+MySql2 Timezone[https://github.com/sidorares/node-mysql2/issues/642]
+
+MySQL no permet guardar el timezone en camps DATETIME o TIMESTAMP, per tal de poder guardar i recuperar aquestes dates correctament, es guardarà sempre com a UTC i serà en el client que es transformà al time zone que calgui.
+
+**A mysql, DATE i DATETIME s'emmagatzemen com a cadenes simples. També s'envien i reben com a cadenes, sense tenir en compte les zones horàries.**
+
+**Interpretar DATETIME com a data nova ("AAAA-MM-DD HH:mm:ss"). Això pot ser correcte si el que ha emmagatzemat el DATETIME es troba a la mateixa zona horària que tu.**
+
+Per recuperar la data en format local es pot fer servir la funció CONVERT_TZ() en la SQL la consulta següent:
+
+```sql
+-- Convertir de UTC a la timezone de la connexió
+SELECT id
+       , `code`
+       , CONVERT_TZ(date_start, '+00:00', @@session.time_zone)
+       , CONVERT_TZ(date_final, '+00:00', @@session.time_zone)
+       , `active`
+       , token
+       , notes 
+  FROM cargo_loading.client;
+```
+
+Si es vol gestionar en Nodejs s'ha de tenir en compte:
+
+```javascript
+let d1 = new Date();  // 28/4/2023, 18:09:40
+console.log(d1);                          // 2023-04-28T16:09:40.561Z
+console.log(d1.toISOString());            // '2023-04-28T16:09:40.561Z'
+console.log(d1.toLocaleString());         // '28/4/2023, 18:09:40'
+console.log(d1.toLocaleString('en-US'));  // '4/28/2023, 6:09:40 PM'
+console.log(d1.toLocaleString('es-ES'));  // '28/4/2023, 18:09:40'
+
+let d2 = new Date('2023-04-18T16:07:50');
+console.log(d2);                          // 2023-04-18T14:07:50.000Z
+console.log(d2.toISOString());            // '2023-04-18T14:07:50.000Z'
+console.log(d2.toLocaleString());         // '18/4/2023, 16:07:50'
+console.log(d2.toLocaleString('en-US'));  // '4/18/2023, 4:07:50 PM'
+console.log(d2.toLocaleString('es-ES'));  // '18/4/2023, 16:07:50'
+
+let d3 = new Date(2023, 04, 18, 16, 7, 50);
+console.log(d3);                          // 2023-05-18T14:07:50.000Z
+console.log(d3.toISOString());            // '2023-05-18T14:07:50.000Z'
+console.log(d3.toLocaleString());         // '18/5/2023, 16:07:50'
+console.log(d3.toLocaleString('en-US'));  // '5/18/2023, 4:07:50 PM'
+console.log(d3.toLocaleString('es-ES'));  // '18/5/2023, 16:07:50'
+
+let d4 = new Date('2023-04-18 16:07:50');
+console.log(d4);                          // 2023-04-18T14:07:50.000Z
+console.log(d4.toISOString());            // '2023-04-18T14:07:50.000Z'
+console.log(d4.toLocaleString());         // '18/4/2023, 16:07:50'
+console.log(d4.toLocaleString('en-US'));  // '4/18/2023, 4:07:50 PM'
+console.log(d4.toLocaleString('es-ES'));  // '18/4/2023, 16:07:50'
+```
+
 ## Com treballar amb el projecte
 
 Pojecte hostatjat al GitHub, per col·laborar treballar de la següent manera:
