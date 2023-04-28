@@ -9,7 +9,7 @@ var debug = require('debug')('onion-cargo-loading-service:server');
 var http = require('http');
 const logger = require("../api/logger");
 
-const DEFAULT_PORT = '8082';  // Port del contenidor que espera Cloud Run
+const DEFAULT_PORT = '8080';  // Port del contenidor que espera Cloud Run
 
 /**
  * Get port from environment and store in Express.
