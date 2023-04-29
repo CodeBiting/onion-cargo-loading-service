@@ -148,8 +148,9 @@ Nosaltres farem servir concurrència optimista amb versionat.
 
 #### Nodejs, MySQL i Timestamps
 
-Gotcha! Timezones in nodejs and mysql[https://medium.com/@magnusjt/gotcha-timezones-in-nodejs-and-mysql-b39e418c9d3]
-MySql2 Timezone[https://github.com/sidorares/node-mysql2/issues/642]
+Gotcha! Timezones in nodejs and mysql <https://medium.com/@magnusjt/gotcha-timezones-in-nodejs-and-mysql-b39e418c9d3>
+
+MySql2 Timezone <https://github.com/sidorares/node-mysql2/issues/642>
 
 MySQL no permet guardar el timezone en camps DATETIME o TIMESTAMP, per tal de poder guardar i recuperar aquestes dates correctament, es guardarà sempre com a UTC i serà en el client que es transformà al time zone que calgui.
 
@@ -202,6 +203,11 @@ console.log(d4.toLocaleString());         // '18/4/2023, 16:07:50'
 console.log(d4.toLocaleString('en-US'));  // '4/18/2023, 4:07:50 PM'
 console.log(d4.toLocaleString('es-ES'));  // '18/4/2023, 16:07:50'
 ```
+
+### Fer servir transaccions, locks i deadlocks
+
+<https://lynn-kwong.medium.com/understand-the-basics-of-locks-and-deadlocks-in-mysql-part-i-92f229db0a>
+<https://lynn-kwong.medium.com/understand-the-basics-of-locks-and-deadlocks-in-mysql-part-ii-6beecd183345>
 
 ## Com treballar amb el projecte
 
