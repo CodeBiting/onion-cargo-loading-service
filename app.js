@@ -27,11 +27,16 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
-//generate uniqueid everytime API is called
+
+/**
+ * Generate one uniqueid everytime API is called, to trace the client call
+ */
 app.use((req, res, next) => {
-  //console.log('Prova');
+  // Get the requestId if its provided in the heather
   let requestId = req.headers["x-request-id"];
+  // Save the requestId or create a new one if not exists
   req.requestId = requestId || uniqid();
+  // Call the next function in the middleware
   next();
 });
 
