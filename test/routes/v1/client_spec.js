@@ -16,13 +16,13 @@ const URL= 'http://localhost:8080/v1';
 const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const TEST_CLIENT = {
-  "id": 0,
-  "code": "new",
-  "dateStart": new Date(2023, 0, 1),
-  "dateFinal": new Date(2023, 0, 2),
-  "active": true,
-  "token": "new",
-  "notes": "new",
+  'id': 0,
+  'code': 'new',
+  'dateStart': new Date(2023, 0, 1),
+  'dateFinal': new Date(2023, 0, 2),
+  'active': true,
+  'token': 'new',
+  'notes': 'new',
 };
 
   //----------GET-----------
@@ -67,12 +67,12 @@ describe('API Client ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: 1,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
+        code: 'jordi',
+        dateStart: '01/01/2023',
+        dateFinal: '02/01/2023',
         active: true,
-        token: "fer el seu fitxer",
-        notes: "no se, notes",
+        token: 'fer el seu fitxer',
+        notes: 'no se, notes',
       })
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
@@ -92,9 +92,9 @@ describe('API Client ',()=>{
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CLIENT-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request are correct",
+        code:'CLIENT-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request are correct',
         help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
@@ -135,12 +135,12 @@ describe('API Client ',()=>{
       .set('content-type', 'application/json')
       .send({
         id: 1,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
+        code: 'jordi',
+        dateStart: '01/01/2023',
+        dateFinal: '02/01/2023',
         active: true,
-        token: "fer el seu fitxer",
-        notes: "no se, notes",
+        token: 'fer el seu fitxer',
+        notes: 'no se, notes',
       })
       .end(function(err, res) {
         expect(res).to.have.status(200);
@@ -152,12 +152,12 @@ describe('API Client ',()=>{
         //console.log(res.body);
         expect(res.body.data).to.be.deep.equal({
           id: res.body.data.id,
-          code: "jordi",
-          dateStart: "01/01/2023",
-          dateFinal: "02/01/2023",
+          code: 'jordi',
+          dateStart: '01/01/2023',
+          dateFinal: '02/01/2023',
           active: true,
-          token: "fer el seu fitxer",
-          notes: "no se, notes",
+          token: 'fer el seu fitxer',
+          notes: 'no se, notes',
         })
         done();
       });
@@ -177,8 +177,8 @@ describe('API Client ',()=>{
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
         code: 'CLIENT-001',
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
@@ -195,9 +195,9 @@ describe('API Client ',()=>{
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CLIENT-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'CLIENT-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
@@ -209,12 +209,12 @@ describe('API Client ',()=>{
     .post('/container')
     .send({
       id: 1,
-      code: "jordi",
-      dateStart: "01/01/2023",
-      dateFinal: "02/01/2023",
+      code: 'jordi',
+      dateStart: '01/01/2023',
+      dateFinal: '02/01/2023',
       active: true,
-      token: "fer el seu fitxer",
-      notes: "no se, notes",
+      token: 'fer el seu fitxer',
+      notes: 'no se, notes',
     })
     .end(function(err, res) {
       //console.log(res.body);
@@ -223,12 +223,12 @@ describe('API Client ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: res.body.data.id,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
+        code: 'jordi',
+        dateStart: '01/01/2023',
+        dateFinal: '02/01/2023',
         active: true,
-        token: "fer el seu fitxer",
-        notes: "no se, notes",
+        token: 'fer el seu fitxer',
+        notes: 'no se, notes',
       })
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
@@ -260,9 +260,9 @@ describe('API Client ',()=>{
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CLIENT-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'CLIENT-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
@@ -279,9 +279,9 @@ describe('API Client ',()=>{
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CLIENT-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'CLIENT-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();

@@ -1,4 +1,4 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
 const logger = require(`${__base}api/logger`);
@@ -6,9 +6,9 @@ const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const containerService = require(`${__base}api/v1/containerService`);
 
-const HELP_BASE_URL = "/help/error";
+const HELP_BASE_URL = '/help/error';
 
-const API_NAME = "container";
+const API_NAME = 'container';
 
 /**
  * @swagger
@@ -22,7 +22,7 @@ const API_NAME = "container";
  *           type: string
  *         description:
  *           type: string,
- *       required: ["number", "code"]
+ *       required: ['number', 'code']
  */
 
 /**
@@ -41,7 +41,7 @@ const API_NAME = "container";
  *               $ref: '#/definitions/ApiResult'
  */
 
-router.get("/", function (req, res, next) {
+router.get('/', function (req, res, next) {
   let errors = [];
   let status = 200;
   let container = null;
@@ -56,10 +56,10 @@ router.get("/", function (req, res, next) {
     status = 500;
     errors.push(
       new ApiError(
-        "CONTAINER-001",
-        "Internal server error",
-        "Server has an internal error with the request",
-        `${req.protocol}://${req.get("host")}${HELP_BASE_URL}/CONTAINER-001`
+        'CONTAINER-001',
+        'Internal server error',
+        'Server has an internal error with the request',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
       )
     );
   }
@@ -68,7 +68,7 @@ router.get("/", function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         container,
         req.requestId,
         errors

@@ -1,4 +1,4 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
 const logger = require(`${__base}api/logger`);
@@ -6,10 +6,10 @@ const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const registerService = require(`${__base}api/v1/registerService`);
 
-const HELP_BASE_URL = "/v1/help/error";
+const HELP_BASE_URL = '/v1/help/error';
 
 // Constants to structure logs
-const API_NAME = "register";
+const API_NAME = 'register';
 
 /**
  * @swagger
@@ -35,7 +35,7 @@ const API_NAME = "register";
  *           type: string
  *         responseData:
  *           type: string
- *       required: ["id", "date", "origin", "destiny", "method", "status"]
+ *       required: ['id', 'date', 'origin', 'destiny', 'method', 'status']
  */
 
 /**
@@ -80,7 +80,7 @@ router.get('/', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         registers,
         req.requestId,
         errors
@@ -151,7 +151,7 @@ router.get('/:id', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         register,
         req.requestId,
         errors
@@ -207,7 +207,7 @@ router.post('/', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 201 ? "OK" : "ERROR",
+        status === 201 ? 'OK' : 'ERROR',
         registerCreated,
         req.requestId,
         errors
@@ -284,7 +284,7 @@ router.put('/:id', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         registerUpdated,
         req.requestId,
         errors
@@ -357,7 +357,7 @@ router.delete('/:id', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         registerDeleted,
         req.requestId,
         errors

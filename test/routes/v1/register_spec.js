@@ -15,14 +15,14 @@ const URL= 'http://localhost:8080/v1';
 const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const REGISTER_NEW = {
-  "id": 0,
-  "date": "new",
-  "origin":"new",
-  "destiny": "new",
-  "method": "new",
-  "status": 0,
-  "requestBody": "new",
-  "responseData": "new"
+  'id': 0,
+  'date': 'new',
+  'origin':'new',
+  'destiny': 'new',
+  'method': 'new',
+  'status': 0,
+  'requestBody': 'new',
+  'responseData': 'new'
 };
 
 describe('API Register ',()=>{
@@ -74,9 +74,9 @@ describe('API Register ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"REGISTER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request are correct",
+        code:'REGISTER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request are correct',
         help: `${HELP_BASE_URL}/REGISTER-001`
       }]);
       done();
@@ -156,9 +156,9 @@ describe('API Register ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"REGISTER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'REGISTER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/REGISTER-001`
       }]);
       done();
@@ -174,9 +174,9 @@ describe('API Register ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"REGISTER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'REGISTER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/REGISTER-001`
       }]);
       done();
@@ -238,9 +238,9 @@ describe('API Register ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"REGISTER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'REGISTER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/REGISTER-001`
       }]);
       done();
@@ -256,9 +256,9 @@ describe('API Register ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"REGISTER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'REGISTER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/REGISTER-001`
       }]);
       done();

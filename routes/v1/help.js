@@ -1,4 +1,4 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
 const logger = require(`${__base}api/logger`);
@@ -7,7 +7,7 @@ const ApiError = require(`${__base}api/ApiError`);
 const helpData = require(`${__base}/api/v1/help.json`);
 
 // Constants to structure logs
-const API_NAME = "help";
+const API_NAME = 'help';
 
 /**
  * @swagger
@@ -43,7 +43,7 @@ const API_NAME = "help";
  *               $ref: '#/definitions/ApiResult'
  */
 router.get('/error/', function (req, res, next) {
-  res.status(200).json(new ApiResult("OK", helpData, req.requestId, []));
+  res.status(200).json(new ApiResult('OK', helpData, req.requestId, []));
 });
 
 /**
@@ -109,7 +109,7 @@ router.get('/error/:code', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         helpFound,
         req.requestId,
         errors

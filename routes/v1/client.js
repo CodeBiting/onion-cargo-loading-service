@@ -1,4 +1,4 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
 const logger = require(`${__base}api/logger`);
@@ -7,10 +7,10 @@ const ApiError = require(`${__base}api/ApiError`);
 const clientService = require(`${__base}api/v1/clientService`);
 const containerService = require(`${__base}api/v1/containerService`);
 
-const HELP_BASE_URL = "/v1/help/error";
+const HELP_BASE_URL = '/v1/help/error';
 
 // Constants to structure logs
-const API_NAME = "client";
+const API_NAME = 'client';
 
 /**
  * @swagger
@@ -32,7 +32,7 @@ const API_NAME = "client";
  *         type: string
  *       notes:
  *         type: string
- *     required: ["id", "code", "dateStart", "dateFinal", "active", "token", "notes"]
+ *     required: ['id', 'code', 'dateStart', 'dateFinal', 'active', 'token', 'notes']
  */
 
 /**
@@ -77,7 +77,7 @@ router.get('/', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         clients,
         req.requestId,
         errors
@@ -134,7 +134,7 @@ router.get('/:id/containers', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         containers,
         req.requestId,
         errors
@@ -205,7 +205,7 @@ router.get('/:id', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         client,
         req.requestId,
         errors
@@ -261,7 +261,7 @@ router.post('/', function (req, res, next) {
     .status(status)
     .json(
       new ApiResult(
-        status === 201 ? "OK" : "ERROR",
+        status === 201 ? 'OK' : 'ERROR',
         clientCreated,
         req.requestId,
         errors
@@ -322,7 +322,7 @@ router.put('/:id', function (req, res, next) {
       );
       return res
         .status(400)
-        .json(new ApiResult("ERROR", clientUpdated === undefined, errors));
+        .json(new ApiResult('ERROR', clientUpdated === undefined, errors));
     }
 
     clientUpdated = clientService.putClient(id, clientNewData);
@@ -356,13 +356,13 @@ router.put('/:id', function (req, res, next) {
     );
     return res
       .status(500)
-      .json(new ApiResult("ERROR", clientUpdated === undefined, errors));
+      .json(new ApiResult('ERROR', clientUpdated === undefined, errors));
   }
   res
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         clientUpdated,
         req.requestId,
         errors
@@ -434,13 +434,13 @@ router.delete('/:id', function (req, res, next) {
     );
     return res
       .status(500)
-      .json(new ApiResult("ERROR", clientUpdated === undefined, errors));
+      .json(new ApiResult('ERROR', clientUpdated === undefined, errors));
   }
   res
     .status(status)
     .json(
       new ApiResult(
-        status === 200 ? "OK" : "ERROR",
+        status === 200 ? 'OK' : 'ERROR',
         clientDeleted,
         req.requestId,
         errors

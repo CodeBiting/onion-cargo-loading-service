@@ -1,11 +1,7 @@
 # Partim d’una imatge mínima de node 18.12.1 LTS https://hub.docker.com/_/node
 FROM node:lts-alpine3.16
-
-
 # Indicar el creador
 LABEL maintainer="Codebiting - JDH"
-
-
 # Instalem wget
 RUN apk update && apk add wget
 # Creem un directori per l'aplicacio i descarreguem el projecte

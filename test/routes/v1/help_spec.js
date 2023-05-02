@@ -61,9 +61,9 @@ describe('API Help ',()=>{
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
         //id: 1,
-        code:"HELP-001",
-        message:"Incorrect code, this code does not exist",
-        detail:"Ensure that the code included in the request are correct",
+        code:'HELP-001',
+        message:'Incorrect code, this code does not exist',
+        detail:'Ensure that the code included in the request are correct',
         help: ''
       }]);
       done();
@@ -82,9 +82,9 @@ describe('API Help ',()=>{
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
         //id: 2,
-        code:"HELP-001",
-        message:"Incorrect code, this code does not exist",
-        detail:"Ensure that the code included in the request are correct",
+        code:'HELP-001',
+        message:'Incorrect code, this code does not exist',
+        detail:'Ensure that the code included in the request are correct',
         help: ''
       }]);
       done();

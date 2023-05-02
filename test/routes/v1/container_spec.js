@@ -15,14 +15,14 @@ const URL = 'http://localhost:8080/v1';
 const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const CONTAINER_NEW = {
-  "id": 0,
-  "clientId": 0,
-  "code": "new",
-  "description": "new",
-  "width": 0,
-  "length": 0,
-  "height": 0,
-  "maxWeight": 0
+  'id': 0,
+  'clientId': 0,
+  'code': 'new',
+  'description': 'new',
+  'width': 0,
+  'length': 0,
+  'height': 0,
+  'maxWeight': 0
 };
 
 describe('API Container ', () => {
@@ -69,7 +69,7 @@ describe('API Container ', () => {
   });
 
   // /v1/containers?clientId=[clientId]
-  it('Debería devolver solo los contenedores correspondientes al clientId', (done) => {
+  it('It should return only the containers corresponding to the clientId', (done) => {
     const clientId = 1; // Cambiar el valor según corresponda
     chai.request(URL)
       .get(`/container?clientId=${clientId}`)
@@ -101,9 +101,9 @@ describe('API Container ', () => {
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CONTAINER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request are correct",
+        code:'CONTAINER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request are correct',
         help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
@@ -185,9 +185,9 @@ describe('API Container ', () => {
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CONTAINER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'CONTAINER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
@@ -204,9 +204,9 @@ describe('API Container ', () => {
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CONTAINER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'CONTAINER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
@@ -270,9 +270,9 @@ describe('API Container ', () => {
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CONTAINER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'CONTAINER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
@@ -289,9 +289,9 @@ describe('API Container ', () => {
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CONTAINER-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'CONTAINER-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CONTAINER-001`
       }]);
       done();
