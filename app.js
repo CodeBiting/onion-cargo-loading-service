@@ -6,7 +6,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
-
+var uniqid = require("uniqid");
 const logger = require("./api/logger");
 const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
@@ -27,6 +27,13 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
+//generate uniqueid everytime API is called
+app.use((req, res, next) => {
+  //console.log('Prova');
+  let requestId = req.headers["x-request-id"];
+  req.requestId = requestId || uniqid();
+  next();
+});
 
 const morganFormat = process.env.NODE_ENV !== 'production' ? 'dev' : 'combined';
 app.use(

@@ -14,6 +14,8 @@ const ApiError = require(`${__base}api/ApiError`);
  *           items:
  *             type: "object"
  *             description : "array of objects returned"
+ *         requestId:
+ *           type: "string"
  *         errors:
  *           type: "array"
  *           items: 
@@ -28,18 +30,20 @@ const ApiError = require(`${__base}api/ApiError`);
  *                 type: "string"
  *               help:
  *                 type: "string"
- *       required: ["status","data", "errors"]
+ *       required: ["status","data","requestedId", "errors"]
  */
 class ApiResult {
   /**
    * 
    * @param {*} status 
    * @param {*} data 
+   * @param {*} requestedId
    * @param {*} error : object from class ApiError
    */
-  constructor(status, data, errors) {
+  constructor(status, data, requestId,  errors) {
     this.status = status;
     this.data = data;
+    this.requestId = requestId;
     this.errors = [];
 
     if (errors && Array.isArray(errors) ) {

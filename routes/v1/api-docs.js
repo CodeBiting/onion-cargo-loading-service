@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const express = require('express');
 const app = express();
@@ -39,6 +39,6 @@ const swaggerOptions = {
 }
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 module.exports = app;

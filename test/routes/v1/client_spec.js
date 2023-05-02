@@ -12,23 +12,23 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL= 'http://localhost:8082/v1';
-const HELP_BASE_URL = 'http://localhost:8082/v1/help/error';
+const URL= 'http://localhost:8080/v1';
+const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const TEST_CLIENT = {
-  "id": 0,
-  "code": "new",
-  "dateStart": new Date(2023, 0, 1),
-  "dateFinal": new Date(2023, 0, 2),
-  "active": true,
-  "token": "new",
-  "notes": "new",
+  'id': 0,
+  'code': 'new',
+  'dateStart': new Date(2023, 0, 1),
+  'dateFinal': new Date(2023, 0, 2),
+  'active': true,
+  'token': 'new',
+  'notes': 'new',
 };
 
   //----------GET-----------
 describe('API Client ',()=>{
 
-  it('Tiene que devolver todos los clients', (done) => {
+  it('should return all clients', (done) => {
     chai.request(URL)
     .get('/client')
     .end(function(err, res) {
@@ -36,6 +36,7 @@ describe('API Client ',()=>{
       expect(res).to.have.status(200);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       done();
@@ -43,13 +44,14 @@ describe('API Client ',()=>{
   });
 
   ///v1/client/[clientId]/containers
-  it('Ha de retornar tots el contenidors', (done) => {
+  it('should return all containers', (done) => {
     chai.request(URL)
     .get('/client/1/containers')
     .end((err, res) => {
       expect(res).to.have.status(200);
       expect(res.body).to.have.property('status', 'OK');
       expect(res.body).to.have.property('data').that.is.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array').that.is.empty;
       done();
     });
@@ -65,13 +67,14 @@ describe('API Client ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: 1,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
+        code: 'jordi',
+        dateStart: '01/01/2023',
+        dateFinal: '02/01/2023',
         active: true,
-        token: "fer el seu fitxer",
-        notes: "no se, notes",
+        token: 'fer el seu fitxer',
+        notes: 'no se, notes',
       })
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       done();
@@ -86,11 +89,12 @@ describe('API Client ',()=>{
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CLIENT-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request are correct",
+        code:'CLIENT-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request are correct',
         help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
@@ -106,6 +110,7 @@ describe('API Client ',()=>{
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       done();
@@ -121,6 +126,7 @@ describe('API Client ',()=>{
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       //console.log(res.body);
@@ -129,28 +135,29 @@ describe('API Client ',()=>{
       .set('content-type', 'application/json')
       .send({
         id: 1,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
+        code: 'jordi',
+        dateStart: '01/01/2023',
+        dateFinal: '02/01/2023',
         active: true,
-        token: "fer el seu fitxer",
-        notes: "no se, notes",
+        token: 'fer el seu fitxer',
+        notes: 'no se, notes',
       })
       .end(function(err, res) {
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');
+        expect(res.body.requestId).to.be.an('string');
         expect(res.body.errors).to.be.an('array');
         expect(res.body.errors).to.be.an('array').that.eql([]);
         //console.log(res.body);
         expect(res.body.data).to.be.deep.equal({
           id: res.body.data.id,
-          code: "jordi",
-          dateStart: "01/01/2023",
-          dateFinal: "02/01/2023",
+          code: 'jordi',
+          dateStart: '01/01/2023',
+          dateFinal: '02/01/2023',
           active: true,
-          token: "fer el seu fitxer",
-          notes: "no se, notes",
+          token: 'fer el seu fitxer',
+          notes: 'no se, notes',
         })
         done();
       });
@@ -166,11 +173,12 @@ describe('API Client ',()=>{
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
         code: 'CLIENT-001',
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
@@ -179,17 +187,18 @@ describe('API Client ',()=>{
 
   it('should return 404 if the URL to update a container is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .put('/client/ ')
+    .put('/client/{} ')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"NOT-FOUND-ERROR-001",
-        message:"Not found",
-        detail:"",
-        help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
+        code:'CLIENT-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
+        help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
     });
@@ -200,12 +209,12 @@ describe('API Client ',()=>{
     .post('/container')
     .send({
       id: 1,
-      code: "jordi",
-      dateStart: "01/01/2023",
-      dateFinal: "02/01/2023",
+      code: 'jordi',
+      dateStart: '01/01/2023',
+      dateFinal: '02/01/2023',
       active: true,
-      token: "fer el seu fitxer",
-      notes: "no se, notes",
+      token: 'fer el seu fitxer',
+      notes: 'no se, notes',
     })
     .end(function(err, res) {
       //console.log(res.body);
@@ -214,13 +223,14 @@ describe('API Client ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: res.body.data.id,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
+        code: 'jordi',
+        dateStart: '01/01/2023',
+        dateFinal: '02/01/2023',
         active: true,
-        token: "fer el seu fitxer",
-        notes: "no se, notes",
+        token: 'fer el seu fitxer',
+        notes: 'no se, notes',
       })
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       chai.request(URL)
@@ -231,6 +241,7 @@ describe('API Client ',()=>{
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');
+        expect(res.body.requestId).to.be.an('string');
         expect(res.body.errors).to.be.an('array');
         expect(res.body.errors).to.deep.equal([]);
         done();
@@ -246,11 +257,12 @@ describe('API Client ',()=>{
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"CLIENT-001",
-        message:"Incorrect Id, this id does not exist",
-        detail:"Ensure that the Id included in the request is correct",
+        code:'CLIENT-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
         help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
@@ -259,17 +271,18 @@ describe('API Client ',()=>{
 
   it('should return 404 if the URL to delete a client is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .delete('/client/ ')
+    .delete('/client/{} ')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
+      expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:"NOT-FOUND-ERROR-001",
-        message:"Not found",
-        detail:"",
-        help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
+        code:'CLIENT-001',
+        message:'Incorrect Id, this id does not exist',
+        detail:'Ensure that the Id included in the request is correct',
+        help: `${HELP_BASE_URL}/CLIENT-001`
       }]);
       done();
     });
