@@ -1,119 +1,116 @@
 const mysql = require('mysql2');
+const { log } = require('winston');
 
 const database = require(`${__base}api/database`);
 
-
 const clientService = {
-  getClient(id) {
-
-    // return pool.promise().query(`SELECT * FROM client WHERE id = ${id}`)
-    //   .then(([rows]) => {
-    //     return rows[0];
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });-
+  
+  async getClient(id) {
 
     let sql = `SELECT * FROM client WHERE id = ${id}`;
 
-    database.get().query(sql, [], function(err, rows) {
-      if (err) {
-          return done(err);
-      } else {
-          done(null, rows);
-      }
-    });
-
-    // if (id == "") {
-    //   return undefined;
-    // } else {
-    // // Comparem amb == ja que l'id que rebem és un string
-    // return clients.find(o => o.id == id);
-    // }
+    let [rows, fields] = await database.getPromise().query(sql, []);
+    console.log(rows);
+    return rows[0];
   },
 
-  getClients() {
-    //return clients;
+  async getClients() {
+
     let sql = `SELECT * FROM client`;
-    database.get().query(sql, [], function(err, rows) {
-      if (err) {
-          return done(err);
-      } else {
-          done(null, rows);
-      }
-    });
+
+    let [rows, fields] = await database.getPromise().query(sql, []);
+    return rows;
     
+  },
+
+  async postClient(client) {
+
+    // let sql = `INSERT INTO client(code, date_start, date_final, active, token, notes)
+    //             VALUES('${client.code}', '${client.dateStart}', '${client.dateFinal}', '${ client.active }', '${client.token}', '${client.notes}')`;
+
+    let sql = `INSERT INTO client(code, dateStart, dateFinal, active, token, notes)
+                VALUES(?, ?, ?, ?, ?, ?)`;
+    let values = [
+      client.code, 
+      client.dateStart, 
+      client.dateFinal, 
+      client.active, 
+      client.token, 
+      client.notes];
+
+    let [rows, fields] = await database.getPromise().query(sql, values);
+
+    sql = `SELECT id, code, CONVERT_TZ(dateStart, '+00:00', @@session.time_zone) AS dateStart, CONVERT_TZ(dateFinal, '+00:00', @@session.time_zone)AS dateFinal, active, token, notes FROM client WHERE id = ?`;
+    [rows, fields] = await database.getPromise().query(sql, [rows.insertId]);
+    
+    return rows[0];
+
+  },
+
+  async putClient(id, client) {
+
+    let sql = `SELECT * FROM client WHERE id = ${id}`;
+    let [rows, fields] = await database.getPromise().query(sql, []);
+
+    if (rows.length !== 1) {
       
-  },
+      return undefined;
+    }
 
-  postClient(client) {
-    let sql = `INSERT INTO client(code, date_start, date_final, active, token, notes)
-                VALUES('${client.code}', '${client.dateStart}', '${client.dateFinal}', '${ client.active }', '${client.token}', '${client.notes}')`;
-    //let values = `VALUES('${client.code}', '${client.dateStart}', '${client.dateFinal}', ${ client.active }, '${client.token}', '${client.notes}')`;
+    let clientToUpdate = rows[0];
 
-    database.get().query(sql, [], function(err, rows) {
-      if (err) {
-          return done(err);
-      } else {
-          done(null, rows);
-      }
-    });
-
-    // const nextId = clients.reduce((maxId, client) => Math.max(maxId, client.id), 0) + 1;
-    // clients.push({ ...client, id: nextId });
-    // return clients[clients.length-1];
-
-  },
-
-  putClient(id, client) {
-    let sql = `UPDATE client SET
-    code = '${client.code}',
-      date_start = '${client.dateStart}',
-      date_final = '${client.dateFinal}',
+    sql = `UPDATE client SET
+      code = '${client.code}',
+      dateStart = CONVERT_TZ('${client.dateStart}', '+00:00', @@session.time_zone),
+      dateFinal = CONVERT_TZ('${client.dateFinal}', '+00:00', @@session.time_zone),
       active = '${ client.active }',
       token = '${client.token}',
       notes = '${client.notes}'
     WHERE id = ${ id }`;
 
-    database.get().query(sql, [], function(err, rows) {
-      if (err) {
-          return done(err);
-      } else {
-          done(null, rows);
-      }
-    });
+    [rows, fields] = await database.getPromise().query(sql, []);
 
-    // const clientToUpdate = clients.find(client => client.id == id);
-    // if (clientToUpdate) {
-    //   clientToUpdate.code = client.code || clientToUpdate.code;
-    //   clientToUpdate.dateStart = client.dateStart || clientToUpdate.dateStart;
-    //   clientToUpdate.dateFinal = client.dateFinal || clientToUpdate.dateFinal;
-    //   clientToUpdate.active = client.active || clientToUpdate.active;
-    //   clientToUpdate.token = client.token || clientToUpdate.token;
-    //   clientToUpdate.notes = client.notes || clientToUpdate.notes; 
-    // }
-    // return clientToUpdate;
+    if (rows.affectedRows !== 1) {
+      throw new Error(`Error updating client, affected rows = ${rows.affectedRows}`);
+    }
+
+    sql = `SELECT * FROM client WHERE id = ${id}`;
+    [rows, fields] = await database.getPromise().query(sql, []);
+
+    if (rows.length !== 1) {
+      throw new Error(`Error retrieving updated client data`);
+    }
+
+    clientToUpdate = rows[0];
+
+    return clientToUpdate;
+
   },
 
-  deleteClient(id) {
-    let sql = `DELETE FROM client WHERE id = ${ id }`;
+  async deleteClient(id) {
 
-    database.get().query(sql, [], function(err, rows) {
-      if (err) {
-          return done(err);
-      } else {
-          done(null, rows);
-      }
-    });
+    let sql = `SELECT * FROM client WHERE id = ${id}`;
+    let [rows, fields] = await database.getPromise().query(sql, []);
 
-    // const index = clients.findIndex(o => o.id == id); 
-    // if (index >= 0) {
-    //   let clientDeleted = clients.splice(index, 1); 
-    //   return clientDeleted[0];
-    // } else {
-    //   return undefined; 
-    // }
+    if (rows.length !== 1) {
+      
+      return undefined;
+    }
+
+    const clientToDelete = rows[0];
+    
+    sql = `DELETE FROM client WHERE id = ${ id }`;
+
+    [rows, fields] = await database.getPromise().query(sql, []);
+
+    if (rows.affectedRows !== 1) {
+      throw new Error(`Error deleting client, affected rows = ${rows.affectedRows}`);
+    }
+     
+    return clientToDelete;
+      
   }
-};
+  
+}
 
 module.exports = clientService;

@@ -55,12 +55,12 @@ const API_NAME = 'register';
  *               type: object
  *               $ref: '#/definitions/ApiResult'
   */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let registers = null;
   try {
-    registers = registerService.getRegisters();
+    registers = await registerService.getRegisters();
   } catch (ex) {
     status = 500;
     errors.push(new ApiError('REGISTER-001', 
@@ -96,12 +96,12 @@ router.get('/', function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
   */
-router.get('/:id', function(req, res, next) {
+router.get('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let register = null;
   try {
-    register = registerService.getRegister(req.params.id);
+    register = await registerService.getRegister(req.params.id);
     if (register === undefined) {  
       status = 404;
       errors.push(new ApiError('REGISTER-001', 
@@ -143,13 +143,13 @@ router.get('/:id', function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.post('/', function(req, res, next) {
+router.post('/', async function(req, res, next) {
   let errors = [];
   let status = 201;
   let registerCreated = null;
 
   try {
-    registerCreated = registerService.postRegister(req.body);
+    registerCreated = await registerService.postRegister(req.body);
   } catch (ex) {
     errors.push(new ApiError('REGISTER-001',
       'Internal server error', 
@@ -189,13 +189,13 @@ router.post('/', function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id', function(req, res, next) {
+router.put('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let registerUpdated = null;
 
   try {
-    registerUpdated = registerService.putRegister(req.params.id, req.body);
+    registerUpdated = await registerService.putRegister(req.params.id, req.body);
     if (registerUpdated === undefined) {
       status = 404;
       errors.push(new ApiError('REGISTER-001',
@@ -238,13 +238,13 @@ router.put('/:id', function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let registerDeleted = null;
 
   try {
-    registerDeleted = registerService.deleteRegister(req.params.id);
+    registerDeleted = await registerService.deleteRegister(req.params.id);
 
     if (registerDeleted === undefined) {
       status = 404;

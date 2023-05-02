@@ -1,6 +1,6 @@
 -- Script to create a MySql database to store data from the container loading management application
 -- V 0.1.0  24/03/2023
-DROP DATABASE IF EXISTS cargo_loading;
+//DROP DATABASE IF EXISTS cargo_loading;
 
 CREATE DATABASE cargo_loading;
 
@@ -9,8 +9,8 @@ USE cargo_loading;
 CREATE TABLE client (
   id BIGINT UNSIGNED AUTO_INCREMENT,
   code VARCHAR(50) NOT NULL,
-  date_start DATETIME NULL,
-  date_final DATETIME NULL,
+  dateStart DATETIME NULL,
+  dateFinal DATETIME NULL,
   active BOOLEAN NOT NULL,
   token VARCHAR(255) NULL,
   notes TEXT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE register (
     ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
-INSERT INTO client (id, code, date_start, date_final, active, token, notes)
+INSERT INTO client (id, code, dateStart, dateFinal, active, token, notes)
 SELECT 1, 'TEST_CLIENT', now(), null, 1, 'TEST_TOKEN', 'some notes' FROM DUAL WHERE NOT EXISTS (SELECT id FROM client WHERE code = 'TEST_CLIENT' ) LIMIT 1;
 
 INSERT INTO container (client_id, code, description, width, length, height, max_weight) 

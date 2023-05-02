@@ -1,40 +1,16 @@
-var config = require(`${__base}config/config`);
-var database = require(`${__base}api/database`);
-database.connect(config.db, function(err) {
-    if (err) {
-        console.log('Unable to connect to MySQL: ' + err);
-        process.exit(1);
-    } else {
-        console.log(`Connected to MySQL ${config.db.database} successfully`);
-    }
-});
+const mysql = require('mysql2');
+const { log } = require('winston');
 
-// Create the connection pool. The pool-specific settings are the defaults
-// const pool = mysql.createPool({
-//   host: 'localhost',
-//   user: 'root',
-//   database: 'code_biting',
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
-//   idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-//   queueLimit: 0
-// });
-
-
+const database = require(`${__base}api/database`);
   
   const registerService = {
 
-    getRegister(id) {
+    async getRegister(id) {
+
       let sql = `SELECT * FROM register WHERE id = ${id}`;
 
-      database.get().query(sql, [], function(err, rows) {
-        if (err) {
-            return done(err);
-        } else {
-            done(null, rows);
-        }
-      });
+      let [rows, fields] = await database.getPromise().query(sql, []);
+      return rows;
       // if(id == ""){
       //   return undefined;
       // }else{
@@ -42,36 +18,31 @@ database.connect(config.db, function(err) {
       // }
     },
 
-    getRegisters() {
+    async getRegisters() {
+
       let sql = `SELECT * FROM register`;
-      database.get().query(sql, [], function(err, rows) {
-        if (err) {
-            return done(err);
-        } else {
-            done(null, rows);
-        }
-      });
+
+      let [rows, fields] = await database.getPromise().query(sql, []);
+      return rows;
       //return registers;
     },
     
-    postRegister(register){
+    async postRegister(register){
+
       let sql = `INSERT INTO register (date, origin, destiny, method, status, requestBody, responseData)
                 VALUES('${register.date}', '${register.origin}', '${register.destiny}', '${ register.method}',
                 '${register.status}', '${register.requestBody}', '${register.responseData}')`;
-      database.get().query(sql, [], function(err, rows) {
-        if (err) {
-            return done(err);
-        } else {
-            done(null, rows);
-        }
-      });
+
+      let [rows, fields] = await database.getPromise().query(sql, []);
+      return rows;
       // const nextId = registers.reduce((maxId, register) => Math.max(maxId, register.id), 0) + 1;
       // registers.push({ ...register, id: nextId });
       // return registers[registers.length-1];
   
     },
   
-    putRegister(id, newRegisterData) {
+    async putRegister(id, newRegisterData) {
+
       let sql = `UPDATE register SET
       date = '${newRegisterData.date}',
       origin = '${newRegisterData.origin}',
@@ -81,13 +52,9 @@ database.connect(config.db, function(err) {
       requestBody = '${newRegisterData.requestBody}',
       responseData = '${newRegisterData.responseData}'
       WHERE id = ${ id }`;
-      database.get().query(sql, [], function(err, rows) {
-        if (err) {
-            return done(err);
-        } else {
-            done(null, rows);
-        }
-      });
+
+      let [rows, fields] = await database.getPromise().query(sql, []);
+      return rows;
       // const registerToUpdate = registers.find(register => register.id == id);
       // if (registerToUpdate) {
       //   registerToUpdate.date = newRegisterData.date || registerToUpdate.date;
@@ -101,15 +68,12 @@ database.connect(config.db, function(err) {
       // return registerToUpdate;
     },
   
-    deleteRegister(id) {
+    async deleteRegister(id) {
+
       let sql = `DELETE FROM register WHERE id = ${ id }`;
-      database.get().query(sql, [], function(err, rows) {
-        if (err) {
-            return done(err);
-        } else {
-            done(null, rows);
-        }
-      });
+
+      let [rows, fields] = await database.getPromise().query(sql, []);
+      return rows;
       // const index = registers.findIndex(o => o.id == id); 
       // if (index >= 0) {
       //   let registerDeleted = registers.splice(index, 1); 

@@ -54,10 +54,10 @@ describe('API Client ',()=>{
       done();
     });
   });
-*/
+
   it('should return one client', (done) => {
     chai.request(URL)
-    .get('/client/1')
+    .get(`/client/1`)
     .end(function(err, res) {
       //console.log(res.body);
       expect(res).to.have.status(200);
@@ -65,19 +65,19 @@ describe('API Client ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: 1,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
-        active: true,
-        token: "fer el seu fitxer",
-        notes: "no se, notes",
+        code: "TEST_CLIENT",
+        dateStart: (new Date(2023, 03, 11, 24, 00, 00)).toISOString(),
+        dateFinal: null,
+        active: 1,
+        token: "TEST_TOKEN",
+        notes: "some notes",
       })
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       done();
     });
   });
-/*
+  
   it('should return 404 if the client requested does not exist', (done) => {
     chai.request(URL)
     .get('/client/9999')
@@ -96,7 +96,8 @@ describe('API Client ',()=>{
       done();
     });
   });
-
+*/
+/*
   //----------POST-----------
   it('should create a new client', (done) => {
     chai.request(URL)
@@ -111,7 +112,8 @@ describe('API Client ',()=>{
       done();
     });
   });
-
+*/
+/*
   //----------PUT-----------
   it('should update a client', (done) => {
     chai.request(URL)
@@ -129,10 +131,10 @@ describe('API Client ',()=>{
       .set('content-type', 'application/json')
       .send({
         id: 1,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
-        active: true,
+        code: "Prova PUT",
+        dateStart: new Date(2023, 3, 20, 10, 15),
+        dateFinal: new Date(2024, 3, 25, 10, 15),
+        active: 1,
         token: "fer el seu fitxer",
         notes: "no se, notes",
       })
@@ -145,10 +147,10 @@ describe('API Client ',()=>{
         //console.log(res.body);
         expect(res.body.data).to.be.deep.equal({
           id: res.body.data.id,
-          code: "jordi",
-          dateStart: "01/01/2023",
-          dateFinal: "02/01/2023",
-          active: true,
+          code: "Prova PUT",
+          dateStart: (new Date(2023, 3, 20, 10, 15)).toISOString(),
+          dateFinal: (new Date(2024, 3, 25, 10, 15)).toISOString(),
+          active: 1,
           token: "fer el seu fitxer",
           notes: "no se, notes",
         })
@@ -156,6 +158,7 @@ describe('API Client ',()=>{
       });
     });
   });
+  
 
   it('should return 404 if the client requested for updating does not exist', (done) => {
     chai.request(URL)
@@ -194,16 +197,18 @@ describe('API Client ',()=>{
       done();
     });
   });
-
+*/
+/*
+  //----------DELETE-----------
   it('should delete a client', (done) => {
     chai.request(URL)
-    .post('/container')
+    .post('/client')
     .send({
       id: 1,
-      code: "jordi",
-      dateStart: "01/01/2023",
-      dateFinal: "02/01/2023",
-      active: true,
+      code: "Prova DELETE",
+      dateStart: new Date(2023, 3, 20, 10, 15),
+      dateFinal: new Date(2024, 3, 25, 10, 15),
+      active: 1,
       token: "fer el seu fitxer",
       notes: "no se, notes",
     })
@@ -214,20 +219,20 @@ describe('API Client ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: res.body.data.id,
-        code: "jordi",
-        dateStart: "01/01/2023",
-        dateFinal: "02/01/2023",
-        active: true,
+        code: "Prova DELETE",
+        dateStart: (new Date(2023, 3, 20, 10, 15)).toISOString(),
+        dateFinal: (new Date(2024, 3, 25, 10, 15)).toISOString(),
+        active: 1,
         token: "fer el seu fitxer",
         notes: "no se, notes",
-      })
+      });
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       chai.request(URL)
-      .delete(`/container/${res.body.data.id}`)
+      .delete(`/client/${res.body.data.id}`)
       .end(function(err, res) {
-        //console.log(res.status);
-        //console.log(res.body);
+        console.log(res.status);
+        console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');

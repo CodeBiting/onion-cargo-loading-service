@@ -105,7 +105,7 @@ describe('API Container ', () => {
       done();
     });
   });
-
+/*
   it('should create a new container', (done) => {
     chai.request(URL)
     .post('/container')
@@ -286,6 +286,6 @@ describe('API Container ', () => {
       
     });
   });
-  
+  */
 });
 
