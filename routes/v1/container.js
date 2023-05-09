@@ -152,6 +152,7 @@ router.post('/', async function(req, res, next) {
   let errors = [];
   let status = 201;
   let containerCreated = null;
+  
   try {
     containerCreated = await containerService.postContainer(req.body);
   } catch (ex) {
@@ -159,7 +160,7 @@ router.post('/', async function(req, res, next) {
     status = 500;
     errors.push(new ApiError('CONTAINER-001',
       'Internal server error', 
-      'Server has an internal error with the request', 
+      ex.message, 
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
   }
 
@@ -195,13 +196,18 @@ router.post('/', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
+
 router.put('/:id', async function(req, res, next) {
+  logger.info(`About to update client id: ${req.params.id}`);
   let errors = [];
   let status = 200;
   let containerUpdated = null;
 
   try {
-    containerUpdated = await containerService.putContainer(req.params.id, req.body);
+    const id = req.params.id;
+    const containerNewData = req.body;
+
+    containerUpdated = await containerService.putContainer(id, containerNewData);
     if (containerUpdated === undefined) {
       logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Container not found`)
       status = 404;
@@ -212,11 +218,13 @@ router.put('/:id', async function(req, res, next) {
     }
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    console.log(ex);
     status = 500;
     errors.push(new ApiError('CONTAINER-001',
       'Internal server error',
       'Server has an internal error with the request',
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
+    return res.status(500).json(new ApiResult("ERROR", containerUpdated === undefined, errors));
   }
 
   res.status(status).json(new ApiResult((status === 200 ? "OK" : "ERROR"), containerUpdated, errors));

@@ -21,32 +21,34 @@ CREATE TABLE client (
 
 CREATE TABLE container (
   id BIGINT UNSIGNED AUTO_INCREMENT,
-  client_id BIGINT UNSIGNED NOT NULL,
+  clientId BIGINT UNSIGNED NOT NULL,
   code VARCHAR(50) NOT NULL,
   description TEXT NULL,
   width INT NULL,
   length INT NULL,
   height INT NULL,
-  max_weight INT NULL,
+  maxWeight INT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (code),
-  CONSTRAINT fk_container_client FOREIGN KEY (client_id)
+  CONSTRAINT fk_container_client FOREIGN KEY (clientId)
     REFERENCES client(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 CREATE TABLE register (
   id BIGINT UNSIGNED AUTO_INCREMENT,
-  client_id BIGINT UNSIGNED NOT NULL,
+  clientId BIGINT UNSIGNED NOT NULL,
   date DATETIME NOT NULL,
   origin VARCHAR(255) NOT NULL,
   destiny VARCHAR(255) NOT NULL,
   method VARCHAR(50) NOT NULL,
+  requestId TEXT NOT NULL,
   status INT NOT NULL,
-  request_body TEXT NULL,
-  response_data TEXT NULL,
+  requestBody TEXT NULL,
+  responseData TEXT NULL,
+  
   PRIMARY KEY (id),
-  CONSTRAINT fk_register_client FOREIGN KEY (client_id)
+  CONSTRAINT fk_register_client FOREIGN KEY (clientId)
     REFERENCES client(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=INNODB;
@@ -54,8 +56,8 @@ CREATE TABLE register (
 INSERT INTO client (id, code, dateStart, dateFinal, active, token, notes)
 SELECT 1, 'TEST_CLIENT', now(), null, 1, 'TEST_TOKEN', 'some notes' FROM DUAL WHERE NOT EXISTS (SELECT id FROM client WHERE code = 'TEST_CLIENT' ) LIMIT 1;
 
-INSERT INTO container (client_id, code, description, width, length, height, max_weight) 
+INSERT INTO container (clientId, code, description, width, length, height, maxWeight) 
 SELECT 1, 'TEST_CONTAINER', 'Container 1x1x1', 1, 1, 1, 1 FROM DUAL WHERE NOT EXISTS (SELECT id FROM container WHERE code = 'TEST_CONTAINER' ) LIMIT 1;
 
-INSERT INTO register (client_id, date, origin, destiny, method, status, request_body, response_data) 
-SELECT 1, now(), 'TEST_REGISTER', 'url', 'GET', 200, 'request body data', 'response body data' FROM DUAL WHERE NOT EXISTS (SELECT id FROM register WHERE origin = 'TEST_REGISTER' ) LIMIT 1;
+INSERT INTO register (clientId, date, origin, destiny, method, requestId, status, requestBody, responseData) 
+SELECT 1, now(), 'TEST_REGISTER', 'url', 'GET', 'request id text', 200, 'request body data', 'response body data' FROM DUAL WHERE NOT EXISTS (SELECT id FROM register WHERE origin = 'TEST_REGISTER' ) LIMIT 1;

@@ -16,7 +16,7 @@ const HELP_BASE_URL = 'http://localhost:8082/v1/help/error';
 
 const CONTAINER_NEW = {
   "id": 0,
-  "clientId": 0,
+  "clientId": 1,
   "code": "new",
   "description": "new",
   "width": 0,
@@ -26,7 +26,6 @@ const CONTAINER_NEW = {
 };
 
 describe('API Container ', () => {
-  
   
   it('should return all containers', (done) => {
     chai.request(URL)
@@ -44,26 +43,48 @@ describe('API Container ', () => {
 
   it('should return one container', (done) => {
     chai.request(URL)
-    .get('/container/1')
-    .end(function(err, res) {
-      //console.log(res.body);
-      expect(res).to.have.status(200);
-      expect(res.body).to.have.status('OK');
-      expect(res.body.data).not.to.be.an('array');
-      expect(res.body.data).to.be.eql({
-        id: 1,
-        clientId: 1,
-        code: 'C1',
-        description: 'Container 1',
-        width: 1,
-        length: 1,
-        height: 1,
-        maxWeight: 1,
-      })
-      expect(res.body.errors).to.be.an('array');
-      expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
-    });
+      .post('/container')
+      .send(CONTAINER_NEW)
+      .end(function (err, res) {
+        //console.log(res.body);
+        expect(res).to.have.status(201);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        chai.request(URL)
+          .get(`/container/${res.body.data.id}`)
+          .end(function (err, res) {
+            //console.log(res.body);
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.status('OK');
+            expect(res.body.data).not.to.be.an('array');
+            expect(res.body.data).to.be.eql({
+              id: res.body.data.id,
+              clientId: 1,
+              code: "new",
+              description: "new",
+              width: 0,
+              length: 0,
+              height: 0,
+              maxWeight: 0
+            })
+            expect(res.body.errors).to.be.an('array');
+            expect(res.body.errors).to.be.an('array').that.eql([]);
+            chai.request(URL)
+              .delete(`/container/${res.body.data.id}`)
+              .end(function (err, res) {
+                console.log(res.status);
+                console.log(res.body);
+                expect(res).to.have.status(200);
+                expect(res.body).to.have.status('OK');
+                expect(res.body.data).not.to.be.an('array');
+                expect(res.body.errors).to.be.an('array');
+                expect(res.body.errors).to.deep.equal([]);
+                done();
+              });
+          });
+      });
   });
 
   // /v1/containers?clientId=[clientId]
@@ -105,20 +126,34 @@ describe('API Container ', () => {
       done();
     });
   });
-/*
+
+
   it('should create a new container', (done) => {
     chai.request(URL)
     .post('/container')
     .send(CONTAINER_NEW)
     .end(function(err, res) {
+      //console.log(res.body);
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
+      chai.request(URL)
+      .delete(`/container/${res.body.data.id}`)
+      .end(function(err, res) {
+        console.log(res.status);
+        console.log(res.body);
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.deep.equal([]);
+        done();
+      });
     });
   });
+  
 
   it('should update a container', (done) => {
     chai.request(URL)
@@ -136,12 +171,12 @@ describe('API Container ', () => {
       .set('content-type', 'application/json')
       .send({
         clientId: 1,
-        code: 'C1',
-        description: 'Container 1',
-        width: 1,
-        length: 1,
-        height: 1,
-        maxWeight: 1,
+        code: 'Container PUT',
+        description: 'Test of funcionality PUT container',
+        width: 2,
+        length: 2,
+        height: 2,
+        maxWeight: 2,
       })
       .end(function(err, res) {
         expect(res).to.have.status(200);
@@ -153,18 +188,30 @@ describe('API Container ', () => {
         expect(res.body.data).to.be.deep.equal({
           id: res.body.data.id,
           clientId: 1,
-          code: 'C1',
-          description: 'Container 1',
-          width: 1,
-          length: 1,
-          height: 1,
-          maxWeight: 1,
+          code: 'Container PUT',
+          description: 'Test of funcionality PUT container',
+          width: 2,
+          length: 2,
+          height: 2,
+          maxWeight: 2,
         })
-        done();
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        chai.request(URL)
+        .delete(`/container/${res.body.data.id}`)
+        .end(function(err, res) {
+          //console.log(res.status);
+          //console.log(res.body);
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.status('OK');
+          expect(res.body.data).not.to.be.an('array');
+          expect(res.body.errors).to.be.an('array');
+          expect(res.body.errors).to.deep.equal([]);
+          done();
+        });
       });
     });
   });
-
 
   it('should return 404 if the container requested for updating does not exist', (done) => {
     chai.request(URL)
@@ -203,6 +250,7 @@ describe('API Container ', () => {
       done();
     });
   });
+
 
   it('should delete a container', (done) => {
     chai.request(URL)
@@ -286,6 +334,6 @@ describe('API Container ', () => {
       
     });
   });
-  */
+  
 });
 

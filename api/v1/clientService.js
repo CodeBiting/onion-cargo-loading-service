@@ -7,16 +7,16 @@ const clientService = {
   
   async getClient(id) {
 
-    let sql = `SELECT * FROM client WHERE id = ${id}`;
+    let sql = `SELECT id, code, CONVERT_TZ(dateStart, '+00:00', @@session.time_zone) AS dateStart, CONVERT_TZ(dateFinal, '+00:00', @@session.time_zone)AS dateFinal, active, token, notes FROM client WHERE id = ?`;
 
-    let [rows, fields] = await database.getPromise().query(sql, []);
-    console.log(rows);
+    let [rows, fields] = await database.getPromise().query(sql, [id]);
+    
     return rows[0];
   },
 
   async getClients() {
 
-    let sql = `SELECT * FROM client`;
+    let sql = `SELECT id, code, CONVERT_TZ(dateStart, '+00:00', @@session.time_zone) AS dateStart, CONVERT_TZ(dateFinal, '+00:00', @@session.time_zone)AS dateFinal, active, token, notes FROM client`;
 
     let [rows, fields] = await database.getPromise().query(sql, []);
     return rows;
@@ -24,9 +24,6 @@ const clientService = {
   },
 
   async postClient(client) {
-
-    // let sql = `INSERT INTO client(code, date_start, date_final, active, token, notes)
-    //             VALUES('${client.code}', '${client.dateStart}', '${client.dateFinal}', '${ client.active }', '${client.token}', '${client.notes}')`;
 
     let sql = `INSERT INTO client(code, dateStart, dateFinal, active, token, notes)
                 VALUES(?, ?, ?, ?, ?, ?)`;
@@ -49,16 +46,6 @@ const clientService = {
 
   async putClient(id, client) {
 
-    let sql = `SELECT * FROM client WHERE id = ${id}`;
-    let [rows, fields] = await database.getPromise().query(sql, []);
-
-    if (rows.length !== 1) {
-      
-      return undefined;
-    }
-
-    let clientToUpdate = rows[0];
-
     sql = `UPDATE client SET
       code = '${client.code}',
       dateStart = CONVERT_TZ('${client.dateStart}', '+00:00', @@session.time_zone),
@@ -68,7 +55,12 @@ const clientService = {
       notes = '${client.notes}'
     WHERE id = ${ id }`;
 
-    [rows, fields] = await database.getPromise().query(sql, []);
+    let [rows, fields] = await database.getPromise().query(sql, []);
+
+    // return undefined if client not found
+    if (rows.affectedRows === 0) {
+      return undefined;
+    }
 
     if (rows.affectedRows !== 1) {
       throw new Error(`Error updating client, affected rows = ${rows.affectedRows}`);
@@ -81,23 +73,21 @@ const clientService = {
       throw new Error(`Error retrieving updated client data`);
     }
 
-    clientToUpdate = rows[0];
-
-    return clientToUpdate;
+    return rows[0];
 
   },
 
   async deleteClient(id) {
 
-    let sql = `SELECT * FROM client WHERE id = ${id}`;
-    let [rows, fields] = await database.getPromise().query(sql, []);
+    let sql = `SELECT id, code, CONVERT_TZ(dateStart, '+00:00', @@session.time_zone) AS dateStart, CONVERT_TZ(dateFinal, '+00:00', @@session.time_zone)AS dateFinal, active, token, notes FROM client WHERE id = ?`;
+    let [rows, fields] = await database.getPromise().query(sql, [id]);
 
     if (rows.length !== 1) {
       
       return undefined;
     }
 
-    const clientToDelete = rows[0];
+    let clientToDelete = rows[0];
     
     sql = `DELETE FROM client WHERE id = ${ id }`;
 

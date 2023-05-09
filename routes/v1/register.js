@@ -29,13 +29,15 @@ const API_NAME = 'register';
  *         description: url of the server to ask
  *       method: 
  *         type: string
+ *       requestId:
+ *         type: string
  *       status: 
  *         type: integer
  *       requestBody: 
  *         type: string
  *       responseData:
  *         type: string
- *     required: ["id", "date", "origin", "destiny", "method", "status"]
+ *     required: ["id", "date", "origin", "destiny", "method", "requestId"]
  */
 
 /**
@@ -151,9 +153,12 @@ router.post('/', async function(req, res, next) {
   try {
     registerCreated = await registerService.postRegister(req.body);
   } catch (ex) {
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    console.log(ex);
+    status = 500;
     errors.push(new ApiError('REGISTER-001',
       'Internal server error', 
-      'Server has an internal error with the request', 
+      ex.message, 
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
   }
 

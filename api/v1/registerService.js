@@ -7,80 +7,106 @@ const database = require(`${__base}api/database`);
 
     async getRegister(id) {
 
-      let sql = `SELECT * FROM register WHERE id = ${id}`;
+      let sql = `SELECT id, clientId, CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, origin, destiny, method, requestId, status, requestBody, responseData FROM register WHERE id = ?`;
 
-      let [rows, fields] = await database.getPromise().query(sql, []);
-      return rows;
-      // if(id == ""){
-      //   return undefined;
-      // }else{
-      //   return registers.find(o => o.id == id);
-      // }
+      let [rows, fields] = await database.getPromise().query(sql, [id]);
+      
+      return rows[0];
+
     },
 
     async getRegisters() {
 
-      let sql = `SELECT * FROM register`;
+      let sql = `SELECT id, clientId, CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, origin, destiny, method, requestId, status, requestBody, responseData FROM register`;
 
       let [rows, fields] = await database.getPromise().query(sql, []);
       return rows;
-      //return registers;
+
     },
     
     async postRegister(register){
 
-      let sql = `INSERT INTO register (date, origin, destiny, method, status, requestBody, responseData)
-                VALUES('${register.date}', '${register.origin}', '${register.destiny}', '${ register.method}',
-                '${register.status}', '${register.requestBody}', '${register.responseData}')`;
+      let sql = `INSERT INTO register (clientId, date, origin, destiny, method, requestId, status, requestBody, responseData)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-      let [rows, fields] = await database.getPromise().query(sql, []);
-      return rows;
-      // const nextId = registers.reduce((maxId, register) => Math.max(maxId, register.id), 0) + 1;
-      // registers.push({ ...register, id: nextId });
-      // return registers[registers.length-1];
-  
+      let values = [
+        register.clientId,
+        register.date,
+        register.origin,
+        register.destiny,
+        register.method,
+        register.requestId,
+        register.status,
+        register.requestBody,
+        register.responseData
+      ];
+
+      let [rows, fields] = await database.getPromise().query(sql, values);
+
+      sql = `SELECT id, clientId, CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, origin, destiny, method, requestId, status, requestBody, responseData FROM register WHERE id = ?`;
+      [rows, fields] = await database.getPromise().query(sql, [rows.insertId]);
+    
+      return rows[0];
+
     },
   
     async putRegister(id, newRegisterData) {
 
-      let sql = `UPDATE register SET
-      date = '${newRegisterData.date}',
-      origin = '${newRegisterData.origin}',
-      destiny = '${newRegisterData.destiny}',
-      method = '${ newRegisterData.method }',
-      status = '${newRegisterData.status}',
-      requestBody = '${newRegisterData.requestBody}',
-      responseData = '${newRegisterData.responseData}'
+      sql = `UPDATE register SET
+        date = CONVERT_TZ('${newRegisterData.date}', '+00:00', @@session.time_zone),
+        origin = '${newRegisterData.origin}',
+        destiny = '${newRegisterData.destiny}',
+        method = '${ newRegisterData.method }',
+        requestId = '${ newRegisterData.requestId }',
+        status = '${newRegisterData.status}',
+        requestBody = '${newRegisterData.requestBody}',
+        responseData = '${newRegisterData.responseData}'
       WHERE id = ${ id }`;
 
       let [rows, fields] = await database.getPromise().query(sql, []);
-      return rows;
-      // const registerToUpdate = registers.find(register => register.id == id);
-      // if (registerToUpdate) {
-      //   registerToUpdate.date = newRegisterData.date || registerToUpdate.date;
-      //   registerToUpdate.origin = newRegisterData.origin || registerToUpdate.origin;
-      //   registerToUpdate.destiny = newRegisterData.destiny || registerToUpdate.destiny;
-      //   registerToUpdate.method = newRegisterData.method || registerToUpdate.method;
-      //   registerToUpdate.status = newRegisterData.status || registerToUpdate.status;
-      //   registerToUpdate.requestBody = newRegisterData.requestBody || registerToUpdate.requestBody; 
-      //   registerToUpdate.responseData = newRegisterData.responseData || registerToUpdate.responseData;
-      // }
-      // return registerToUpdate;
+
+      // return undefined if client not found
+      if (rows.affectedRows === 0) {
+        return undefined;
+      }
+
+      if (rows.affectedRows !== 1) {
+        throw new Error(`Error updating client, affected rows = ${rows.affectedRows}`);
+      }
+
+      sql = `SELECT * FROM register WHERE id = ${id}`;
+      [rows, fields] = await database.getPromise().query(sql, []);
+
+      if (rows.length !== 1) {
+        throw new Error(`Error retrieving updated client data`);
+      }
+
+      return rows[0];
+
     },
   
     async deleteRegister(id) {
 
-      let sql = `DELETE FROM register WHERE id = ${ id }`;
+      let sql = `SELECT id, clientId, CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, origin, destiny, method, requestId, status, requestBody, responseData FROM register WHERE id = ?`;
+      let [rows, fields] = await database.getPromise().query(sql, [id]);
 
-      let [rows, fields] = await database.getPromise().query(sql, []);
-      return rows;
-      // const index = registers.findIndex(o => o.id == id); 
-      // if (index >= 0) {
-      //   let registerDeleted = registers.splice(index, 1); 
-      //   return registerDeleted[0];
-      // } else {
-      //   return undefined; 
-      // }
+      if (rows.length !== 1) {
+
+        return undefined;
+      }
+
+      let registerToDelete = rows[0];
+
+      sql = `DELETE FROM register WHERE id = ${ id }`;
+
+      [rows, fields] = await database.getPromise().query(sql, []);
+
+      if (rows.affectedRows !== 1) {
+        throw new Error(`Error deleting register, affected rows = ${rows.affectedRows}`);
+      }
+
+      return registerToDelete;
+
     }
   
   };

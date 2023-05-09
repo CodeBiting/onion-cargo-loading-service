@@ -152,6 +152,7 @@ router.get('/:id', async function(req, res, next) {
     }
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    console.log(ex);
     status = 500;
     errors.push(new ApiError('CLIENT-001', 
       'Internal server error',
@@ -238,6 +239,7 @@ router.put('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let clientUpdated = null;
+  
   try {
     const id = req.params.id;
     const clientNewData = req.body;
