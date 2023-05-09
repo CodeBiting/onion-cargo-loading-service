@@ -12,75 +12,94 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL= 'http://localhost:8080/v1';
+const URL = 'http://localhost:8080/v1';
 const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const TEST_CLIENT = {
-  'id': 0,
-  'code': 'new',
-  'dateStart': new Date(2023, 0, 1),
-  'dateFinal': new Date(2023, 0, 2),
-  'active': true,
-  'token': 'new',
-  'notes': 'new',
+  "id": 0,
+  "code": "new",
+  "dateStart": new Date(2023, 0, 1),
+  "dateFinal": new Date(2023, 0, 2),
+  "active": 1,
+  "token": "new",
+  "notes": "new",
 };
 
-  //----------GET-----------
-describe('API Client ',()=>{
-
-  it('should return all clients', (done) => {
-    chai.request(URL)
-    .get('/client')
-    .end(function(err, res) {
-      //console.log(res.body);
-      expect(res).to.have.status(200);
-      expect(res.body).to.have.status('OK');
-      expect(res.body.data).to.be.an('array');
-      expect(res.body.requestId).to.be.an('string');
-      expect(res.body.errors).to.be.an('array');
-      expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
+//----------GET-----------
+describe('API Client ', () => {
+  
+    it('should return all clients', (done) => {
+      chai.request(URL)
+      .get('/client')
+      .end(function(err, res) {
+        //console.log(res.body);
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        done();
+      });
     });
-  });
-
-  ///v1/client/[clientId]/containers
-  it('should return all containers', (done) => {
-    chai.request(URL)
-    .get('/client/1/containers')
-    .end((err, res) => {
-      expect(res).to.have.status(200);
-      expect(res.body).to.have.property('status', 'OK');
-      expect(res.body).to.have.property('data').that.is.an('array');
-      expect(res.body.requestId).to.be.an('string');
-      expect(res.body.errors).to.be.an('array').that.is.empty;
-      done();
+  
+    ///v1/client/[clientId]/containers
+    it('should return all containers', (done) => {
+      chai.request(URL)
+      .get('/client/1/containers')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('status', 'OK');
+        expect(res.body).to.have.property('data').that.is.an('array');
+        expect(res.body.errors).to.be.an('array').that.is.empty;
+        done();
+      });
     });
-  });
-
+  
   it('should return one client', (done) => {
     chai.request(URL)
-    .get('/client/1')
-    .end(function(err, res) {
-      //console.log(res.body);
-      expect(res).to.have.status(200);
-      expect(res.body).to.have.status('OK');
-      expect(res.body.data).not.to.be.an('array');
-      expect(res.body.data).to.be.eql({
-        id: 1,
-        code: 'jordi',
-        dateStart: '01/01/2023',
-        dateFinal: '02/01/2023',
-        active: true,
-        token: 'fer el seu fitxer',
-        notes: 'no se, notes',
-      })
-      expect(res.body.requestId).to.be.an('string');
-      expect(res.body.errors).to.be.an('array');
-      expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
-    });
+      .post('/client')
+      .send(TEST_CLIENT)
+      .end(function (err, res) {
+        //console.log(res.body);
+        expect(res).to.have.status(201);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        chai.request(URL)
+          .get(`/client/${res.body.data.id}`)
+          .end(function (err, res) {
+            //console.log(res.body);
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.status('OK');
+            expect(res.body.data).not.to.be.an('array');
+            expect(res.body.data).to.be.eql({
+              id: res.body.data.id,
+              code: "new",
+              dateStart: (new Date(2023, 0, 1)).toISOString(),
+              dateFinal: (new Date(2023, 0, 2)).toISOString(),
+              active: 1,
+              token: "new",
+              notes: "new",
+            })
+            expect(res.body.errors).to.be.an('array');
+            expect(res.body.errors).to.be.an('array').that.eql([]);
+            chai.request(URL)
+              .delete(`/client/${res.body.data.id}`)
+              .end(function (err, res) {
+                console.log(res.status);
+                console.log(res.body);
+                expect(res).to.have.status(200);
+                expect(res.body).to.have.status('OK');
+                expect(res.body.data).not.to.be.an('array');
+                expect(res.body.errors).to.be.an('array');
+                expect(res.body.errors).to.deep.equal([]);
+                done();
+              });
+          });
+      });
   });
-
+  
   it('should return 404 if the client requested does not exist', (done) => {
     chai.request(URL)
     .get('/client/9999')
@@ -101,22 +120,36 @@ describe('API Client ',()=>{
     });
   });
 
+
   //----------POST-----------
   it('should create a new client', (done) => {
     chai.request(URL)
     .post('/client')
     .send(TEST_CLIENT)
     .end(function(err, res) {
+      //console.log(res.body);
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
+      chai.request(URL)
+      .delete(`/client/${res.body.data.id}`)
+      .end(function(err, res) {
+        console.log(res.status);
+        console.log(res.body);
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.deep.equal([]);
+        done();
+      });
     });
   });
 
+  
   //----------PUT-----------
   it('should update a client', (done) => {
     chai.request(URL)
@@ -135,12 +168,12 @@ describe('API Client ',()=>{
       .set('content-type', 'application/json')
       .send({
         id: 1,
-        code: 'jordi',
-        dateStart: '01/01/2023',
-        dateFinal: '02/01/2023',
-        active: true,
-        token: 'fer el seu fitxer',
-        notes: 'no se, notes',
+        code: "Prova PUT",
+        dateStart: new Date(2023, 3, 20, 10, 15),
+        dateFinal: new Date(2024, 3, 25, 10, 15),
+        active: 1,
+        token: "fer el seu fitxer",
+        notes: "no se, notes",
       })
       .end(function(err, res) {
         expect(res).to.have.status(200);
@@ -152,14 +185,25 @@ describe('API Client ',()=>{
         //console.log(res.body);
         expect(res.body.data).to.be.deep.equal({
           id: res.body.data.id,
-          code: 'jordi',
-          dateStart: '01/01/2023',
-          dateFinal: '02/01/2023',
-          active: true,
-          token: 'fer el seu fitxer',
-          notes: 'no se, notes',
+          code: "Prova PUT",
+          dateStart: (new Date(2023, 3, 20, 10, 15)).toISOString(),
+          dateFinal: (new Date(2024, 3, 25, 10, 15)).toISOString(),
+          active: 1,
+          token: "fer el seu fitxer",
+          notes: "no se, notes",
         })
-        done();
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        chai.request(URL)
+        .delete(`/client/${res.body.data.id}`)
+        .end(function(err, res) {
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.status('OK');
+          expect(res.body.data).not.to.be.an('array');
+          expect(res.body.errors).to.be.an('array');
+          expect(res.body.errors).to.deep.equal([]);
+          done();
+        });
       });
     });
   });
@@ -204,17 +248,19 @@ describe('API Client ',()=>{
     });
   });
 
+
+  //----------DELETE-----------
   it('should delete a client', (done) => {
     chai.request(URL)
-    .post('/container')
+    .post('/client')
     .send({
       id: 1,
-      code: 'jordi',
-      dateStart: '01/01/2023',
-      dateFinal: '02/01/2023',
-      active: true,
-      token: 'fer el seu fitxer',
-      notes: 'no se, notes',
+      code: "Prova DELETE",
+      dateStart: new Date(2023, 3, 20, 10, 15),
+      dateFinal: new Date(2024, 3, 25, 10, 15),
+      active: 1,
+      token: "fer el seu fitxer",
+      notes: "no se, notes",
     })
     .end(function(err, res) {
       //console.log(res.body);
@@ -223,21 +269,20 @@ describe('API Client ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: res.body.data.id,
-        code: 'jordi',
-        dateStart: '01/01/2023',
-        dateFinal: '02/01/2023',
-        active: true,
-        token: 'fer el seu fitxer',
-        notes: 'no se, notes',
-      })
-      expect(res.body.requestId).to.be.an('string');
+        code: "Prova DELETE",
+        dateStart: (new Date(2023, 3, 20, 10, 15)).toISOString(),
+        dateFinal: (new Date(2024, 3, 25, 10, 15)).toISOString(),
+        active: 1,
+        token: "fer el seu fitxer",
+        notes: "no se, notes",
+      });
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       chai.request(URL)
-      .delete(`/container/${res.body.data.id}`)
+      .delete(`/client/${res.body.data.id}`)
       .end(function(err, res) {
-        //console.log(res.status);
-        //console.log(res.body);
+        console.log(res.status);
+        console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');

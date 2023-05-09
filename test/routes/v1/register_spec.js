@@ -11,21 +11,24 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL= 'http://localhost:8080/v1';
-const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
+const URL= 'http://localhost:8082/v1';
+const HELP_BASE_URL = 'http://localhost:8082/v1/help/error';
 
 const REGISTER_NEW = {
-  'id': 0,
-  'date': 'new',
-  'origin':'new',
-  'destiny': 'new',
-  'method': 'new',
-  'status': 0,
-  'requestBody': 'new',
-  'responseData': 'new'
+  "id": 0,
+  "clientId": 1,
+  "date": new Date(2023, 0, 1),
+  "origin":"new",
+  "destiny": "new",
+  "method": "new",
+  "requestId": "new",
+  "status": 0,
+  "requestBody": "new",
+  "responseData": "new"
 };
 
 describe('API Register ',()=>{
+  
   it('should return all registers', (done) => {
     chai.request(URL)
     .get('/register')
@@ -42,26 +45,50 @@ describe('API Register ',()=>{
 
   it('should return one register', (done) => {
     chai.request(URL)
-    .get('/register/1')
-    .end(function(err, res) {
-      //console.log(res.body);
-      expect(res).to.have.status(200);
-      expect(res.body).to.have.status('OK');
-      expect(res.body.data).not.to.be.an('array');
-      expect(res.body.data).to.be.eql({
-        id: 1,
-        date: '22-03-2020T15:30:04',
-        origin: '127.04.71:8078',
-        destiny: 'http://v1/container',
-        method: 'POST',
-        status: 200,
-        requestBody: 'Body initial',
-        responseData: 'Body final',
-      })
-      expect(res.body.errors).to.be.an('array');
-      expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
-    });
+      .post('/register')
+      .send(REGISTER_NEW)
+      .end(function (err, res) {
+        //console.log(res.body);
+        expect(res).to.have.status(201);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        chai.request(URL)
+          .get(`/register/${res.body.data.id}`)
+          .end(function (err, res) {
+            //console.log(res.body);
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.status('OK');
+            expect(res.body.data).not.to.be.an('array');
+            expect(res.body.data).to.be.eql({
+              id: res.body.data.id,
+              clientId: 1,
+              date: (new Date(2023, 0, 1)).toISOString(),
+              origin:"new",
+              destiny: "new",
+              method: "new",
+              requestId: "new",
+              status: 0,
+              requestBody: "new",
+              responseData: "new"
+            })
+            expect(res.body.errors).to.be.an('array');
+            expect(res.body.errors).to.be.an('array').that.eql([]);
+            chai.request(URL)
+              .delete(`/register/${res.body.data.id}`)
+              .end(function (err, res) {
+                console.log(res.status);
+                console.log(res.body);
+                expect(res).to.have.status(200);
+                expect(res.body).to.have.status('OK');
+                expect(res.body.data).not.to.be.an('array');
+                expect(res.body.errors).to.be.an('array');
+                expect(res.body.errors).to.deep.equal([]);
+                done();
+              });
+          });
+      });
   });
 
   it('should return 404 if the register requested does not exist', (done) => {
@@ -82,20 +109,34 @@ describe('API Register ',()=>{
       done();
     });
   });
+  
 
   it('should create a new register', (done) => {
     chai.request(URL)
     .post('/register')
     .send(REGISTER_NEW)
     .end(function(err, res) {
+      //console.log(res.body);
       expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
+      chai.request(URL)
+      .delete(`/register/${res.body.data.id}`)
+      .end(function(err, res) {
+        console.log(res.status);
+        console.log(res.body);
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.deep.equal([]);
+        done();
+      });
     });
   });
+  
 
   it('should update a register', (done) => {
     chai.request(URL)
@@ -113,10 +154,12 @@ describe('API Register ',()=>{
       .set('content-type', 'application/json')
       .send({
         id: 1,
-        date: '22-03-2020T15:30:04',
+        clientId: 1,
+        date: new Date(2023, 6, 12, 3, 25),
         origin: '127.04.71:8078',
         destiny: 'http://v1/container',
         method: 'POST',
+        requestId: 'Id required text',
         status: 200,
         requestBody: 'Body initial',
         responseData: 'Body final',
@@ -131,15 +174,28 @@ describe('API Register ',()=>{
         //console.log(res.body);
         expect(res.body.data).to.be.deep.equal({
           id: res.body.data.id,
-          date: '22-03-2020T15:30:04',
+          clientId: 1,
+          date: (new Date(2023, 6, 12, 3, 25)).toISOString(),
           origin: '127.04.71:8078',
           destiny: 'http://v1/container',
           method: 'POST',
+          requestId: 'Id required text',
           status: 200,
           requestBody: 'Body initial',
           responseData: 'Body final',
         })
-        done();
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.be.an('array').that.eql([]);
+        chai.request(URL)
+        .delete(`/register/${res.body.data.id}`)
+        .end(function(err, res) {
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.status('OK');
+          expect(res.body.data).not.to.be.an('array');
+          expect(res.body.errors).to.be.an('array');
+          expect(res.body.errors).to.deep.equal([]);
+          done();
+        });
       });
     });
   });
@@ -183,15 +239,18 @@ describe('API Register ',()=>{
     });
   });
 
+  
   it('should delete a register', (done) => {
     chai.request(URL)
     .post('/register')
     .send({
       id: 1,
-      date: '22-03-2020T15:30:04',
+      clientId: 1,
+      date: new Date(2023, 6, 12, 3, 25),
       origin: '127.04.71:8078',
       destiny: 'http://v1/container',
       method: 'POST',
+      requestId: "request id text",
       status: 200,
       requestBody: 'Body initial',
       responseData: 'Body final',
@@ -203,10 +262,12 @@ describe('API Register ',()=>{
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.data).to.be.eql({
         id: res.body.data.id,
-        date: '22-03-2020T15:30:04',
+        clientId: 1,
+        date: (new Date(2023, 6, 12, 3, 25)).toISOString(),
         origin: '127.04.71:8078',
         destiny: 'http://v1/container',
         method: 'POST',
+        requestId: "request id text",
         status: 200,
         requestBody: 'Body initial',
         responseData: 'Body final',
@@ -263,7 +324,6 @@ describe('API Register ',()=>{
       }]);
       done();
     });       
-
   });
 
 });
