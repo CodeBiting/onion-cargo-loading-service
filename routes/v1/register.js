@@ -14,28 +14,30 @@ const API_NAME = 'register';
 /**
  * @swagger
  *   definitions:
- *     Register:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *         date:
- *           type: string
- *           format: date-time
- *         origin:
- *           type: string
- *         destiny:
- *           type: string
- *           description: url of the server to ask
- *         method:
- *           type: string
- *         status:
- *           type: integer
- *         requestBody:
- *           type: string
- *         responseData:
- *           type: string
- *       required: ['id', 'date', 'origin', 'destiny', 'method', 'status']
+ *   Register:
+ *     type: object
+ *     properties:
+ *       id:
+ *         type: integer
+ *       date:
+ *         type: string
+ *         format: date-time
+ *       origin:
+ *         type: string
+ *       destiny: 
+ *         type: string
+ *         description: url of the server to ask
+ *       method: 
+ *         type: string
+ *       requestId:
+ *         type: string
+ *       status: 
+ *         type: integer
+ *       requestBody: 
+ *         type: string
+ *       responseData:
+ *         type: string
+ *     required: ["id", "date", "origin", "destiny", "method", "requestId"]
  */
 
 /**
@@ -54,13 +56,13 @@ const API_NAME = 'register';
  *             schema:
  *               type: object
  *               $ref: '#/definitions/ApiResult'
- */
-router.get('/', function (req, res, next) {
+  */
+router.get('/', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let registers = null;
   try {
-    registers = registerService.getRegisters();
+    registers = await registerService.getRegisters();
   } catch (ex) {
     logger.error(
       `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
@@ -111,14 +113,14 @@ router.get('/', function (req, res, next) {
  *             schema:
  *               type: object
  *               $ref: '#/definitions/ApiResult'
- */
-router.get('/:id', function (req, res, next) {
+  */
+router.get('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let register = null;
   try {
-    register = registerService.getRegister(req.params.id);
-    if (register === undefined) {
+    register = await registerService.getRegister(req.params.id);
+    if (register === undefined) {  
       status = 404;
       logger.error(
         `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Register not found`
@@ -182,25 +184,21 @@ router.get('/:id', function (req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.post('/', function (req, res, next) {
+router.post('/', async function(req, res, next) {
   let errors = [];
   let status = 201;
   let registerCreated = null;
 
   try {
-    registerCreated = registerService.postRegister(req.body);
+    registerCreated = await registerService.postRegister(req.body);
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
-    );
-    errors.push(
-      new ApiError(
-        'REGISTER-001',
-        'Internal server error',
-        'Server has an internal error with the request',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`
-      )
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    console.log(ex);
+    status = 500;
+    errors.push(new ApiError('REGISTER-001',
+      'Internal server error', 
+      ex.message, 
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
   }
 
   res
@@ -244,13 +242,13 @@ router.post('/', function (req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id', function (req, res, next) {
+router.put('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let registerUpdated = null;
 
   try {
-    registerUpdated = registerService.putRegister(req.params.id, req.body);
+    registerUpdated = await registerService.putRegister(req.params.id, req.body);
     if (registerUpdated === undefined) {
       logger.error(
         `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Register not found`
@@ -316,13 +314,13 @@ router.put('/:id', function (req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let registerDeleted = null;
 
   try {
-    registerDeleted = registerService.deleteRegister(req.params.id);
+    registerDeleted = await registerService.deleteRegister(req.params.id);
 
     if (registerDeleted === undefined) {
       logger.error(

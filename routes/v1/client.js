@@ -52,12 +52,12 @@ const API_NAME = 'client';
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.get('/', function (req, res, next) {
+router.get('/',async function(req, res, next) {
   let errors = [];
   let status = 200;
   let clients = null;
   try {
-    clients = clientService.getClients();
+    clients = await clientService.getClients();
   } catch (ex) {
     logger.error(
       `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`
@@ -110,12 +110,12 @@ router.get('/', function (req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 
-router.get('/:id/containers', function (req, res, next) {
+router.get('/:id/containers', async function(req, res, next) {
   let status = 200;
   let containers = null;
   let errors = [];
   try {
-    containers = containerService.getClientContainers(req.params.id);
+    containers = await containerService.getClientContainers(req.params.id);
   } catch (ex) {
     logger.error(
       `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
@@ -166,12 +166,12 @@ router.get('/:id/containers', function (req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.get('/:id', function (req, res, next) {
+router.get('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let client = null;
   try {
-    client = clientService.getClient(req.params.id);
+    client = await clientService.getClient(req.params.id);
     if (client === undefined) {
       logger.error(
         `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: Client not found`
@@ -237,25 +237,20 @@ router.get('/:id', function (req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 
-router.post('/', function (req, res, next) {
+router.post('/', async function(req, res, next) {
   let errors = [];
   let clientCreated = null;
   let status = 201;
   try {
-    clientCreated = clientService.postClient(req.body);
+    clientCreated = await clientService.postClient(req.body);
+    
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
     status = 500;
-    errors.push(
-      new ApiError(
-        'CLIENT-001',
-        'Internal server error',
-        'Server has an internal error with the request',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`
-      )
-    );
+    errors.push(new ApiError('CLIENT-001',
+      'Internal server error', 
+      ex.message, 
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
   res
     .status(status)
@@ -298,11 +293,12 @@ router.post('/', function (req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id', function (req, res, next) {
+router.put('/:id', async function(req, res, next) {
   logger.info(`About to update client id: ${req.params.id}`);
   let errors = [];
   let status = 200;
   let clientUpdated = null;
+  
   try {
     const id = req.params.id;
     const clientNewData = req.body;
@@ -325,7 +321,7 @@ router.put('/:id', function (req, res, next) {
         .json(new ApiResult('ERROR', clientUpdated === undefined, errors));
     }
 
-    clientUpdated = clientService.putClient(id, clientNewData);
+    clientUpdated = await clientService.putClient(id, clientNewData);
     if (clientUpdated === undefined) {
       logger.info(`About to client not exist id: ${req.params.id}`);
       logger.error(
@@ -342,21 +338,13 @@ router.put('/:id', function (req, res, next) {
       );
     }
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`);
     status = 500;
-    errors.push(
-      new ApiError(
-        'CLIENT-001',
-        'Internal server error',
-        'Server has an internal error with the request',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`
-      )
-    );
-    return res
-      .status(500)
-      .json(new ApiResult('ERROR', clientUpdated === undefined, errors));
+    errors.push(new ApiError('CLIENT-001',
+      'Internal server error',
+      ex.message,
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+    return res.status(500).json(new ApiResult("ERROR", clientUpdated === undefined, errors));
   }
   res
     .status(status)
@@ -394,7 +382,7 @@ router.put('/:id', function (req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id', async function(req, res, next) {
   logger.info(`About to delete client id: ${req.params.id}`);
   let errors = [];
   let status = 200;
@@ -402,7 +390,7 @@ router.delete('/:id', function (req, res, next) {
   try {
     const id = req.params.id;
 
-    clientDeleted = clientService.deleteClient(id);
+    clientDeleted = await clientService.deleteClient(id);
 
     if (clientDeleted === undefined) {
       logger.info(`About to client not exist id: ${req.params.id}`);
@@ -420,21 +408,13 @@ router.delete('/:id', function (req, res, next) {
       );
     }
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`);
     status = 500;
-    errors.push(
-      new ApiError(
-        'CLIENT-001',
-        'Internal server error',
-        'Server has an internal error with the request',
-        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`
-      )
-    );
-    return res
-      .status(500)
-      .json(new ApiResult('ERROR', clientUpdated === undefined, errors));
+    errors.push(new ApiError('CLIENT-001',
+      'Internal server error',
+      ex.message,
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+      return res.status(500).json(new ApiResult("ERROR", clientUpdated === undefined, errors));
   }
   res
     .status(status)
