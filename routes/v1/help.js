@@ -12,23 +12,28 @@ const API_NAME = 'help';
 /**
  * @swagger
  *   definitions:
- *   Error:
- *     type: object
- *     properties:
- *       id:
- *         type: integer
- *       code:
- *         type: string
- *       message:
- *         type: string
- *       detail:
- *         type: string
+ *   schemas:
+ *     Error:
+ *       tags:
+ *         - Help
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         code:
+ *           type: string
+ *         message:
+ *           type: string
+ *         detail:
+ *           type: string
  */
 
 /**
  * @swagger
  * /v1/help/error:
  *   get:
+ *     tags:
+ *       - Help
  *     summary: Returns all error helps
  *     description: Returns all error helps
  *     produces:
@@ -50,6 +55,8 @@ router.get('/error/', function (req, res, next) {
  * @swagger
  * /v1/help/error/code:
  *   get:
+ *     tags:
+ *       - Help
  *     summary: Returns one error helps
  *     description: Returns one error helps
  *     produces:

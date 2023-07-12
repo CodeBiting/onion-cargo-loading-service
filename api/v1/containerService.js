@@ -6,24 +6,27 @@ const database = require(`${__base}api/database`);
 const containerService = {
 
   async getContainer(id) {
-    let sql = `SELECT * FROM container WHERE id = ?`;
-
-    let [rows, fields] = await database.getPromise().query(sql, [id]);
+    //let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container WHERE id = ?`;
+    //let [rows, fields] = await database.getPromise().query(sql, [id]);
+    let [rows, fields] = await selectContainer(id);
 
     return rows[0];
     
   },
   
   async getContainers() {
-    let sql = `SELECT * FROM container`;
+    //let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container`;
+    //let [rows, fields] = await database.getPromise().query(sql, []);
 
-    let [rows, fields] = await database.getPromise().query(sql, []);
+    let [rows, fields] = await selectContainer();
+
     return rows;
 
   },
 
   async getClientContainers(clientId) {
-    let sql = `SELECT * FROM container WHERE id = ?`;
+    let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight 
+    FROM container WHERE client_id = ?`;
     
     let [rows, fields] = await database.getPromise().query(sql, [clientId]);
     return rows;
@@ -32,7 +35,7 @@ const containerService = {
 
   async postContainer(container){
 
-    let sql = `INSERT INTO container(clientId, code, description, width, length, height, maxWeight)
+    let sql = `INSERT INTO container(client_id, code, description, width, length, height, max_weight)
               VALUES(?, ?, ?, ?, ?, ?, ?)`;
     
     let values = [
@@ -47,8 +50,9 @@ const containerService = {
 
     let [rows, fields] = await database.getPromise().query(sql, values);
 
-    sql = `SELECT * FROM container WHERE id = ?`;
-    [rows, fields] = await database.getPromise().query(sql, [rows.insertId]);
+    //sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container WHERE id = ?`;
+    //[rows, fields] = await database.getPromise().query(sql, [rows.insertId]);
+    [rows, fields] = await selectContainer(rows.insertId);
 
     return rows[0];
 
@@ -62,7 +66,7 @@ const containerService = {
       width = '${newContainerData.width}',
       length = '${newContainerData.length}',
       height = '${newContainerData.height}',
-      maxWeight = '${newContainerData.maxWeight}'
+      max_weight = '${newContainerData.maxWeight}'
     WHERE id = ${id}`;
 
     let [rows, fields] = await database.getPromise().query(sql, []);
@@ -76,8 +80,9 @@ const containerService = {
       throw new Error(`Error updating client, affected rows = ${rows.affectedRows}`);
     }
 
-    sql = `SELECT * FROM container WHERE id = ${id}`;
-    [rows, fields] = await database.getPromise().query(sql, []);
+    //sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container WHERE id = ${id}`;
+    //[rows, fields] = await database.getPromise().query(sql, []);
+    [rows, fields] = await selectContainer(id);
 
     if (rows.length !== 1) {
       throw new Error(`Error retrieving updated client data`);
@@ -89,8 +94,9 @@ const containerService = {
 
   async deleteContainer(id) {
 
-    let sql = `SELECT * FROM container WHERE id = ?`;
-    let [rows, fields] = await database.getPromise().query(sql, [id]);
+    //let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container WHERE id = ?`;
+    //let [rows, fields] = await database.getPromise().query(sql, [id]);
+    let [rows, fields] = await selectContainer(id);
 
     if (rows.length !== 1) {
       
@@ -112,5 +118,13 @@ const containerService = {
   }
 
 };
+
+async function selectContainer(id) {
+  let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container`;
+  if (id) {
+    sql = sql + ` WHERE id = ?`;
+  }
+  return await database.getPromise().query(sql, [id]);
+}
 
 module.exports = containerService;

@@ -90,7 +90,7 @@ app.use(function(req, res, next) {
   let status = 404;
   logger.error(`ExpressJS: [${req.method}] ${req.originalUrl}: ${status}: Not found`);
   let error = new ApiError('NOT-FOUND-ERROR-001', 'Not found', '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/NOT-FOUND-ERROR-001`);
-  res.status(status).json(new ApiResult("ERROR", null, [ error ]));
+  res.status(status).json(new ApiResult("ERROR", null, req.requestId, [ error ]));
 });
 
 // error handler

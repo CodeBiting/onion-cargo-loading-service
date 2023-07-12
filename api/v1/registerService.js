@@ -6,29 +6,25 @@ const database = require(`${__base}api/database`);
 const registerService = {
 
   async getRegister(id) {
-
-    let sql = `SELECT id, clientId, CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, origin, destiny, method, requestId, status, requestBody, responseData FROM register WHERE id = ?`;
-
-    let [rows, fields] = await database.getPromise().query(sql, [id]);
-    
+    let [rows, fields] = await selectRegister(id);
     return rows[0];
-
   },
 
   async getRegisters() {
-
-    let sql = `SELECT id, clientId, CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, origin, destiny, method, requestId, status, requestBody, responseData FROM register`;
-
-    let [rows, fields] = await database.getPromise().query(sql, []);
+    let [rows, fields] = await selectRegister();
     return rows;
-
   },
   
+  /**
+   * Creates a register into database
+   * The datetime fields are converted from session.time_zone to UTC
+   * @param {*} register :
+   * - date : date time in format 'YYYY-MM-DD hh:mm:ss' in local date time
+   * @returns 
+   */
   async postRegister(register){
-
-    let sql = `INSERT INTO register (clientId, date, origin, destiny, method, requestId, status, requestBody, responseData)
-              VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
+    let sql = `INSERT INTO register (client_id, date, origin, destiny, method, request_id, status, request_body, response_data)
+              VALUES(?, CONVERT_TZ(?, @@session.time_zone, '+00:00'), ?, ?, ?, ?, ?, ?, ?)`;
     let values = [
       register.clientId,
       register.date,
@@ -40,65 +36,68 @@ const registerService = {
       register.requestBody,
       register.responseData
     ];
-
     let [rows, fields] = await database.getPromise().query(sql, values);
 
-    sql = `SELECT id, clientId, CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, origin, destiny, method, requestId, status, requestBody, responseData FROM register WHERE id = ?`;
-    [rows, fields] = await database.getPromise().query(sql, [rows.insertId]);
-  
+    [rows, fields] = await selectRegister(rows.insertId);
     return rows[0];
-
   },
 
+  /**
+   * The datetime fields are converted from session.time_zone to UTC
+   * @param {*} id 
+   * @param {*} newRegisterData 
+   * @returns 
+   */
   async putRegister(id, newRegisterData) {
-
     sql = `UPDATE register SET
-      date = CONVERT_TZ('${newRegisterData.date}', '+00:00', @@session.time_zone),
-      origin = '${newRegisterData.origin}',
-      destiny = '${newRegisterData.destiny}',
-      method = '${ newRegisterData.method }',
-      requestId = '${ newRegisterData.requestId }',
-      status = '${newRegisterData.status}',
-      requestBody = '${newRegisterData.requestBody}',
-      responseData = '${newRegisterData.responseData}'
-    WHERE id = ${ id }`;
-
-    let [rows, fields] = await database.getPromise().query(sql, []);
+            client_id = ?,
+            date = CONVERT_TZ(?, @@session.time_zone, '+00:00'),
+            origin = ?,
+            destiny = ?,
+            method = ?,
+            request_id = ?,
+            status = ?,
+            request_body = ?,
+            response_data = ?
+          WHERE id = ?`;
+    let values = [
+      newRegisterData.clientId, 
+      newRegisterData.date, 
+      newRegisterData.origin,
+      newRegisterData.destiny,
+      newRegisterData.method,
+      newRegisterData.requestId,
+      newRegisterData.status,
+      newRegisterData.requestBody,
+      newRegisterData.responseData,
+      id
+    ];
+    let [rows, fields] = await database.getPromise().query(sql, values);
 
     // return undefined if client not found
     if (rows.affectedRows === 0) {
       return undefined;
     }
-
     if (rows.affectedRows !== 1) {
       throw new Error(`Error updating client, affected rows = ${rows.affectedRows}`);
     }
 
-    sql = `SELECT * FROM register WHERE id = ${id}`;
-    [rows, fields] = await database.getPromise().query(sql, []);
-
+    [rows, fields] = await selectRegister(id);
     if (rows.length !== 1) {
       throw new Error(`Error retrieving updated client data`);
     }
 
     return rows[0];
-
   },
 
   async deleteRegister(id) {
-
-    let sql = `SELECT id, clientId, CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, origin, destiny, method, requestId, status, requestBody, responseData FROM register WHERE id = ?`;
-    let [rows, fields] = await database.getPromise().query(sql, [id]);
-
+    let [rows, fields] = await selectRegister(id);
     if (rows.length !== 1) {
-
       return undefined;
     }
 
     let registerToDelete = rows[0];
-
     sql = `DELETE FROM register WHERE id = ${ id }`;
-
     [rows, fields] = await database.getPromise().query(sql, []);
 
     if (rows.affectedRows !== 1) {
@@ -106,9 +105,32 @@ const registerService = {
     }
 
     return registerToDelete;
-
   }
 
 };
+
+/**
+ * Function that get one or all registers from database
+ * The datetime fields are converted UTC to session.time_zone
+ * @param {*} id 
+ * @returns 
+ */
+async function selectRegister(id) {
+  let sql = `SELECT id, 
+                    client_id as clientId, 
+                    CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, 
+                    origin, 
+                    destiny, 
+                    method, 
+                    request_id as requestId, 
+                    status, 
+                    request_body as requestBody, 
+                    response_data as responseData 
+             FROM register`;
+  if (id) {
+    sql = sql + ` WHERE id = ?`;
+  }
+  return await database.getPromise().query(sql, [id]);
+}
   
-  module.exports = registerService;
+module.exports = registerService;

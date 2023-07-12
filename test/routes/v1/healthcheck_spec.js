@@ -26,16 +26,7 @@ describe('API Healthcheck ', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');
-        expect(res.body.data).to.be.eql({
-          id: 1,
-          clientId: 1,
-          code: 'C1',
-          description: 'Container 1',
-          width: 1,
-          length: 1,
-          height: 1,
-          maxWeight: 1,
-        });
+        expect(res.body.data).to.be.eql({});
         expect(res.body.requestId).to.be.an('string');
         expect(res.body.errors).to.be.an('array');
         expect(res.body.errors).to.be.an('array').that.eql([]);

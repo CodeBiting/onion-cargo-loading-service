@@ -14,31 +14,42 @@ const API_NAME = 'client';
 
 /**
  * @swagger
- *   definitions:
- *   Client:
- *     type: object
- *     properties:
- *       id:
- *         type: integer
- *       code:
- *         type: string
- *       dateStart:
- *         type: string
- *       dateFinal:
- *         type: string
- *       active:
- *         type: boolean
- *       token:
- *         type: string
- *       notes:
- *         type: string
- *     required: ['id', 'code', 'dateStart', 'dateFinal', 'active', 'token', 'notes']
+ * definitions:
+ *   schemas:
+ *     Client:
+ *       tags:
+ *         - Clients
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         code:
+ *           type: string
+ *         dateStart:
+ *           type: string
+ *           description: DateTime when the client starts its service. In format 'YYYY-MM-DD hh:mm:ss' in local date time
+ *           example: 2023-12-25 12:45:32
+ *         dateFinal:
+ *           type: string
+ *           description: DateTime when the client ends its service. In format 'YYYY-MM-DD hh:mm:ss' in local date time
+ *           example: 2023-12-25 12:45:32
+ *         active:
+ *           type: boolean
+ *           example: true
+ *         token:
+ *           type: string
+ *           description: Token to comunicate, its checked on every API call.
+ *         notes:
+ *           type: string
+ *       required: ['id', 'code', 'dateStart', 'dateFinal', 'active', 'token', 'notes']
  */
 
 /**
  * @swagger
  * /v1/client:
  *   get:
+ *     tags:
+ *       - Clients
  *     summary: Returns clients
  *     description: Returns all the clients
  *     produces:
@@ -89,6 +100,8 @@ router.get('/',async function(req, res, next) {
  * @swagger
  *   /v1/client/{id}/containers:
  *  get:
+ *     tags:
+ *       - Clients
  *     summary: Returns clients
  *     description: Returns all the clients
  *     produces:
@@ -146,6 +159,8 @@ router.get('/:id/containers', async function(req, res, next) {
  * @swagger
  * /v1/client/{id}:
  *   get:
+ *     tags:
+ *       - Clients
  *     summary: Returns clients
  *     description: Returns all the clients
  *     produces:
@@ -217,18 +232,20 @@ router.get('/:id', async function(req, res, next) {
  * @swagger
  * /v1/client:
  *   post:
+ *     tags:
+ *       - Clients
  *     summary: Creates a new client
  *     description: Creates a new client
  *     produces:
  *       - application/json
- *     parameters:
- *       - in: body
- *         name: Client object
- *         description: The client to create
- *         schema:
- *           $ref: '#/definitions/Client'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/definitions/schemas/Client'
  *     responses:
- *       200:
+ *       201:
  *         description: ApiResult object with created client in data attribute
  *         content:
  *           application/json:
@@ -268,6 +285,8 @@ router.post('/', async function(req, res, next) {
  * @swagger
  * /v1/client/{id}:
  *   put:
+ *     tags:
+ *       - Clients
  *     summary: Updates a client
  *     description: Updates a client
  *     produces:
@@ -279,11 +298,12 @@ router.post('/', async function(req, res, next) {
  *         schema:
  *           type: integer
  *         required: true
- *       - in: body
- *         name: Client object
- *         descriptcontainerion: The client to update
- *         schema:
- *           $ref: '#/definitions/Client'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/definitions/schemas/Client'
  *     responses:
  *       200:
  *         description: ApiResult object with updated client in data attribute
@@ -362,6 +382,8 @@ router.put('/:id', async function(req, res, next) {
  * @swagger
  * /v1/client/{id}:
  *   delete:
+ *     tags:
+ *       - Clients
  *     summary: Updates a client
  *     description: Updates a client
  *     produces:
@@ -414,7 +436,7 @@ router.delete('/:id', async function(req, res, next) {
       'Internal server error',
       ex.message,
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
-      return res.status(500).json(new ApiResult("ERROR", clientUpdated === undefined, errors));
+      return res.status(500).json(new ApiResult("ERROR", clientDeleted === undefined, errors));
   }
   res
     .status(status)

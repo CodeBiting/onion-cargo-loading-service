@@ -13,37 +13,45 @@ const API_NAME = 'register';
 
 /**
  * @swagger
- *   definitions:
- *   Register:
- *     type: object
- *     properties:
- *       id:
- *         type: integer
- *       date:
- *         type: string
- *         format: date-time
- *       origin:
- *         type: string
- *       destiny: 
- *         type: string
- *         description: url of the server to ask
- *       method: 
- *         type: string
- *       requestId:
- *         type: string
- *       status: 
- *         type: integer
- *       requestBody: 
- *         type: string
- *       responseData:
- *         type: string
- *     required: ["id", "date", "origin", "destiny", "method", "requestId"]
+ * definitions:
+ *   schemas:
+ *     Register:
+ *       tags:
+ *         - Registers
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: te user ID
+ *         date:
+ *           type: string
+ *           format: date-time
+ *           description: DateTime when the call is received. In format 'YYYY-MM-DD hh:mm:ss' in local date time
+ *           example: 2023-12-25 12:45:32
+ *         origin:
+ *           type: string
+ *         destiny: 
+ *           type: string
+ *           description: url of the server to ask
+ *         method: 
+ *           type: string
+ *         requestId:
+ *           type: string
+ *         status: 
+ *           type: integer
+ *         requestBody: 
+ *           type: string
+ *         responseData:
+ *           type: string
+ *       required: ["id", "date", "origin", "destiny", "method", "requestId"]
  */
 
 /**
  * @swagger
  * /v1/register:
  *   get:
+ *     tags:
+ *       - Registers
  *     summary: Returns registers
  *     description: Returns all the registers
  *     produces:
@@ -64,9 +72,7 @@ router.get('/', async function(req, res, next) {
   try {
     registers = await registerService.getRegisters();
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
     status = 500;
     errors.push(
       new ApiError(
@@ -94,6 +100,8 @@ router.get('/', async function(req, res, next) {
  * @swagger
  * /v1/register/{id}:
  *   get:
+ *     tags:
+ *       - Registers
  *     summary: Returns registers
  *     description: Returns one register
  *     produces:
@@ -113,7 +121,7 @@ router.get('/', async function(req, res, next) {
  *             schema:
  *               type: object
  *               $ref: '#/definitions/ApiResult'
-  */
+ */
 router.get('/:id', async function(req, res, next) {
   let errors = [];
   let status = 200;
@@ -122,9 +130,7 @@ router.get('/:id', async function(req, res, next) {
     register = await registerService.getRegister(req.params.id);
     if (register === undefined) {  
       status = 404;
-      logger.error(
-        `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Register not found`
-      );
+      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Register not found`);
       errors.push(
         new ApiError(
           'REGISTER-001',
@@ -135,9 +141,7 @@ router.get('/:id', async function(req, res, next) {
       );
     }
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}:  Register not found`
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}:  Register not found`);
     status = 500;
     errors.push(
       new ApiError(
@@ -165,18 +169,20 @@ router.get('/:id', async function(req, res, next) {
  * @swagger
  * /v1/register:
  *   post:
+ *     tags:
+ *       - Registers
  *     summary: Creates a new register
  *     description: Creates a new register
  *     produces:
  *       - application/json
- *     parameters:
- *       - in: body
- *         name: Container object
- *         description: The register to create
- *         schema:
- *           $ref: '#/definitions/Register'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/definitions/schemas/Register'
  *     responses:
- *       200:
+ *       201:
  *         description: ApiResult object with created register in data attribute
  *         content:
  *           application/json:
@@ -193,7 +199,7 @@ router.post('/', async function(req, res, next) {
     registerCreated = await registerService.postRegister(req.body);
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
-    console.log(ex);
+    //console.log(ex);
     status = 500;
     errors.push(new ApiError('REGISTER-001',
       'Internal server error', 
@@ -217,6 +223,8 @@ router.post('/', async function(req, res, next) {
  * @swagger
  * /v1/register/{id}:
  *   put:
+ *     tags:
+ *       - Registers
  *     summary: Updates a register
  *     description: Updates a register
  *     produces:
@@ -228,11 +236,12 @@ router.post('/', async function(req, res, next) {
  *         schema:
  *           type: integer
  *         required: true
- *       - in: body
- *         name: Register object
- *         description: The register to update
- *         schema:
- *           $ref: '#/definitions/Register'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/definitions/schemas/Register'
  *     responses:
  *       200:
  *         description: ApiResult object with updated register in data attribute
@@ -250,9 +259,7 @@ router.put('/:id', async function(req, res, next) {
   try {
     registerUpdated = await registerService.putRegister(req.params.id, req.body);
     if (registerUpdated === undefined) {
-      logger.error(
-        `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Register not found`
-      );
+      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Register not found`);
       status = 404;
       errors.push(
         new ApiError(
@@ -264,9 +271,7 @@ router.put('/:id', async function(req, res, next) {
       );
     }
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
     status = 500;
     errors.push(
       new ApiError(
@@ -294,6 +299,8 @@ router.put('/:id', async function(req, res, next) {
  * @swagger
  * /v1/register/{id}:
  *   delete:
+ *     tags:
+ *       - Registers
  *     summary: Updates a register
  *     description: Updates a register
  *     produces:

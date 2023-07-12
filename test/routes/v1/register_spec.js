@@ -11,13 +11,13 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL= 'http://localhost:8082/v1';
-const HELP_BASE_URL = 'http://localhost:8082/v1/help/error';
+const URL= 'http://localhost:8080/v1';
+const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const REGISTER_NEW = {
   "id": 0,
   "clientId": 1,
-  "date": new Date(2023, 0, 1),
+  "date": '2023-01-01 00:00:00',
   "origin":"new",
   "destiny": "new",
   "method": "new",
@@ -28,7 +28,7 @@ const REGISTER_NEW = {
 };
 
 describe('API Register ',()=>{
-  
+
   it('should return all registers', (done) => {
     chai.request(URL)
     .get('/register')
@@ -78,8 +78,8 @@ describe('API Register ',()=>{
             chai.request(URL)
               .delete(`/register/${res.body.data.id}`)
               .end(function (err, res) {
-                console.log(res.status);
-                console.log(res.body);
+                //console.log(res.status);
+                //console.log(res.body);
                 expect(res).to.have.status(200);
                 expect(res.body).to.have.status('OK');
                 expect(res.body.data).not.to.be.an('array');
@@ -110,7 +110,6 @@ describe('API Register ',()=>{
     });
   });
   
-
   it('should create a new register', (done) => {
     chai.request(URL)
     .post('/register')
@@ -125,8 +124,8 @@ describe('API Register ',()=>{
       chai.request(URL)
       .delete(`/register/${res.body.data.id}`)
       .end(function(err, res) {
-        console.log(res.status);
-        console.log(res.body);
+        //console.log(res.status);
+        //console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).not.to.be.an('array');
@@ -136,7 +135,6 @@ describe('API Register ',()=>{
       });
     });
   });
-  
 
   it('should update a register', (done) => {
     chai.request(URL)
@@ -155,7 +153,7 @@ describe('API Register ',()=>{
       .send({
         id: 1,
         clientId: 1,
-        date: new Date(2023, 6, 12, 3, 25),
+        date: '2023-07-12 03:25',
         origin: '127.04.71:8078',
         destiny: 'http://v1/container',
         method: 'POST',
@@ -200,7 +198,6 @@ describe('API Register ',()=>{
     });
   });
 
-
   it('should return 404 if the register requested for updating does not exist', (done) => {
     chai.request(URL)
     .put('/register/9999')
@@ -223,30 +220,29 @@ describe('API Register ',()=>{
 
   it('should return 404 if the URL to update a register is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .put('/register/{} ')
+    .put('/register/')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:'REGISTER-001',
-        message:'Incorrect Id, this id does not exist',
-        detail:'Ensure that the Id included in the request is correct',
-        help: `${HELP_BASE_URL}/REGISTER-001`
+        code:'NOT-FOUND-ERROR-001',
+        message:'Not found',
+        detail:'',
+        help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
       }]);
       done();
     });
   });
 
-  
   it('should delete a register', (done) => {
     chai.request(URL)
     .post('/register')
     .send({
       id: 1,
       clientId: 1,
-      date: new Date(2023, 6, 12, 3, 25),
+      date: '2023-07-12 03:25',
       origin: '127.04.71:8078',
       destiny: 'http://v1/container',
       method: 'POST',

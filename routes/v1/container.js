@@ -13,33 +13,49 @@ const API_NAME = 'container';
 
 /**
  * @swagger
- *   definitions:
- *   Container:
- *     type: object
- *     properties:
- *       id:
- *         type: integer
- *       clientId:
- *         type: integer
- *       code:
- *         type: string
- *       description:
- *         type: string
- *       width:
- *         type: integer
- *       length:
- *         type: integer
- *       height:
- *         type: integer
- *       maxWeight:
- *         type: integer
- *     required: ['id', 'code', 'width', 'length', 'height', 'maxWeight']
+ * definitions:
+ *   schemas:
+ *     Container:
+ *       tags:
+ *         - Containers
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: the container ID
+ *         clientId:
+ *           type: integer
+ *         code:
+ *           type: string
+ *           description: the container code, must be unique for the client
+ *         description:
+ *           type: string
+ *           description: the container description
+ *         width:
+ *           type: integer
+ *           description: the container internal width in milimeters
+ *           example: 100
+ *         length:
+ *           type: integer
+ *           description: the container internal length in milimeters
+ *           example: 1000
+ *         height:
+ *           type: integer
+ *           description: the container internal height in milimeters
+ *           example: 100
+ *         maxWeight:
+ *           type: integer
+ *           description: the container maximum weight that can carry, in miligrams
+ *           example: 100
+ *       required: ['id', 'code', 'width', 'length', 'height', 'maxWeight']
  */
 
 /**
  * @swagger
  * /v1/container:
  *   get:
+ *     tags:
+ *       - Containers
  *     summary: Returns containers
  *     description: Returns all the containers
  *     produces:
@@ -52,12 +68,12 @@ const API_NAME = 'container';
  *             schema:
  *               type: object
  *               $ref: '#/definitions/ApiResult'
-  */
+ */
 router.get('/', async function(req, res, next) {
   let errors = [];
   let status = 200;
   let containers = null;
-  logger.info(`test-message ${req.requestId}`);
+  //logger.info(`test-message ${req.requestId}`);
   try {
     if (req.query.clientId) {
       containers = await containerService.getClientContainers(req.query.clientId);
@@ -65,9 +81,7 @@ router.get('/', async function(req, res, next) {
       containers = await containerService.getContainers();
     }
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
     status = 500;
     errors.push(
       new ApiError(
@@ -95,6 +109,8 @@ router.get('/', async function(req, res, next) {
  * @swagger
  * /v1/container/{id}:
  *   get:
+ *     tags:
+ *       - Containers
  *     summary: Returns containers
  *     description: Returns one container
  *     produces:
@@ -134,9 +150,7 @@ router.get('/:id', async function(req, res, next) {
       );
     }
   } catch (ex) {
-    logger.error(
-      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`
-    );
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`);
     status = 500;
     errors.push(
       new ApiError(
@@ -164,18 +178,18 @@ router.get('/:id', async function(req, res, next) {
  * @swagger
  * /v1/container:
  *   post:
+ *     tags:
+ *       - Containers
  *     summary: Creates a new container
  *     description: Creates a new container
- *     produces:
- *       - application/json
- *     parameters:
- *       - in: body
- *         name: Container object
- *         description: The container to create
- *         schema:
- *           $ref: '#/definitions/Container'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/definitions/schemas/Container'
  *     responses:
- *       200:
+ *       201:
  *         description: ApiResult object with created container in data attribute
  *         content:
  *           application/json:
@@ -217,6 +231,8 @@ router.post('/', async function(req, res, next) {
  * @swagger
  * /v1/container/{id}:
  *   put:
+ *     tags:
+ *       - Containers
  *     summary: Updates a container
  *     description: Updates a container
  *     produces:
@@ -228,11 +244,12 @@ router.post('/', async function(req, res, next) {
  *         schema:
  *           type: integer
  *         required: true
- *       - in: body
- *         name: Container object
- *         description: The container to update
- *         schema:
- *           $ref: '#/definitions/Container'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/definitions/schemas/Container'
  *     responses:
  *       200:
  *         description: ApiResult object with updated container in data attribute
@@ -270,7 +287,7 @@ router.put('/:id', async function(req, res, next) {
     }
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`)
-    console.log(ex);
+    //console.log(ex);
     status = 500;
     errors.push(new ApiError('CONTAINER-001',
       'Internal server error',
@@ -295,6 +312,8 @@ router.put('/:id', async function(req, res, next) {
  * @swagger
  * /v1/container/{id}:
  *   delete:
+ *     tags:
+ *       - Containers
  *     summary: Updates a container
  *     description: Updates a container
  *     produces:

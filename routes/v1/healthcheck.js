@@ -12,8 +12,11 @@ const API_NAME = 'container';
 
 /**
  * @swagger
- *   definitions:
+ * definitions:
+ *   schemas:
  *     Healthcheck:
+ *       tags:
+ *         - Healthcheck
  *       type: object
  *       properties:
  *         number:
@@ -29,6 +32,8 @@ const API_NAME = 'container';
  * @swagger
  * /v1/healthcheck:
  *   get:
+ *     tags:
+ *       - Healthcheck
  *     produces:
  *       - application/json
  *     responses:
