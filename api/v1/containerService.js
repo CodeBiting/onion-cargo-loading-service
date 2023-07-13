@@ -2,6 +2,8 @@ const mysql = require('mysql2');
 const { log } = require('winston');
 
 const database = require(`${__base}api/database`);
+const DEFAULT_SKIP = 0;
+const DEFAULT_LIMIT = 1000;
 
 const containerService = {
 
@@ -14,17 +16,17 @@ const containerService = {
     
   },
   
-  async getContainers() {
+  async getContainers(skip, limit) {
     //let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container`;
     //let [rows, fields] = await database.getPromise().query(sql, []);
 
-    let [rows, fields] = await selectContainer();
+    let [rows, fields] = await selectContainer(null, skip, limit);
 
     return rows;
 
   },
 
-  async getClientContainers(clientId) {
+  async getClientContainers(clientId, skip, limit) {
     let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight 
     FROM container WHERE client_id = ?`;
     
@@ -119,11 +121,13 @@ const containerService = {
 
 };
 
-async function selectContainer(id) {
+async function selectContainer(id, skip, limit) {
   let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container`;
   if (id) {
-    sql = sql + ` WHERE id = ?`;
+    sql += ` WHERE id = ?`;
   }
+  sql += ` LIMIT ${skip || DEFAULT_SKIP},${limit || DEFAULT_LIMIT}`;
+
   return await database.getPromise().query(sql, [id]);
 }
 

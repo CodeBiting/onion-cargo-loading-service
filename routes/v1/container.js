@@ -60,6 +60,25 @@ const API_NAME = 'container';
  *     description: Returns all the containers
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: clientId
+ *         description: container's client ID 
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - in: query
+ *         name: skip
+ *         description: number of elements to skip
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - in: query
+ *         name: limit
+ *         description: max. number of elements to return
+ *         schema:
+ *           type: integer
+ *         required: false
  *     responses:
  *       200:
  *         description: ApiResult object with all containers found in data attribute
@@ -76,9 +95,9 @@ router.get('/', async function(req, res, next) {
   //logger.info(`test-message ${req.requestId}`);
   try {
     if (req.query.clientId) {
-      containers = await containerService.getClientContainers(req.query.clientId);
+      containers = await containerService.getClientContainers(req.query.clientId, req.query.skip, req.query.limit);
     } else {
-      containers = await containerService.getContainers();
+      containers = await containerService.getContainers(req.query.skip, req.query.limit);
     }
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
