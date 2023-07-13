@@ -43,7 +43,7 @@ describe('API Client ', () => {
   });
   
   ///v1/client/[clientId]/containers
-  it('should return all containers', (done) => {
+  it('should return all client containers', (done) => {
       chai.request(URL)
       .get('/client/1/containers')
       .end((err, res) => {
@@ -55,7 +55,7 @@ describe('API Client ', () => {
       });
   });
 
-  it('should create one client, and return onli this client', (done) => {
+  it('should create one client, and return only this client', (done) => {
     chai.request(URL)
       .post('/client')
       .send(TEST_CLIENT)
