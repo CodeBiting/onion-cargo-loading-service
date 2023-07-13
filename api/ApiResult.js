@@ -47,9 +47,7 @@ class ApiResult {
     this.errors = [];
 
     if (errors && Array.isArray(errors) ) {
-      for (let i = 0; i < errors.length; i++) {
-        this.errors.push(new ApiError(errors[i].code, errors[i].message, errors[i].detail, errors[i].help));  
-      }           
+      this.errors = [...this.errors, ...errors];
     }     
   }
 }
