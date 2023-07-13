@@ -98,7 +98,7 @@ module.exports = {
         for (let i = firstBoxToUse; i < pickingBoxes.length; i++) {
             for (let j = 0; j < productsToPick.length; j++) {
                 // Afegim a les rotacions possibles, com a primera opció, la no rotació
-                let rotations = ['n'].concat(productsToPick[j].canRotate);
+                let rotations = ['n'].concat(productsToPick[j].allowedRotations);
 
                 for (let k = 0; k < rotations.length; k++) {    // Per cada rotació del producte
                     let productCanBeInside = this.putProductInsideBox(retObject.productsInsideBox, pickingBoxes[i], productsToPick[j], rotations[k]);
@@ -126,7 +126,7 @@ module.exports = {
      *    { "code":"selfpackaging-2536", "x1":, "y1":, "z1":, "x2":, "y2":, "z2": },
      *  ]
      * @param {*} box : { "code":"2in1e-Flex-001", "x":250, "y":200, "z":100, "volume":5 }
-     * @param {*} product : { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "canRotate": ["x", "y"] }
+     * @param {*} product : { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "allowedRotations": ["x", "y"] }
      * @param {*} rotation : 'n', 'x', 'y', 'z'
      */
     putProductInsideBox: function(productsInsideBox, box, product, rotation) {
@@ -172,7 +172,7 @@ module.exports = {
 
     /**
      * 
-     * @param {*} product : { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "canRotate": ["x", "y"] },
+     * @param {*} product : { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "allowedRotations": ["x", "y"] },
      * @param {*} rotation : eix de rotació "x" / "y" / "z"
      */
     rotateProduct: function(product, rotation) {

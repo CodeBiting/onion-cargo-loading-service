@@ -38,18 +38,18 @@ const BOX_SET_2IN1_3 = [
 ];
 
 const PRODUCT_SET_01 = [  // 1 producte
-  { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "canRotate": ["x", "y"] },
+  { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "allowedRotations": ["x", "y"] },
 ];
 const PRODUCT_SET_01_NO_ROTATION = [  // 1 producte sense rotació
-{ "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "canRotate": [] },
+{ "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "allowedRotations": [] },
 ];
 const PRODUCT_SET_02 = [  // 2 productes iguals
-  { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "canRotate": ["x", "y"] },
-  { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "canRotate": ["x", "y"] },
+  { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "allowedRotations": ["x", "y"] },
+  { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "allowedRotations": ["x", "y"] },
 ];
 const PRODUCT_SET_03 = [  // 2 productes diferents
-  { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "canRotate": ["x", "y"] },
-  { "code":"selfpackaging-1506", "x":85, "y":83, "z":79, "volume":0.557345, "canRotate": ["x", "y"] },
+  { "code":"selfpackaging-2536", "x":62, "y":62, "z":151, "volume":0.580444, "allowedRotations": ["x", "y"] },
+  { "code":"selfpackaging-1506", "x":85, "y":83, "z":79, "volume":0.557345, "allowedRotations": ["x", "y"] },
 ];
 
 describe('rotateProduct', function() {
