@@ -220,7 +220,7 @@ module.exports = {
      * @param {*} box 
      * @returns 
      */
-     productIsInsideBox: function(product, box) {
+    productIsInsideBox: function(product, box) {
         return (product.x2 <= box.x &&
                 product.y2 <= box.y &&
                 product.z2 <= box.z);

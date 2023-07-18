@@ -2,16 +2,32 @@ const mysql = require('mysql2');
 const { log } = require('winston');
 
 const database = require(`${__base}api/database`);
-  
-const registerService = {
+const requestQuery = require(`${__base}api/requestQuery`);
+const DEFAULT_SKIP = 0;
+const DEFAULT_LIMIT = 150;
 
+const registerService = {
+  
+  //GET ONE Register
   async getRegister(id) {
     let [rows, fields] = await selectRegister(id);
     return rows[0];
   },
 
-  async getRegisters() {
-    let [rows, fields] = await selectRegister();
+  //GET ALL Registers
+  async getRegisters(pag, filter,sort) {
+    sql=`SELECT id, 
+            client_id as clientId, 
+            CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, 
+            origin, 
+            destiny, 
+            method, 
+            request_id as requestId, 
+            status, 
+            request_body as requestBody, 
+            response_data as responseData 
+        FROM register  ${requestQuery.getWheres(filter)} ${requestQuery.getOrderBy(sort)} ${requestQuery.getLimit(pag)};`;
+    let [rows, fields] = await database.getPromise().query(sql);
     return rows;
   },
   
@@ -115,7 +131,7 @@ const registerService = {
  * @param {*} id 
  * @returns 
  */
-async function selectRegister(id) {
+async function selectRegister(id, skip, limit) {
   let sql = `SELECT id, 
                     client_id as clientId, 
                     CONVERT_TZ(date, '+00:00', @@session.time_zone) AS date, 
@@ -126,10 +142,12 @@ async function selectRegister(id) {
                     status, 
                     request_body as requestBody, 
                     response_data as responseData 
-             FROM register`;
+             FROM register `;
   if (id) {
-    sql = sql + ` WHERE id = ?`;
+    sql += `WHERE id = ${id} `;
   }
+  sql += `LIMIT ${skip || DEFAULT_SKIP},${limit || DEFAULT_LIMIT};`;
+  //console.log('-----------Query '+ sql);
   return await database.getPromise().query(sql, [id]);
 }
   

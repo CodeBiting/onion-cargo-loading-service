@@ -16,10 +16,17 @@ const database = require(`./api/database`);
 //Connect MySQL
 database.connect(config.db, function(err) {
   if (err) {
-      console.log('Unable to connect to MySQL: ' + err);
+      console.error('Unable to connect to MySQL: ' + err);
       process.exit(1);
   } else {
-      console.log(`Connected to MySQL ${config.db.database} successfully`);
+      database.get().query('SELECT NOW();', function (err){
+        if(err){
+          console.error('Unable to execute query to MySQL: ' + err);
+          process.exit(1);
+        } else{
+          console.log(`Connected to MySQL ${config.db.database} successfully`);
+        }
+      });
   }
 });
 

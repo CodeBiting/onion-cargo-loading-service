@@ -5,6 +5,7 @@ const logger = require(`${__base}api/logger`);
 const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const registerService = require(`${__base}api/v1/registerService`);
+const reqQuery = require(`${__base}api/requestQuery`);
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -20,9 +21,8 @@ const API_NAME = 'register';
  *         - Registers
  *       type: object
  *       properties:
- *         id:
+ *         client_Id:
  *           type: integer
- *           description: te user ID
  *         date:
  *           type: string
  *           format: date-time
@@ -53,9 +53,22 @@ const API_NAME = 'register';
  *     tags:
  *       - Registers
  *     summary: Returns registers
- *     description: Returns all the registers
+ *     description: Returns all the registers with limits
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: skip
+ *         description: Number of containers to skip
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - in: query
+ *         name: limit
+ *         description: Max. number of elements to return
+ *         schema:
+ *           type: integer
+ *         required: false
  *     responses:
  *       200:
  *         description: ApiResult object with all registers found in data attribute
@@ -70,7 +83,10 @@ router.get('/', async function(req, res, next) {
   let status = 200;
   let registers = null;
   try {
-    registers = await registerService.getRegisters();
+    let pag = reqQuery.pagination(req.query);
+    let filter = reqQuery.filter(req.query);
+    let sort = reqQuery.sort(req.query);
+    registers = await registerService.getRegisters(pag,filter,sort);
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
     status = 500;
@@ -102,8 +118,8 @@ router.get('/', async function(req, res, next) {
  *   get:
  *     tags:
  *       - Registers
- *     summary: Returns registers
- *     description: Returns one register
+ *     summary: Returns specific register
+ *     description: Returns one register from ID
  *     produces:
  *       - application/json
  *     parameters:
@@ -112,7 +128,7 @@ router.get('/', async function(req, res, next) {
  *         description: ID of the register to update
  *         schema:
  *           type: integer
- *         required: false
+ *         required: true
  *     responses:
  *       200:
  *         description: ApiResult object with all registers found in data attribute
@@ -171,7 +187,7 @@ router.get('/:id', async function(req, res, next) {
  *   post:
  *     tags:
  *       - Registers
- *     summary: Creates a new register
+ *     summary: Add register
  *     description: Creates a new register
  *     produces:
  *       - application/json
@@ -225,8 +241,8 @@ router.post('/', async function(req, res, next) {
  *   put:
  *     tags:
  *       - Registers
- *     summary: Updates a register
- *     description: Updates a register
+ *     summary: Updates register
+ *     description: Updates the data from register
  *     produces:
  *       - application/json
  *     parameters:
@@ -301,8 +317,8 @@ router.put('/:id', async function(req, res, next) {
  *   delete:
  *     tags:
  *       - Registers
- *     summary: Updates a register
- *     description: Updates a register
+ *     summary: Delete register
+ *     description: Delete a client register with the ID
  *     produces:
  *       - application/json
  *     parameters:

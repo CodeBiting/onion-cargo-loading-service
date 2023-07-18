@@ -2,18 +2,30 @@ const mysql = require('mysql2');
 const { log } = require('winston');
 
 const database = require(`${__base}api/database`);
+const requestQuery = require(`${__base}api/requestQuery`);
 
-const clientService = {
-  
+const DEFAULT_SKIP = 0;
+const DEFAULT_LIMIT = 150;
+
+const clientService = {  
+  //GET CLIENT per ID
   async getClient(id) {
     let [rows, fields] = await selectClient(id);
     return rows[0];
   },
 
-  async getClients() {
-    let [rows, fields] = await selectClient();
+  //GET ALL CLIENTS
+  async getClients(pag, filter, sort) {
+    sql=`SELECT id, 
+            code, 
+            CONVERT_TZ(date_start, '+00:00', @@session.time_zone) AS dateStart, 
+            CONVERT_TZ(date_final, '+00:00', @@session.time_zone) AS dateFinal, 
+            active, 
+            token, 
+            notes 
+        FROM client ${requestQuery.getWheres(filter)} ${requestQuery.getOrderBy(sort)} ${requestQuery.getLimit(pag)};`;
+    let [rows, fields] = await database.getPromise().query(sql);
     return rows;
-    
   },
 
   /**
@@ -127,11 +139,20 @@ const clientService = {
  * @param {*} id 
  * @returns 
  */
-async function selectClient(id) {
-  let sql = `SELECT id, code, CONVERT_TZ(date_start, '+00:00', @@session.time_zone) AS dateStart, CONVERT_TZ(date_final, '+00:00', @@session.time_zone)AS dateFinal, active, token, notes FROM client`;
+async function selectClient(id, skip, limit) {
+  let sql = `SELECT id, 
+                    code, 
+                    CONVERT_TZ(date_start, '+00:00', @@session.time_zone) AS dateStart, 
+                    CONVERT_TZ(date_final, '+00:00', @@session.time_zone) AS dateFinal, 
+                    active, 
+                    token, 
+                    notes 
+              FROM client `;
   if (id) {
-    sql = sql + ` WHERE id = ?`;
+    sql += `WHERE id = ${id} `;
   }
+  sql += `LIMIT ${skip || DEFAULT_SKIP},${limit || DEFAULT_LIMIT};`;
+  //console.log('-----------Query '+ sql);
   return await database.getPromise().query(sql, [id]);
 }
 

@@ -2,39 +2,43 @@ const mysql = require('mysql2');
 const { log } = require('winston');
 
 const database = require(`${__base}api/database`);
+const requestQuery = require(`${__base}api/requestQuery`);
 const DEFAULT_SKIP = 0;
-const DEFAULT_LIMIT = 1000;
+const DEFAULT_LIMIT = 150;
 
 const containerService = {
 
+  //GET ONE Container
   async getContainer(id) {
-    //let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container WHERE id = ?`;
-    //let [rows, fields] = await database.getPromise().query(sql, [id]);
     let [rows, fields] = await selectContainer(id);
 
     return rows[0];
     
   },
-  
-  async getContainers(skip, limit) {
-    //let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container`;
-    //let [rows, fields] = await database.getPromise().query(sql, []);
 
-    let [rows, fields] = await selectContainer(null, skip, limit);
-
+  //GET ALL Containers
+  async getContainers(pag, filter, sort) {
+    sql=`SELECT id, 
+          client_id as clientId, 
+          code, 
+          description, 
+          width, 
+          length, 
+          height, 
+          max_weight as maxWeight 
+        FROM container  ${requestQuery.getWheres(filter)} ${requestQuery.getOrderBy(sort)} ${requestQuery.getLimit(pag)};`;
+    let [rows, fields] = await database.getPromise().query(sql);
     return rows;
 
   },
 
+  //GET ALL Containers FROM ONE Client
   async getClientContainers(clientId, skip, limit) {
-    let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight 
-    FROM container WHERE client_id = ?`;
-    
-    let [rows, fields] = await database.getPromise().query(sql, [clientId]);
+    let [rows, fields] = await selectContainer(null, clientId, skip, limit);
     return rows;
-    //return containers.filter(c => c.clientId == clientId);
   },
 
+  //CREATE NEW Container
   async postContainer(container){
 
     let sql = `INSERT INTO container(client_id, code, description, width, length, height, max_weight)
@@ -52,8 +56,6 @@ const containerService = {
 
     let [rows, fields] = await database.getPromise().query(sql, values);
 
-    //sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container WHERE id = ?`;
-    //[rows, fields] = await database.getPromise().query(sql, [rows.insertId]);
     [rows, fields] = await selectContainer(rows.insertId);
 
     return rows[0];
@@ -82,8 +84,6 @@ const containerService = {
       throw new Error(`Error updating client, affected rows = ${rows.affectedRows}`);
     }
 
-    //sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container WHERE id = ${id}`;
-    //[rows, fields] = await database.getPromise().query(sql, []);
     [rows, fields] = await selectContainer(id);
 
     if (rows.length !== 1) {
@@ -116,18 +116,29 @@ const containerService = {
     }
      
     return containerToDelete;
-
+    
   }
 
 };
 
-async function selectContainer(id, skip, limit) {
-  let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container`;
-  if (id) {
-    sql += ` WHERE id = ?`;
+async function selectContainer(id,id_client, skip, limit) {
+  let sql = `SELECT id, 
+                    client_id as clientId, 
+                    code, 
+                    description, 
+                    width, 
+                    length, 
+                    height, 
+                    max_weight as maxWeight 
+              FROM container `;
+  if (id_client) {
+    sql += `WHERE client_id = ${id_client}`;
   }
-  sql += ` LIMIT ${skip || DEFAULT_SKIP},${limit || DEFAULT_LIMIT}`;
-
+  else if (id){
+    sql += `WHERE id = ${id}`;
+  }
+  sql += ` LIMIT ${skip || DEFAULT_SKIP},${limit || DEFAULT_LIMIT};`;
+  //console.log('-----Query: '+sql);
   return await database.getPromise().query(sql, [id]);
 }
 

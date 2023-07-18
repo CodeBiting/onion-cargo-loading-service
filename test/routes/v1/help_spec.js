@@ -70,9 +70,9 @@ describe('API Help ',()=>{
     });
   });
 
-  it('should return 400 if the help code requested does not exist', (done) => {
+  it('should return 404 if the help code requested is not found because input CODE is empty', (done) => {
     chai.request(URL)
-    .get('/help/error/9999')
+    .get('/help/error/{}')
     .end(function(err, res) {
       //console.log(res.body);
       expect(res).to.have.status(404);

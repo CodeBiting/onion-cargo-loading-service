@@ -34,8 +34,8 @@ const API_NAME = 'help';
  *   get:
  *     tags:
  *       - Help
- *     summary: Returns all error helps
- *     description: Returns all error helps
+ *     summary: Returns error helps
+ *     description: Returns all errors with information
  *     produces:
  *       - application/json
  *     responses:
@@ -53,18 +53,18 @@ router.get('/error/', function (req, res, next) {
 
 /**
  * @swagger
- * /v1/help/error/code:
+ * /v1/help/error/{code}:
  *   get:
  *     tags:
  *       - Help
- *     summary: Returns one error helps
- *     description: Returns one error helps
+ *     summary: Returns specific error help
+ *     description: Returns one error information
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: path
  *         name: code
- *         description: CODE of the herror to obtain help
+ *         description: CODE of the error to obtain help
  *         schema:
  *           type: string
  *         required: true
