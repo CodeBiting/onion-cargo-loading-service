@@ -6,6 +6,7 @@ const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const clientService = require(`${__base}api/v1/clientService`);
 const containerService = require(`${__base}api/v1/containerService`);
+const reqQuery = require(`${__base}api/requestQuery`);
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -21,8 +22,6 @@ const API_NAME = 'client';
  *         - Clients
  *       type: object
  *       properties:
- *         id:
- *           type: integer
  *         code:
  *           type: string
  *         dateStart:
@@ -51,9 +50,22 @@ const API_NAME = 'client';
  *     tags:
  *       - Clients
  *     summary: Returns clients
- *     description: Returns all the clients
+ *     description: Returns all clients with limits
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: skip
+ *         description: Number of containers to skip
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - in: query
+ *         name: limit
+ *         description: Max. number of elements to return
+ *         schema:
+ *           type: integer
+ *         required: false
  *     responses:
  *       200:
  *         description: ApiResult object with all clients found in data attribute
@@ -68,7 +80,10 @@ router.get('/',async function(req, res, next) {
   let status = 200;
   let clients = null;
   try {
-    clients = await clientService.getClients();
+    let pag = reqQuery.pagination(req.query);
+    let filter = reqQuery.filter(req.query);
+    let sort = reqQuery.sort(req.query);
+    clients = await clientService.getClients(pag, filter, sort);
   } catch (ex) {
     logger.error(
       `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`
@@ -102,14 +117,26 @@ router.get('/',async function(req, res, next) {
  *  get:
  *     tags:
  *       - Clients
- *     summary: Returns clients
- *     description: Returns all the clients
+ *     summary: Returns containers form client
+ *     description: Returns all containers from client with limits
  *     produces:
  *       - application/json
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: id
- *         description: ID of the container to update
+ *         description: Client ID to search your Containers 
+ *         schema:
+ *           type: integer
+ *         required: true
+ *       - in: query
+ *         name: skip
+ *         description: Number of Containers to skip
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - in: query
+ *         name: limit
+ *         description: Max. number of Containers to return
  *         schema:
  *           type: integer
  *         required: false
@@ -128,7 +155,7 @@ router.get('/:id/containers', async function(req, res, next) {
   let containers = null;
   let errors = [];
   try {
-    containers = await containerService.getClientContainers(req.params.id);
+    containers = await containerService.getClientContainers(req.query.id, req.query.skip, req.query.limit);
   } catch (ex) {
     logger.error(
       `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
@@ -161,8 +188,8 @@ router.get('/:id/containers', async function(req, res, next) {
  *   get:
  *     tags:
  *       - Clients
- *     summary: Returns clients
- *     description: Returns all the clients
+ *     summary: Returns specific client
+ *     description: Returns one client from ID
  *     produces:
  *       - application/json
  *     parameters:
@@ -171,7 +198,7 @@ router.get('/:id/containers', async function(req, res, next) {
  *         description: ID of the client to update
  *         schema:
  *           type: integer
- *         required: false
+ *         required: true
  *     responses:
  *       200:
  *         description: ApiResult object with all clients found in data attribute
@@ -234,7 +261,7 @@ router.get('/:id', async function(req, res, next) {
  *   post:
  *     tags:
  *       - Clients
- *     summary: Creates a new client
+ *     summary: Add client
  *     description: Creates a new client
  *     produces:
  *       - application/json
@@ -287,8 +314,8 @@ router.post('/', async function(req, res, next) {
  *   put:
  *     tags:
  *       - Clients
- *     summary: Updates a client
- *     description: Updates a client
+ *     summary: Update client
+ *     description: Updates the data from client
  *     produces:
  *       - application/json
  *     parameters:
@@ -384,8 +411,8 @@ router.put('/:id', async function(req, res, next) {
  *   delete:
  *     tags:
  *       - Clients
- *     summary: Updates a client
- *     description: Updates a client
+ *     summary: Delete client
+ *     description: Delete a client with the ID
  *     produces:
  *       - application/json
  *     parameters:

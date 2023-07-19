@@ -5,6 +5,7 @@ const logger = require(`${__base}api/logger`);
 const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const containerService = require(`${__base}api/v1/containerService`);
+const reqQuery = require(`${__base}api/requestQuery`);
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -20,9 +21,6 @@ const API_NAME = 'container';
  *         - Containers
  *       type: object
  *       properties:
- *         id:
- *           type: integer
- *           description: the container ID
  *         clientId:
  *           type: integer
  *         code:
@@ -57,19 +55,19 @@ const API_NAME = 'container';
  *     tags:
  *       - Containers
  *     summary: Returns containers
- *     description: Returns all the containers
+ *     description: Returns all the containers with limits
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: query
  *         name: clientId
- *         description: container's client ID 
+ *         description: Using the ClientId to search for his Containers
  *         schema:
  *           type: integer
  *         required: false
  *       - in: query
  *         name: skip
- *         description: number of elements to skip
+ *         description: Number of containers to skip
  *         schema:
  *           type: integer
  *         required: false
@@ -97,7 +95,10 @@ router.get('/', async function(req, res, next) {
     if (req.query.clientId) {
       containers = await containerService.getClientContainers(req.query.clientId, req.query.skip, req.query.limit);
     } else {
-      containers = await containerService.getContainers(req.query.skip, req.query.limit);
+      let pag = reqQuery.pagination(req.query);
+      let filter = reqQuery.filter(req.query);
+      let sort = reqQuery.sort(req.query);
+      containers = await containerService.getContainers(pag, filter, sort);
     }
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
@@ -130,17 +131,17 @@ router.get('/', async function(req, res, next) {
  *   get:
  *     tags:
  *       - Containers
- *     summary: Returns containers
- *     description: Returns one container
+ *     summary: Return specific container
+ *     description: Returns one container from ID
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: path
  *         name: id
- *         description: ID of the container to update
+ *         description: Using the container ID to perform a search
  *         schema:
  *           type: integer
- *         required: false
+ *         required: true
  *     responses:
  *       200:
  *         description: ApiResult object with all containers found in data attribute
@@ -199,7 +200,7 @@ router.get('/:id', async function(req, res, next) {
  *   post:
  *     tags:
  *       - Containers
- *     summary: Creates a new container
+ *     summary: Add container
  *     description: Creates a new container
  *     requestBody:
  *       required: true
@@ -252,8 +253,8 @@ router.post('/', async function(req, res, next) {
  *   put:
  *     tags:
  *       - Containers
- *     summary: Updates a container
- *     description: Updates a container
+ *     summary: Update container
+ *     description: Updates the data from container
  *     produces:
  *       - application/json
  *     parameters:
@@ -333,14 +334,14 @@ router.put('/:id', async function(req, res, next) {
  *   delete:
  *     tags:
  *       - Containers
- *     summary: Updates a container
- *     description: Updates a container
+ *     summary: Delete container
+ *     description: Deletes a container with the ID
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: path
  *         name: id
- *         description: ID of the container to update
+ *         description: ID of the container to Delete
  *         schema:
  *           type: integer
  *         required: true

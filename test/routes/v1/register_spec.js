@@ -1,6 +1,6 @@
 /**
  * Created by jordi on 02/12/2022.
- * 
+ *
  * To run the test:
  * 1. Start the server `npm start`
  * 2. Execute test `mocha test/routes/v1/register_spec.js --timeout 2000`
@@ -11,11 +11,10 @@ const expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const URL= 'http://localhost:8080/v1';
+const URL = 'http://localhost:8080/v1';
 const HELP_BASE_URL = 'http://localhost:8080/v1/help/error';
 
 const REGISTER_NEW = {
-  "id": 0,
   "clientId": 1,
   "date": '2023-01-01 00:00:00',
   "origin":"new",
@@ -27,8 +26,7 @@ const REGISTER_NEW = {
   "responseData": "new"
 };
 
-describe('API Register ',()=>{
-
+describe('API Register ', () => {
   it('should return all registers', (done) => {
     chai.request(URL)
     .get('/register')
@@ -39,7 +37,14 @@ describe('API Register ',()=>{
       expect(res.body.data).to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
-      done();
+      chai.request(URL)
+        .get('/register?skip=0&limit=1')
+        .end(function (err, res) {
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.status('OK');
+          expect(res.body.errors).to.deep.equal([]);
+          done();
+        });
     });
   });
 
@@ -148,20 +153,20 @@ describe('API Register ',()=>{
       expect(res.body.errors).to.be.an('array').that.eql([]);
       //console.log(res.body);
       chai.request(URL)
-      .put(`/register/${res.body.data.id}`)
-      .set('content-type', 'application/json')
-      .send({
-        id: 1,
-        clientId: 1,
-        date: '2023-07-12 03:25',
-        origin: '127.04.71:8078',
-        destiny: 'http://v1/container',
-        method: 'POST',
-        requestId: 'Id required text',
-        status: 200,
-        requestBody: 'Body initial',
-        responseData: 'Body final',
-      })
+        .put(`/register/${res.body.data.id}`)
+        .set('content-type', 'application/json')
+        .send({
+          id: 1,
+          clientId: 1,
+          date: '2023-07-12 03:25',
+          origin: '127.04.71:8078',
+          destiny: 'http://v1/container',
+          method: 'POST',
+          requestId: 'Id required text',
+          status: 200,
+          requestBody: 'Body initial',
+          responseData: 'Body final',
+        })
       .end(function(err, res) {
         //console.log(res.body);
         expect(res).to.have.status(200);
@@ -181,7 +186,7 @@ describe('API Register ',()=>{
           status: 200,
           requestBody: 'Body initial',
           responseData: 'Body final',
-        })
+        });
         expect(res.body.errors).to.be.an('array');
         expect(res.body.errors).to.be.an('array').that.eql([]);
         chai.request(URL)
@@ -267,7 +272,7 @@ describe('API Register ',()=>{
         status: 200,
         requestBody: 'Body initial',
         responseData: 'Body final',
-      })
+      });
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
       chai.request(URL)
@@ -285,7 +290,67 @@ describe('API Register ',()=>{
     });
   });
 
-  it('should return 404 if the register requested to delete does not exist', (done) =>{
+  it('should return one register using the skip and limit and then return two registers using skip and limit with other parameters', (done) => {
+    chai
+      .request(URL)
+      .post('/register')
+      .send(REGISTER_NEW)
+      .end(function (err, res) {
+        let firstRegisterId = res.body.data.id;
+        expect(res).to.have.status(201);
+        expect(res.body).to.have.status('OK');
+        chai
+          .request(URL)
+          .post('/register')
+          .send(REGISTER_NEW)
+          .end(function (err, res) {
+            let secondRegisterId = res.body.data.id;
+            expect(res).to.have.status(201);
+            expect(res.body).to.have.status('OK');
+            chai
+              .request(URL)
+              .get('/register?skip=0&limit=1')
+              .end(function (err, res) {
+                expect(res).to.have.status(200);
+                expect(res.body).to.have.status('OK');
+                expect(res.body.data).to.be.an('array');
+                expect(res.body.data).to.have.length(1);
+                chai
+                  .request(URL)
+                  .get('/register?skip=0&limit=2')
+                  .end(function (err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.status('OK');
+                    expect(res.body.data).to.be.an('array');
+                    expect(res.body.data).to.have.length(2);
+                    chai
+                      .request(URL)
+                      .delete(`/register/${firstRegisterId}`)
+                      .end(function (err, res) {
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.status('OK');
+                        expect(res.body.data).not.to.be.an('array');
+                        expect(res.body.errors).to.be.an('array');
+                        expect(res.body.errors).to.deep.equal([]);
+                        chai
+                          .request(URL)
+                          .delete(`/register/${secondRegisterId}`)
+                          .end(function (err, res) {
+                            expect(res).to.have.status(200);
+                            expect(res.body).to.have.status('OK');
+                            expect(res.body.data).not.to.be.an('array');
+                            expect(res.body.errors).to.be.an('array');
+                            expect(res.body.errors).to.deep.equal([]);
+                            done();
+                          });
+                      });
+                  });
+              });
+          });
+      });
+  });
+
+  it('should return 404 if the register requested to delete does not exist', (done) => {
     chai.request(URL)
     .delete('/register/9999')
     .end(function(err, res) {
@@ -306,21 +371,19 @@ describe('API Register ',()=>{
 
   it('should return 404 if the URL to delete a register is not found because input ID is empty', (done) => {
     chai.request(URL)
-    .delete('/register/{} ')
+    .delete('/register/ ')
     .end(function(err, res) {
       expect(res).to.have.status(404);
       expect(res.body).to.have.status('ERROR');
       expect(res.body.data).not.to.be.an('array');
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.deep.equal([{
-        code:'REGISTER-001',
-        message:'Incorrect Id, this id does not exist',
-        detail:'Ensure that the Id included in the request is correct',
-        help: `${HELP_BASE_URL}/REGISTER-001`
+        code: 'NOT-FOUND-ERROR-001',
+        message: 'Not found',
+        detail: '',
+        help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`,
       }]);
       done();
-    });       
+    });
   });
-
 });
- 
