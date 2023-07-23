@@ -12,6 +12,11 @@ const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const config = require(`./config/config`);
 const database = require(`./api/database`);
+const clientService = require(`${__base}api/v1/clientService`);
+
+const BAD_REQUEST = 400;
+const UNAUTHORIZED = 401;
+const FORBIDDEN = 403;
 
 //Connect MySQL
 database.connect(config.db, function(err) {
@@ -48,14 +53,43 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 /**
+ * Autenticate and autorize the requests
  * Generate one uniqueid everytime API is called, to trace the client call
  */
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
+  if (req.url && !req.url.startsWith('/v1/api-docs')) {
+    // Autenticate and autorize the requests
+    if (!req.query || !req.query.token || !req.query.clientId) {
+      logger.error(`Authentication error, missing clientId or token: [${req.method}] ${req.originalUrl}`);
+      // En la resposta no indiquem el motiu de l'error per no ajudar a possibles atacants
+      let error = new ApiError('GENERIC-ERROR-001', 'Bad request', '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/GENERIC-ERROR-001`);
+      return res.status(BAD_REQUEST).json(new ApiResult("ERROR", null, [ error ]));
+    }
+
+    // Check the authorization data provided is correct
+    if (await clientService.isAuthenticacionValid(req.query.clientId, req.query.token) !== true) {
+      logger.error(`Authentication error, incorrect clientId or token: [${req.method}] ${req.originalUrl}`);
+      // En la resposta no indiquem el motiu de l'error per no ajudar a possibles atacants
+      let error = new ApiError('AUTHORIZATION-ERROR-001', 'Authorization error', '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/AUTHORIZATION-ERROR-001`);
+      return res.status(UNAUTHORIZED).json(new ApiResult("ERROR", null, [ error ]));
+    }
+
+    // Check the client has access to the resource requested
+    if (await clientService.hasAccessToTheResource(req.query.clientId, req.originalUrl) !== true) {
+      logger.error(`Authorization error, clientId ${req.query.clientId} don't have access to the resource ${req.originalUrl}: [${req.method}] ${req.originalUrl}`);
+      // En la resposta no indiquem el motiu de l'error per no ajudar a possibles atacants
+      let error = new ApiError('AUTHORIZATION-ERROR-001', 'Authorization error', '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/AUTHORIZATION-ERROR-001`);
+      return res.status(FORBIDDEN).json(new ApiResult("ERROR", null, [ error ]));
+    }
+  }
+
+
   // Get the requestId if its provided in the heather
   let requestId = req.headers["x-request-id"];
   // Save the requestId or create a new one if not exists
   req.requestId = requestId || uniqid();
   // Call the next function in the middleware
+
   next();
 });
 

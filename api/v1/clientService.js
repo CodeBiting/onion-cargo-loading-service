@@ -129,6 +129,37 @@ const clientService = {
      
     return clientToDelete;
       
+  },
+  /**
+   * Function that validates if the client credentials are válid
+   * @param {*} clientId 
+   * @param {*} token 
+   * @returns 
+   */
+  async isAuthenticacionValid(clientId, token) {
+    let sql = `SELECT token FROM client WHERE id = ?`;
+    [rows, fields] = await database.getPromise().query(sql, [clientId]);
+
+    if (rows.length !== 1) {
+      return false;
+    }
+
+    if (rows[0].token !== token) {
+      return false;
+    }
+
+    return true;
+  },
+
+  /**
+   * Funtion that validates if the client has acces to the requested resource
+   * @param {*} clientId 
+   * @param {*} url 
+   * @returns 
+   */
+  async hasAccessToTheResource(clientId, resource) {
+    // TODO: completar amb llistat de URL que té accés el client
+    return true;
   }
   
 }
