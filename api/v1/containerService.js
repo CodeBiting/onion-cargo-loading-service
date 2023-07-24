@@ -117,8 +117,25 @@ const containerService = {
      
     return containerToDelete;
     
-  }
+  },
 
+  async selectContainerForVolumeAnalysis(id_client) {
+    let sql = `SELECT id, 
+                      client_id as clientId, 
+                      code, 
+                      description, 
+                      width as x, 
+                      length as y, 
+                      height as z, 
+                      max_weight as maxWeight,
+                      (width*length*height)/1000000 as volume
+                FROM container 
+                WHERE client_id = ?
+                ORDER BY (width*length*height) ASC;`;
+    //console.log('-----Query: '+sql);
+    let [rows, fields] = await database.getPromise().query(sql, [id_client]);
+    return rows;
+  },
 };
 
 async function selectContainer(id,id_client, skip, limit) {
@@ -140,6 +157,6 @@ async function selectContainer(id,id_client, skip, limit) {
   sql += ` LIMIT ${skip || DEFAULT_SKIP},${limit || DEFAULT_LIMIT};`;
   //console.log('-----Query: '+sql);
   return await database.getPromise().query(sql, [id]);
-}
+};
 
 module.exports = containerService;
