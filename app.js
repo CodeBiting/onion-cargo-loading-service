@@ -37,6 +37,8 @@ const containerRouterV1 = require('./routes/v1/container');
 const clientRouterV1 = require('./routes/v1/client');
 const registerRouterV1 = require('./routes/v1/register');
 const helpRouterV1 = require('./routes/v1/help');
+// UI V1
+const uiClients = require('./routes/ui/v1/clients');
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -46,6 +48,9 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
+//pug
+app.set('views', path.join(__dirname, './routes/views'));
+app.set('view engine', 'pug');
 
 /**
  * Generate one uniqueid everytime API is called, to trace the client call
@@ -82,6 +87,9 @@ app.use('/v1/container', containerRouterV1);
 app.use('/v1/client', clientRouterV1);
 app.use('/v1/register', registerRouterV1);
 app.use('/v1/help', helpRouterV1);
+
+//UI routes
+app.use('/ui/v1/clients', uiClients);
 
 logger.info(`Node environment = ${(process.env.NODE_ENV ? process.env.NODE_ENV : 'development')}`);
 
