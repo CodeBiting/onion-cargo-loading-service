@@ -5,6 +5,13 @@ const e = require("express");
 const DEFAULT_SKIP = 0;
 const DEFAULT_LIMIT = 150;
 module.exports = {
+
+  /**
+   * Returns the pagination specified in the request.query  or a default
+   * pagination object.
+   * @param {*} query 
+   * @returns 
+   */
   pagination: function (query) {
     if(query && query.skip && query.limit){
       return {skip:query.skip, limit:query.limit};
@@ -43,6 +50,11 @@ module.exports = {
     else return null
   },
   
+  /**
+   * Returns a string with the mysql limit
+   * @param {*} pag : object with the skip and limit, can not be null
+   * @returns 
+   */
   getLimit: function (pag){
     return `LIMIT ${pag.skip},${pag.limit}`;
   },
@@ -71,6 +83,7 @@ module.exports = {
     else return '';
   }
 }
+
 const FilterRule = {
   EQUALS : 'eq',
   NOT_EQUALS : 'neq',
