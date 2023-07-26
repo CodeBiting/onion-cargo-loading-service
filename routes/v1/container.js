@@ -6,6 +6,7 @@ const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const containerService = require(`${__base}api/v1/containerService`);
 const reqQuery = require(`${__base}api/requestQuery`);
+const volAnalysis = require(`${__base}api/VolumeAnalysis`);
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -182,6 +183,88 @@ router.get('/:id', async function(req, res, next) {
     );
   }
 
+  res
+    .status(status)
+    .json(
+      new ApiResult(
+        status === 200 ? 'OK' : 'ERROR',
+        container,
+        req.requestId,
+        errors
+      )
+    );
+});
+
+/**
+ * @swagger
+ * /v1/container/smallest/{clientId}:
+ *   post:
+ *     tags:
+ *       - Containers
+ *     summary: Return the smallest container 
+ *     description: Return the smallest container where your products can fit
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: clientId
+ *         description: Using clientid to volumeAnalysis
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *     responses:
+ *       200:
+ *         description: ApiResult object with all containers found in data attribute
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/definitions/ApiResult'
+  */
+router.post('/smallest/:clientId', async function(req, res, next) {
+  let errors = [];
+  let status = 200;
+  let smallestContainerFound = null;
+  let container = null;
+  try {
+    let containers= await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
+    smallestContainerFound = volAnalysis.findPickingBox(containers,req.body);
+    if(smallestContainerFound){
+      if(smallestContainerFound.returnValue===0){
+        container = [smallestContainerFound.boxFound];
+      }
+      else{
+        status=404;
+        errors.push(
+          new ApiError(
+          'CONTAINER-001',
+          'Smallest Container Not Found',
+          smallestContainerFound.message,
+          `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+        ))
+      }
+    }
+    else{
+     throw new Error('Expected result for findPickingBox but not found'); 
+    }
+  } catch(ex){
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
+    status = 500;
+    errors.push(
+      new ApiError(
+        'CONTAINER-001',
+        'Internal server error',
+        ex.message,
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+      )
+    );
+  }
   res
     .status(status)
     .json(

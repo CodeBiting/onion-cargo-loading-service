@@ -32,7 +32,22 @@ const CONTAINER_NEW_2 = {
   "height": 0,
   "maxWeight": 0
 };
-
+const PRODUCT_NEW ={ 
+  "code":"selfpackaging-2536", 
+  "x":0.5, 
+  "y":0.5, 
+  "z":0.5, 
+  "volume":0.5, 
+  "allowedRotations": ["x", "y"] 
+};
+const PRODUCT_NEW_2={ 
+  "code":"selfpackaging-2536", 
+  "x":0.5, 
+  "y":0.5, 
+  "z":0.5, 
+  "volume":100000000,
+  "allowedRotations": ["x", "y"] 
+};
 describe('API Container ', () => {
   
   it('should return all containers', (done) => {
@@ -104,7 +119,7 @@ describe('API Container ', () => {
   });
 
   // /v1/containers?clientId=[clientId]
-  it('It should return only the containers corresponding to the clientId', (done) => {
+  it('should return only the containers corresponding to the clientId', (done) => {
     const clientId = 1; // Cambiar el valor según corresponda
     chai.request(URL)
       .get(`/container?clientId=${clientId}`)
@@ -122,7 +137,63 @@ describe('API Container ', () => {
         done();
       });
   });
+
+  it('should return the smallest container to save one product', (done) =>{
+    const clientId = 1;
+    chai
+      .request(URL)
+      .post(`/container/smallest/${clientId}`)
+      .send([PRODUCT_NEW])
+      .end(function (err, res){
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).to.be.an('array');
+        expect(res.body.data).to.have.length(1);
+        done();
+      });
+  });
   
+  it('should return error because there is no container enoght big to save the product', (done) =>{
+    const clientId = 1;
+    chai
+      .request(URL)
+      .post(`/container/smallest/${clientId}`)
+      .send([PRODUCT_NEW_2])
+      .end(function (err, res){
+        expect(res).to.have.status(404);
+        expect(res.body).to.have.status('ERROR');
+        expect(res.body.errors).to.have.length(1);
+        expect(res.body.errors).to.deep.equal([
+          {
+            "code": "CONTAINER-001",
+            "message": "Smallest Container Not Found",
+            "detail": "The total products volume is greater than all boxes",
+            "help": "http://localhost:8080/v1/help/error/CONTAINER-001"
+          }
+        ]);
+        done();
+      });
+  });
+
+  it('should return error because there is no container enoght big to save the product', (done) =>{
+    const clientId = 1;
+    chai
+      .request(URL)
+      .post(`/container/smallest/${clientId}`)
+      .send()
+      .end(function (err, res){
+        expect(res).to.have.status(404);
+        expect(res.body).to.have.status('ERROR');
+        expect(res.body.errors).to.deep.equal([{
+            "code": "CONTAINER-001",
+            "message": "Smallest Container Not Found",
+            "detail": "Not found any product combination that can be fit into the boxes",
+            "help": "http://localhost:8080/v1/help/error/CONTAINER-001"
+        }]);
+        done();
+      });
+  });
+
   it('should return one container using the skip and limit and then return two containers using skip and limit with other parameters', (done) => {
     chai
       .request(URL)
