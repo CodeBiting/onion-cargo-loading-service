@@ -1,0 +1,86 @@
+extends layout
+
+block content
+  header
+   h1 Cargo Loading Service
+   ul
+    li 
+     a(href='/ui/v1/containers') Containers
+    li 
+     a(href='/ui/v1/clients') Clients
+    li 
+     p Registers
+  article
+   h2 Registers
+   p Registers data
+   section
+    form(action='/ui/v1/registers', method='post')
+     p 
+      label(for='skip') From 
+      input#skip(type='text', name='skip', value=`${skip}`) 
+     p
+      label(for='limit') to 
+      input#limit(type='text', name='limit', value=`${parseInt(skip)+parseInt(limit)}`)
+     button(onclick='submit') Search
+    .ag-theme-alpine-dark#myGrid(style='height: 500px;width: 90%;')
+    a.firstButton()
+     button.mod Modify
+  div.popup.mod
+   a.close_btn &times;
+   h2 Modify
+   form(action='/ui/v1/containers', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+    div.form_elemen
+     label(for='clientId') Client Id: 
+     input(type="number", name='clientId', required)
+    div.form_elemen
+     label(for='date') Date: 
+     input(type="date", name='date', required)
+    div.form_elemen
+     label(for='origin') Origin: 
+     input(type="text", name='origin')
+    div.form_elemen
+     label(for='destiny') Destiny: 
+     input(type="text", name='destiny', required)
+    div.form_elemen
+     label(for='method') Method: 
+     input(type="text", name='method', required, pattern='GET|get|PUT|put|POST|post|DELETE|delete')
+    div.form_elemen
+     label(for='status') Status: 
+     input(type="number", name='status')
+    button() Submit
+  footer
+     span
+      a(href='https://github.com/CodeBiting', target='_blank') CodeBiting&copy
+  //Grid script
+  - var gridCols= gridColumns
+  - var gridData= rowData
+  script(type='text/javascript').
+      document.querySelector(".mod").addEventListener("click", function(){
+         document.querySelector(".popup.mod").classList.add("active");
+      });
+      document.querySelector(".popup.mod .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.mod").classList.remove("active");
+      });
+     function deselect(){
+         gridOptions.api.deselectAll()
+     }
+     // get div to host the grid
+     const eGridDiv = document.getElementById("myGrid");
+     // Grid Options are properties passed to the grid
+     const gridOptions = {
+          // each entry here represents one column
+          columnDefs: JSON.parse(JSON.stringify(!{gridCols})),
+          rowData: JSON.parse(JSON.stringify(!{gridData})),
+          // default col def properties get applied to all columns
+          defaultColDef: {sortable: true, filter: true},
+
+          //rowSelection: 'multiple', // allow rows to be selected
+          animateRows: true, // have rows animate to new positions when sorted
+          //pagination: true,
+          // example event handler
+          onCellClicked: params => {
+               console.log('cell was clicked', params)
+          }
+     };
+     // new grid instance, passing in the hosting DIV and Grid Options
+     new agGrid.Grid(eGridDiv, gridOptions);

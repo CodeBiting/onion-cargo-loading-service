@@ -477,4 +477,76 @@ router.delete('/:id', async function(req, res, next) {
     );
 });
 
+/**
+ * @swagger
+ * /v1/client/{id}/delete:
+ *   put:
+ *     tags:
+ *       - Clients
+ *     summary: Add delete date to client
+ *     description: Delete a client by ID but just adding a date
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the client to update
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: ApiResult object with deleted client in data attribute
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/definitions/ApiResult'
+ */
+router.put('/:id/delete', async function(req, res, next) {
+  logger.info(`About to delete client id: ${req.params.id}`);
+  let errors = [];
+  let status = 200;
+  let clientDeleted = null;
+  try {
+    const id = req.params.id;
+
+    clientDeleted = await clientService.dateDeleteClient(id);
+
+    if (clientDeleted === undefined) {
+      logger.info(`About to client not exist id: ${req.params.id}`);
+      logger.error(
+        `${API_NAME}: [${req.method}] ${req.originalUrl}:reqId=${req.requestId}: Client not found`
+      );
+      status = 404;
+      errors.push(
+        new ApiError(
+          'CLIENT-001',
+          'Incorrect Id, this id does not exist',
+          'Ensure that the Id included in the request is correct',
+          `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`
+        )
+      );
+    }
+  } catch (ex) {
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`);
+    status = 500;
+    errors.push(new ApiError('CLIENT-001',
+      'Internal server error',
+      ex.message,
+      `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
+      return res.status(500).json(new ApiResult("ERROR", clientDeleted === undefined, errors));
+  }
+  res
+    .status(status)
+    .json(
+      new ApiResult(
+        status === 200 ? 'OK' : 'ERROR',
+        clientDeleted,
+        req.requestId,
+        errors
+      )
+    );
+});
+
 module.exports = router;

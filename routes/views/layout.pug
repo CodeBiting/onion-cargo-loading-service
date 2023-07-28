@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title= title
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width,initial-scale=1')
+    link(rel='stylesheet', href='/stylesheets/style.css') 
+    //  Include the JS for AG Grid 
+    script(src='https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js')
+    //  Include the core CSS, this is needed by the grid 
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css')
+    //  Include the theme CSS, only need to import the theme you are going to use 
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css')
+  body
+    block content

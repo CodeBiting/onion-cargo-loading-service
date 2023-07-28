@@ -41,8 +41,8 @@ const containerService = {
   //CREATE NEW Container
   async postContainer(container){
 
-    let sql = `INSERT INTO container(client_id, code, description, width, length, height, max_weight)
-              VALUES(?, ?, ?, ?, ?, ?, ?)`;
+    let sql = `INSERT INTO container(client_id, code, description, width, length, height, max_weight, deleted_at)
+              VALUES(?, ?, ?, ?, ?, ?, ?, null)`;
     
     let values = [
       container.clientId,
@@ -108,6 +108,7 @@ const containerService = {
     let containerToDelete = rows[0];
     
     sql = `DELETE FROM container WHERE id = ${ id }`;
+    //sql = `UPDATE container SET deleted_at = now() WHERE id = ${id}`;
 
     [rows, fields] = await database.getPromise().query(sql, []);
 
@@ -117,6 +118,31 @@ const containerService = {
      
     return containerToDelete;
     
+  },
+
+  async dateDeleteContainer(id) {
+
+    //let sql = `SELECT id, client_id as clientId, code, description, width, length, height, max_weight as maxWeight FROM container WHERE id = ?`;
+    //let [rows, fields] = await database.getPromise().query(sql, [id]);
+    let [rows, fields] = await selectContainer(id);
+
+    if (rows.length !== 1) {
+      
+      return undefined;
+    }
+    else if(rows[0].deleted_at){
+      return 'This Container is alredy deleted.'
+    }
+
+    let containerToDelete = rows[0];
+    sql = `UPDATE container SET deleted_at = now() WHERE id = ${id}`;
+
+    [rows, fields] = await database.getPromise().query(sql, []);
+
+    if (rows.affectedRows !== 1) {
+      throw new Error(`Error deleting container, affected rows = ${rows.affectedRows}`);
+    }
+    return containerToDelete;
   },
 
   async selectContainerForVolumeAnalysis(id_client) {
@@ -146,7 +172,8 @@ async function selectContainer(id,id_client, skip, limit) {
                     width, 
                     length, 
                     height, 
-                    max_weight as maxWeight 
+                    max_weight as maxWeight,
+                    deleted_at 
               FROM container `;
   if (id_client) {
     sql += `WHERE client_id = ${id_client}`;
