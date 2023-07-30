@@ -27,6 +27,26 @@ const clientService = {
     let [rows, fields] = await database.getPromise().query(sql);
     return rows;
   },
+  
+  async getClientsConainersRegisters(pag){
+    sql=`SELECT 
+            cl.id, 
+            cl.code, 
+            COUNT(DISTINCT c.id) AS containers,
+            COUNT(DISTINCT r.id) AS registers,
+            CONVERT_TZ(date_start, '+00:00', @@session.time_zone) AS dateStart,
+            CONVERT_TZ(date_final, '+00:00', @@session.time_zone) AS dateFinal,
+            active, 
+            token, 
+            notes 
+        FROM client cl
+        LEFT JOIN container c ON cl.id = c.client_id
+        LEFT JOIN register r ON cl.id = r.client_id
+        GROUP BY cl.id 
+        ${requestQuery.getLimit(pag)};`;
+    let [rows, fields] = await database.getPromise().query(sql);
+    return rows;
+  },
 
   /**
    * Function that creates a client into the database
@@ -37,11 +57,11 @@ const clientService = {
    * @returns 
    */
   async postClient(client) {
-    let sql = `INSERT INTO client(code, date_start, date_final, active, token, notes)
+    let sql = `INSERT INTO client(code, date_start, date_final, active, token, notes, deleted_at)
                VALUES(?, 
                       CONVERT_TZ(?, @@session.time_zone, '+00:00'), 
                       CONVERT_TZ(?, @@session.time_zone, '+00:00'), 
-                      ?, ?, ?)`;
+                      ?, ?, ?, null)`;
     let values = [
       client.code, 
       client.dateStart, 
@@ -120,16 +140,48 @@ const clientService = {
     let clientToDelete = rows[0];
     
     sql = `DELETE FROM client WHERE id = ${ id }`;
-
     [rows, fields] = await database.getPromise().query(sql, []);
 
-    if (rows.affectedRows !== 1) {
+    if (rows.affectedRows < 1) {
       throw new Error(`Error deleting client, affected rows = ${rows.affectedRows}`);
     }
      
     return clientToDelete;
       
   },
+
+  /**
+   * Function that add the date value to column delete_at in the client you spaceify by id and the containers/registers from the client
+   * @param {*} id 
+   * @returns 
+   */
+  async dateDeleteClient(id) {
+
+    let [rows, fields] = await selectClient(id);
+
+    if (rows.length !== 1) {
+      
+      return undefined;
+    }
+    else if(rows[0].deleted_at){
+      return 'This client is alredy deleted.'
+    }
+    let clientToDelete = rows[0];
+    sql = `UPDATE client 
+    JOIN container ON (client.id = container.client_id) 
+    JOIN register ON (client.id = register.client_id) 
+    SET client.deleted_at = now(), container.deleted_at = now(), register.deleted_at = now() 
+    WHERE client.id = ${id} AND  container.deleted_at IS NULL AND register.deleted_at IS NULL;`;
+    [rows, fields] = await database.getPromise().query(sql, []);
+
+    /*if (rows.affectedRows < 1) {
+      throw new Error(`Error deleting client, affected rows = ${rows.affectedRows}`);
+    }*/
+    //console.log(clientToDelete);
+    return clientToDelete;
+      
+  },
+
   /**
    * Function that validates if the client credentials are válid
    * @param {*} clientId 
@@ -177,7 +229,8 @@ async function selectClient(id, skip, limit) {
                     CONVERT_TZ(date_final, '+00:00', @@session.time_zone) AS dateFinal, 
                     active, 
                     token, 
-                    notes 
+                    notes,
+                    deleted_at
               FROM client `;
   if (id) {
     sql += `WHERE id = ${id} `;

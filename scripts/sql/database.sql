@@ -14,6 +14,7 @@ CREATE TABLE client (
   active BOOLEAN NOT NULL,
   token VARCHAR(255) NULL,
   notes TEXT NULL,
+  deleted_at DATETIME NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (code),
   UNIQUE KEY (token)
@@ -28,6 +29,7 @@ CREATE TABLE container (
   length INT NULL,
   height INT NULL,
   max_weight INT NULL,
+  deleted_at DATETIME NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (code),
   CONSTRAINT fk_container_client FOREIGN KEY (client_id)
@@ -46,7 +48,7 @@ CREATE TABLE register (
   status INT NOT NULL,
   request_body TEXT NULL,
   response_data TEXT NULL,
-  
+  deleted_at DATETIME NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_register_client FOREIGN KEY (client_id)
     REFERENCES client(id)
@@ -57,7 +59,7 @@ INSERT INTO client (id, code, date_start, date_final, active, token, notes)
 SELECT 1, 'TEST_CLIENT', now(), null, 1, 'TEST_TOKEN', 'some notes' FROM DUAL WHERE NOT EXISTS (SELECT id FROM client WHERE code = 'TEST_CLIENT' ) LIMIT 1;
 
 INSERT INTO container (client_id, code, description, width, length, height, max_weight) 
-SELECT 1, 'TEST_CONTAINER', 'Container 1x1x1', 1, 1, 1, 1 FROM DUAL WHERE NOT EXISTS (SELECT id FROM container WHERE code = 'TEST_CONTAINER' ) LIMIT 1;
+SELECT 1, 'TEST_CONTAINER', 'Container 10x10x10', 10, 10, 10, 10 FROM DUAL WHERE NOT EXISTS (SELECT id FROM container WHERE code = 'TEST_CONTAINER' ) LIMIT 1;
 
 INSERT INTO register (client_id, date, origin, destiny, method, request_id, status, request_body, response_data) 
 SELECT 1, now(), 'TEST_REGISTER', 'url', 'GET', 'request id text', 200, 'request body data', 'response body data' FROM DUAL WHERE NOT EXISTS (SELECT id FROM register WHERE origin = 'TEST_REGISTER' ) LIMIT 1;

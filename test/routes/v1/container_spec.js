@@ -33,15 +33,15 @@ const CONTAINER_NEW_2 = {
   "maxWeight": 0
 };
 const PRODUCT_NEW ={ 
-  "code":"selfpackaging-2536", 
-  "x":0.5, 
-  "y":0.5, 
-  "z":0.5, 
-  "volume":0.5, 
+  "code":"test1", 
+  "x":0.0001, 
+  "y":0.0001, 
+  "z":0.0001, 
+  "volume":0.0005, 
   "allowedRotations": ["x", "y"] 
 };
 const PRODUCT_NEW_2={ 
-  "code":"selfpackaging-2536", 
+  "code":"test2", 
   "x":0.5, 
   "y":0.5, 
   "z":0.5, 
@@ -98,7 +98,8 @@ describe('API Container ', () => {
               width: 0,
               length: 0,
               height: 0,
-              maxWeight: 0
+              maxWeight: 0,
+              deleted_at: null
             })
             expect(res.body.errors).to.be.an('array');
             expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -145,6 +146,7 @@ describe('API Container ', () => {
       .post(`/container/smallest/${clientId}`)
       .send([PRODUCT_NEW])
       .end(function (err, res){
+        //console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).to.be.an('array');
@@ -342,6 +344,7 @@ describe('API Container ', () => {
           length: 2,
           height: 2,
           maxWeight: 2,
+          deleted_at: null
         })
         expect(res.body.errors).to.be.an('array');
         expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -429,6 +432,7 @@ describe('API Container ', () => {
         length: 1,
         height: 1,
         maxWeight: 1,
+        deleted_at: null
       })
       expect(res.body.requestId).to.be.an('string');
       expect(res.body.errors).to.be.an('array');
@@ -488,4 +492,63 @@ describe('API Container ', () => {
     });
   });
   
+  it('should return add a delete date and then delete ', (done) => {
+    chai.request(URL)
+    .post('/container')
+    .send({
+      id: 1,
+      clientId: 1,
+      code: 'C2DELETE',
+      description: 'Container to delete',
+      width: 1,
+      length: 1,
+      height: 1,
+      maxWeight: 1,
+    })
+    .end(function(err, res) {
+      //console.log(res.body);
+      expect(res).to.have.status(201);
+      expect(res.body).to.have.status('OK');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.data).to.be.eql({
+        id: res.body.data.id,
+        clientId: 1,
+        code: 'C2DELETE',
+        description: 'Container to delete',
+        width: 1,
+        length: 1,
+        height: 1,
+        maxWeight: 1,
+        deleted_at: null
+      })
+      expect(res.body.requestId).to.be.an('string');
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      chai.request(URL)
+      .put(`/container/${res.body.data.id}/delete`)
+      .end(function(err, res) {
+        //console.log(res.status);
+        //console.log(res.body);
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.deep.equal([]);
+        chai.request(URL)
+        .delete(`/container/${res.body.data.id}`)
+        .end(function(err, res) {
+        //console.log(res.status);
+        //console.log(res.body);
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.status('OK');
+          expect(res.body.data).not.to.be.an('array');
+          expect(res.body.requestId).to.be.an('string');
+          expect(res.body.data.deleted_at).to.be.an("string");
+          expect(res.body.errors).to.be.an('array');
+          expect(res.body.errors).to.deep.equal([]);
+          done();
+        });
+      });
+    });
+  });
 });

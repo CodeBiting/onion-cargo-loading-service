@@ -22,6 +22,7 @@ const TEST_CLIENT = {
   "active": 1,
   "token": "new",
   "notes": "new",
+  "deleted_at": null
 };
 const TEST_CLIENT_2 = {
   "code": "new2",
@@ -30,6 +31,7 @@ const TEST_CLIENT_2 = {
   "active": 1,
   "token": "new2",
   "notes": "new",
+  "deleted_at": null
 };
 
 //----------GET-----------
@@ -95,6 +97,7 @@ describe('API Client ', () => {
               active: 1,
               token: "new",
               notes: "new",
+              deleted_at: null
             })
             expect(res.body.errors).to.be.an('array');
             expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -226,7 +229,7 @@ describe('API Client ', () => {
   it('should update a client', (done) => {
     chai.request(URL)
     .post('/client')
-      .send(TEST_CLIENT)
+    .send(TEST_CLIENT)
     .end(function(err, res) {
         expect(res).to.have.status(201);
       expect(res.body).to.have.status('OK');
@@ -264,6 +267,7 @@ describe('API Client ', () => {
           active: 1,
           token: "fer el seu fitxer",
           notes: "no se, notes",
+          deleted_at: null
         })
         expect(res.body.errors).to.be.an('array');
         expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -333,6 +337,7 @@ describe('API Client ', () => {
       active: 1,
       token: "fer el seu fitxer",
       notes: "no se, notes",
+      deleted_at: null,
     })
     .end(function(err, res) {
       //console.log(res.body);
@@ -347,6 +352,7 @@ describe('API Client ', () => {
         active: 1,
         token: "fer el seu fitxer",
         notes: "no se, notes",
+        deleted_at: null
       });
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -402,6 +408,62 @@ describe('API Client ', () => {
         help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`
       }]);
       done();
+    });
+  });
+
+  it('should return add a delete date and then delete', (done) => {
+    chai.request(URL)
+    .post('/client')
+    .send({
+      code: "Prova DELETE_AT",
+      dateStart: '2023-02-20 10:15',
+      dateFinal: '2024-02-25 10:15',
+      active: 1,
+      token: "fer el seu fitxer",
+      notes: "no se, notes",
+    })
+    .end(function(err, res) {
+      //console.log(res.body);
+      expect(res).to.have.status(201);
+      expect(res.body).to.have.status('OK');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.data).to.be.eql({
+        id: res.body.data.id,
+        code: "Prova DELETE_AT",
+        dateStart: (new Date(2023, 1, 20, 10, 15)).toISOString(),
+        dateFinal: (new Date(2024, 1, 25, 10, 15)).toISOString(),
+        active: 1,
+        token: "fer el seu fitxer",
+        notes: "no se, notes",
+        deleted_at: null
+      });
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      chai.request(URL)
+      .put(`/client/${res.body.data.id}/delete`)
+      .end(function(err, res) {
+        //console.log(res.status);
+        //console.log(res.body);
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.requestId).to.be.an('string');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.deep.equal([]);
+        chai.request(URL)
+        .delete(`/client/${res.body.data.id}`)
+        .end(function(err, res) {
+        //console.log(res.status);
+        //console.log(res.body);
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.status('OK');
+          expect(res.body.data).not.to.be.an('array');
+          expect(res.body.requestId).to.be.an('string');
+          expect(res.body.errors).to.be.an('array');
+          expect(res.body.errors).to.deep.equal([]);
+          done();
+        });
+      });
     });
   });
 });

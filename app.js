@@ -12,11 +12,11 @@ const ApiResult = require(`${__base}api/ApiResult`);
 const ApiError = require(`${__base}api/ApiError`);
 const config = require(`./config/config`);
 const database = require(`./api/database`);
-const clientService = require(`${__base}api/v1/clientService`);
+/*const clientService = require(`${__base}api/v1/clientService`);
 
 const BAD_REQUEST = 400;
 const UNAUTHORIZED = 401;
-const FORBIDDEN = 403;
+const FORBIDDEN = 403;*/
 
 //Connect MySQL
 database.connect(config.db, function(err) {
@@ -44,6 +44,8 @@ const registerRouterV1 = require('./routes/v1/register');
 const helpRouterV1 = require('./routes/v1/help');
 // UI V1
 const uiClients = require('./routes/ui/v1/clients');
+const uiContainers = require('./routes/ui/v1/containers');
+const uiRegisters = require('./routes/ui/v1/registers');
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -62,7 +64,7 @@ app.set('view engine', 'pug');
  * Generate one uniqueid everytime API is called, to trace the client call
  */
 app.use(async (req, res, next) => {
-  if (req.url && !req.url.startsWith('/v1/api-docs')) {
+  /*if (req.url && !req.url.startsWith('/v1/api-docs')) {
     // Autenticate and autorize the requests
     if (!req.query || !req.query.token || !req.query.clientId) {
       logger.error(`Authentication error, missing clientId or token: [${req.method}] ${req.originalUrl}`);
@@ -86,8 +88,7 @@ app.use(async (req, res, next) => {
       let error = new ApiError('AUTHORIZATION-ERROR-001', 'Authorization error', '', `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/AUTHORIZATION-ERROR-001`);
       return res.status(FORBIDDEN).json(new ApiResult("ERROR", null, [ error ]));
     }
-  }
-
+  }*/
 
   // Get the requestId if its provided in the heather
   let requestId = req.headers["x-request-id"];
@@ -124,6 +125,8 @@ app.use('/v1/help', helpRouterV1);
 
 //UI routes
 app.use('/ui/v1/clients', uiClients);
+app.use('/ui/v1/containers', uiContainers);
+app.use('/ui/v1/registers', uiRegisters);
 
 logger.info(`Node environment = ${(process.env.NODE_ENV ? process.env.NODE_ENV : 'development')}`);
 

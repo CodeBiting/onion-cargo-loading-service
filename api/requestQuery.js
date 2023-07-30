@@ -13,7 +13,7 @@ module.exports = {
    * @returns 
    */
   pagination: function (query) {
-    if(query && query.skip && query.limit){
+    if(query && query.skip && query.limit && query.limit > 0){
       return {skip:query.skip, limit:query.limit};
     }
     else return {skip:DEFAULT_SKIP, limit:DEFAULT_LIMIT};

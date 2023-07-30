@@ -39,8 +39,8 @@ const registerService = {
    * @returns 
    */
   async postRegister(register){
-    let sql = `INSERT INTO register (client_id, date, origin, destiny, method, request_id, status, request_body, response_data)
-              VALUES(?, CONVERT_TZ(?, @@session.time_zone, '+00:00'), ?, ?, ?, ?, ?, ?, ?)`;
+    let sql = `INSERT INTO register (client_id, date, origin, destiny, method, request_id, status, request_body, response_data, deleted_at)
+              VALUES(?, CONVERT_TZ(?, @@session.time_zone, '+00:00'), ?, ?, ?, ?, ?, ?, ?, null)`;
     let values = [
       register.clientId,
       register.date,
@@ -121,7 +121,25 @@ const registerService = {
     }
 
     return registerToDelete;
+  },
+
+  async dateDeleteRegister(id){
+    let [rows, fields] = await selectRegister(id);
+    if (rows.length !== 1) {
+      return undefined;
+    }
+    else if(rows[0].deleted_at){
+      return 'This register is alredy deleted.'
+    }
+    let registerToDelete = rows[0];
+    sql = `UPDATE register SET deleted_at = now() WHERE id = ${id}`;
+    [rows, fields] = await database.getPromise().query(sql, []);
+    if (rows.affectedRows !== 1) {
+      throw new Error(`Error deleting register, affected rows = ${rows.affectedRows}`);
+    }
+    return registerToDelete;
   }
+  
 
 };
 
@@ -141,7 +159,8 @@ async function selectRegister(id, skip, limit) {
                     request_id as requestId, 
                     status, 
                     request_body as requestBody, 
-                    response_data as responseData 
+                    response_data as responseData,
+                    deleted_at
              FROM register `;
   if (id) {
     sql += `WHERE id = ${id} `;

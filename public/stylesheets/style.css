@@ -1,8 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
 body {
-  padding: 50px;
+  padding: 0px;
+  margin: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+header{
+  margin: auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
+}
+/*Header*/
+h1{
+  margin-left: 9%;
+  /*text-align: center;*/
+  margin-top: 2vh;
+  color: #95C9E9;
+  font-size: 2.5em;
+}
+header{
+  background-color: #1B4965;
+  font-family: 'Montserrat', sans-serif;
+}
+header ul{
+  list-style: none;
+}
+header li{
+  display: inline-block;
+  margin-left: 10%;
+  margin-top: 1.7vh;
+  font-size: 1.3em;
+  transition: all 1s;
+}
+header li:hover > a{
+  border-bottom: 1px solid white;
+  font-size: 1.02em;
+}
+header li *{
+  transition: all 1s;
+  text-decoration: none;
+  color: #86BBD8;
+  margin: 0px;
+} 
+header li > p{
+  border-bottom: 1px solid ;
+}
+header p{
+  color: #62849C;
+  font-size: 1.05em;
+}
+header li a:hover{
+  color: aliceblue;
+}
+hr{
+  margin: 0px;
+  padding-inline-start: 0px;
+}
+/*Page*/
+article{
+  padding-top: 2vh;
+  background-color: #CAE9FF;
+  height: 82.9vh;
+}
+section{
+  width: 90%;
+  margin: auto;
+  margin-top: 20px;
+  background-color: #2C6181;
+  padding-top: 20px;
+  padding-bottom: 25px;
+  border-radius: 2px;
+}
+section > * {
+  margin-left: 5%;
+}
+h2{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2em;
+}
+article > h2{
+  padding-left: 5%;
+  margin: 0px;
+}
+article > p{
+  font-family: 'Montserrat', sans-serif;
+  padding-left: 5.5%;
+  font-size: 1.3em;
+  margin: 0%;
+
+}
+form {
+  font-family: "Space Grotesk",-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  padding: 0;
+  margin-bottom: 3px;
+}
+form > p{
+  display: inline-block;
+  color: aliceblue;
+  font-size: 1.2em;
+}
+form p input{
+  background: 0;
+  border: 0;
+  outline: none;
+  width: 80vw;
+  max-width: 40px;
+  transition: padding 0.4s 0.4s ease;
+  border-bottom:aliceblue solid 1px;
+  margin-left:5.5px;
+  margin-right:5.5px;
+  display: inline-block;
+  color: aliceblue;
+  font-size: 1.2em;
+}
+form > p{
+  margin: 0px;
+}
+form > input:focus {
+  padding-bottom: 3px;
+  border-bottom:aliceblue solid 1px;
+}
+form > input:focus::after {
+  transform: scaleX(1);
+}
+section > a{
+  margin-left: 10px;
+}
+
+section > p{
+  padding: 0px;
+  margin-bottom: 1px;
+}
+/* CSS */
+button {
+  background-color: #5686A3;
+  border-radius: 2px;
+  border: 0;
+  box-shadow: rgba(1,60,136,.5) 0 -1px 3px 0 inset,rgba(0,44,97,.1) 0 3px 6px 0;
+  box-sizing: border-box;
+  color: aliceblue;
+  cursor: pointer;
+  font-family: "Space Grotesk",-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1.2em;
+  font-weight: 700;
+  line-height: 28px;
+  margin: 0;
+  min-height: 28px;
+  margin-top: 10px;
+  min-width: 90px;
+  padding: 1px 10px;
+  position: relative;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  transition: all .2s cubic-bezier(.22, .61, .36, 1);
+}
+
+button:hover {
+  background-color: #1B4965;
+  transform: translateY(-2px);
+  color: white;
+}
+.firstButton{
+  margin-left: 5%;
+  margin-top: 5px;
+}
+/*Footer*/
+footer{
+  text-align: center;
+  background-color: #1B4965;
+  font-family: 'Montserrat', sans-serif;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+}
+
+.popup{
+  position: absolute;
+  top: -150%;
+  opacity: 0;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.25);
+  width: 500px;
+  padding: 20px 30px;
+  background-color: #CAE9FF;
+  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  transition: opacity 200ms ease-in-out 0ms;
+}
+.popup.active{
+  top: 50%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  transition: all 0.5s;
+}
+.popup .close_btn{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  padding: 0px 9px;
+  opacity: 0.3;
+  font-size: 2em;
+  background-color: #1B4965;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.5s;
+}
+.popup .close_btn:hover{
+  opacity:1;
+}
+.popup h2{
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.popup form{
+  margin: auto;
+  margin-left: 35px;
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.popup form .form_elemen{
+  margin: 15px 0px;
+}
+.popup form .form_elemen label{
+  font-size: 1.2em;
+}
+.popup form .form_elemen input{
+  margin-top: 5px;
+  display: block;
+  width: 75%;
+  padding: 5px;
+  outline: none;
+  border: 1px solid black;
+  border-radius: 2px;
+
+}
+.popup form button{
+  margin-top: 40px;
+  margin-bottom: 15px;
+  width: 81%;
 }

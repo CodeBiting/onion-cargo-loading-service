@@ -324,7 +324,7 @@ router.put('/:id', async function(req, res, next) {
  *     parameters:
  *       - in: path
  *         name: id
- *         description: ID of the register to update
+ *         description: ID of the register to delete
  *         schema:
  *           type: integer
  *         required: true
@@ -344,6 +344,81 @@ router.delete('/:id', async function(req, res, next) {
 
   try {
     registerDeleted = await registerService.deleteRegister(req.params.id);
+
+    if (registerDeleted === undefined) {
+      logger.error(
+        `${API_NAME}: [${req.method}] ${req.originalUrl}:reqId=${req.requestId}: Register not found`
+      );
+      status = 404;
+      errors.push(
+        new ApiError(
+          'REGISTER-001',
+          'Incorrect Id, this id does not exist',
+          'Ensure that the Id included in the request is correct',
+          `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`
+        )
+      );
+    }
+  } catch (ex) {
+    logger.error(
+      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`
+    );
+    status = 500;
+    errors.push(
+      new ApiError(
+        'REGISTER-001',
+        'Internal server error',
+        'Server has an internal error with the request',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`
+      )
+    );
+  }
+
+  res
+    .status(status)
+    .json(
+      new ApiResult(
+        status === 200 ? 'OK' : 'ERROR',
+        registerDeleted,
+        req.requestId,
+        errors
+      )
+    );
+});
+
+/**
+ * @swagger
+ * /v1/register/{id}/delete:
+ *   put:
+ *     tags:
+ *       - Registers
+ *     summary: Add delete date to register
+ *     description: Delete a client register by ID but just adding a date
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the register to delete
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: ApiResult object with deleted register in data attribute
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/definitions/ApiResult'
+ */
+router.put('/:id/delete', async function(req, res, next) {
+  let errors = [];
+  let status = 200;
+  let registerDeleted = null;
+
+  try {
+    registerDeleted = await registerService.dateDeleteRegister(req.params.id);
 
     if (registerDeleted === undefined) {
       logger.error(

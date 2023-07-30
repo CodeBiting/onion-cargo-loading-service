@@ -76,7 +76,8 @@ describe('API Register ', () => {
               requestId: "new",
               status: 0,
               requestBody: "new",
-              responseData: "new"
+              responseData: "new",
+              deleted_at: null
             })
             expect(res.body.errors).to.be.an('array');
             expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -186,6 +187,7 @@ describe('API Register ', () => {
           status: 200,
           requestBody: 'Body initial',
           responseData: 'Body final',
+          deleted_at: null
         });
         expect(res.body.errors).to.be.an('array');
         expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -272,6 +274,7 @@ describe('API Register ', () => {
         status: 200,
         requestBody: 'Body initial',
         responseData: 'Body final',
+        deleted_at: null
       });
       expect(res.body.errors).to.be.an('array');
       expect(res.body.errors).to.be.an('array').that.eql([]);
@@ -384,6 +387,68 @@ describe('API Register ', () => {
         help: `${HELP_BASE_URL}/NOT-FOUND-ERROR-001`,
       }]);
       done();
+    });
+  });
+
+  it('should return add a delete date then delete ', (done) => {
+    chai.request(URL)
+    .post('/register')
+    .send({
+      id: 1,
+      clientId: 1,
+      date: '2023-07-12 03:25',
+      origin: '127.04.71:8078',
+      destiny: 'http://v1/container',
+      method: 'POST',
+      requestId: "request id text",
+      status: 200,
+      requestBody: 'Body initial',
+      responseData: 'Body final',
+    })
+    .end(function(err, res) {
+      //console.log(res.body);
+      expect(res).to.have.status(201);
+      expect(res.body).to.have.status('OK');
+      expect(res.body.data).not.to.be.an('array');
+      expect(res.body.data).to.be.eql({
+        id: res.body.data.id,
+        clientId: 1,
+        date: (new Date(2023, 6, 12, 3, 25)).toISOString(),
+        origin: '127.04.71:8078',
+        destiny: 'http://v1/container',
+        method: 'POST',
+        requestId: "request id text",
+        status: 200,
+        requestBody: 'Body initial',
+        responseData: 'Body final',
+        deleted_at: null
+      });
+      expect(res.body.errors).to.be.an('array');
+      expect(res.body.errors).to.be.an('array').that.eql([]);
+      chai.request(URL)
+      .put(`/register/${res.body.data.id}/delete`)
+      .end(function(err, res) {
+        //console.log(res.status);
+        //console.log(res.body);
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.status('OK');
+        expect(res.body.data).not.to.be.an('array');
+        expect(res.body.errors).to.be.an('array');
+        expect(res.body.errors).to.deep.equal([]);
+        chai.request(URL)
+        .delete(`/register/${res.body.data.id}`)
+        .end(function(err, res) {
+          //console.log(res.status);
+          //console.log(res.body);
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.status('OK');
+          expect(res.body.data).not.to.be.an('array');
+          expect(res.body.data.deleted_at).to.be.an("string");
+          expect(res.body.errors).to.be.an('array');
+          expect(res.body.errors).to.deep.equal([]);
+          done();
+        });
+      });
     });
   });
 });
