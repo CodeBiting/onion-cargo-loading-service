@@ -17,15 +17,24 @@ router.get('/',async function(req, res, next){
 });
 
 router.post('/',async function(req,res,next){
-    let actions=`Error: We couldn't perform the actions.`;
-    let containerDone;
-    containerDone=registerService.putRegister(req.body.id,req.body);
-    if(containerDone !== undefined){
-        actions = `Container ${containerDone.id} modified.`;
+    let result = {
+        message: ``,
+        level: 'INFO'
     }
-    let pag=reqQuery.pagination({skip: req.body.skip, limit: req.body.limit-req.body.skip});
+    let containerDone;
+
+    try {
+        containerDone=registerService.putRegister(req.body.id,req.body);
+        if(containerDone !== undefined){
+            actions = `Container ${containerDone.id} modified.`;
+        }
+    } catch (ex) {
+        result.message =  `${ex.message}`;
+        result.level = 'ERROR';
+    }
+    let pag = reqQuery.pagination({skip: req.body.skip, limit: req.body.limit-req.body.skip});
     query = await registerService.getRegisters(pag,null,null);
-    res.render('registers', {title: 'Cargo Loading: Registers', gridColumns:JSON.stringify([{field:"id", initialWidth:ints},{field:"clientId", initialWidth:bigInts},{field:"date", initialWidth:dates},{field:"origin", initialWidth:strings},{field:"destiny", initialWidth:strings},{field:"method", initialWidth:ints},{field:"requestId", initialWidth:bigInts},{field:"status", initialWidth:ints},{field:"requestBody", initialWidth:strings},{field:"responseData", initialWidth:strings},]),rowData:JSON.stringify(query), skip:pag.skip, limit:pag.limit});
+    res.render('registers', {title: 'Cargo Loading: Registers', gridColumns:JSON.stringify([{field:"id", initialWidth:ints},{field:"clientId", initialWidth:bigInts},{field:"date", initialWidth:dates},{field:"origin", initialWidth:strings},{field:"destiny", initialWidth:strings},{field:"method", initialWidth:ints},{field:"requestId", initialWidth:bigInts},{field:"status", initialWidth:ints},{field:"requestBody", initialWidth:strings},{field:"responseData", initialWidth:strings},]),rowData:JSON.stringify(query), skip:pag.skip, limit:pag.limit, result: result});
 })
 
 module.exports = router;

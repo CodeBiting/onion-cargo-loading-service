@@ -42,6 +42,7 @@ const clientService = {
         FROM client cl
         LEFT JOIN container c ON cl.id = c.client_id
         LEFT JOIN register r ON cl.id = r.client_id
+        WHERE cl.deleted_at is NULL
         GROUP BY cl.id 
         ${requestQuery.getLimit(pag)};`;
     let [rows, fields] = await database.getPromise().query(sql);
@@ -62,11 +63,12 @@ const clientService = {
                       CONVERT_TZ(?, @@session.time_zone, '+00:00'), 
                       CONVERT_TZ(?, @@session.time_zone, '+00:00'), 
                       ?, ?, ?, null)`;
+    let active = parseActive(client.active);
     let values = [
       client.code, 
       client.dateStart, 
       client.dateFinal, 
-      client.active, 
+      active, 
       client.token, 
       client.notes];
 
@@ -97,11 +99,14 @@ const clientService = {
       notes = ?
     WHERE id = ?`;
 
+    let active = parseActive(client.active);
+    let dateStart = parseDate(client.dateStart);
+    let dateFinal = parseDate(client.dateFinal);
     let values = [
       client.code, 
-      client.dateStart, 
-      client.dateFinal, 
-      client.active, 
+      dateStart, 
+      dateFinal, 
+      active, 
       client.token, 
       client.notes,
       id
@@ -139,8 +144,8 @@ const clientService = {
 
     let clientToDelete = rows[0];
     
-    sql = `DELETE FROM client WHERE id = ${ id }`;
-    [rows, fields] = await database.getPromise().query(sql, []);
+    sql = `DELETE FROM client WHERE id = ?`;
+    [rows, fields] = await database.getPromise().query(sql, [id]);
 
     if (rows.affectedRows < 1) {
       throw new Error(`Error deleting client, affected rows = ${rows.affectedRows}`);
@@ -151,7 +156,8 @@ const clientService = {
   },
 
   /**
-   * Function that add the date value to column delete_at in the client you spaceify by id and the containers/registers from the client
+   * Function that set the date value to column delete_at into the client
+   * and into the containers/registers from the client
    * @param {*} id 
    * @returns 
    */
@@ -171,8 +177,8 @@ const clientService = {
     JOIN container ON (client.id = container.client_id) 
     JOIN register ON (client.id = register.client_id) 
     SET client.deleted_at = now(), container.deleted_at = now(), register.deleted_at = now() 
-    WHERE client.id = ${id} AND  container.deleted_at IS NULL AND register.deleted_at IS NULL;`;
-    [rows, fields] = await database.getPromise().query(sql, []);
+    WHERE client.id = ? AND  container.deleted_at IS NULL AND register.deleted_at IS NULL;`;
+    [rows, fields] = await database.getPromise().query(sql, [id]);
 
     /*if (rows.affectedRows < 1) {
       throw new Error(`Error deleting client, affected rows = ${rows.affectedRows}`);
@@ -235,9 +241,23 @@ async function selectClient(id, skip, limit) {
   if (id) {
     sql += `WHERE id = ${id} `;
   }
-  sql += `LIMIT ${skip || DEFAULT_SKIP},${limit || DEFAULT_LIMIT};`;
+  sql += `LIMIT ?,?;`;
   //console.log('-----------Query '+ sql);
-  return await database.getPromise().query(sql, [id]);
+  return await database.getPromise().query(sql, [skip || DEFAULT_SKIP, limit || DEFAULT_LIMIT]);
+}
+
+function parseActive(active) {
+  if (active == 1) return 1;    // Can be a string "1" or a integer
+  if (active === 'on') return 1;
+  if (active === true) return 1;
+  return 0;
+}
+
+function parseDate(date) {
+  if (date === '') return null;
+  if (date === null) return null;
+  if (date === undefined) return null;
+  return date;
 }
 
 module.exports = clientService;

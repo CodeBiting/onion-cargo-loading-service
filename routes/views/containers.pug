@@ -10,6 +10,15 @@ block content
      a(href='/ui/v1/clients') Clients
     li 
      a(href='/ui/v1/registers') Registers
+  if (result && result.message)
+    if (result.level === 'ERROR')
+      div.alert.error
+        strong Error!&nbsp;
+        | #{result.message}
+    else
+      div.alert.info
+        strong Success!&nbsp;
+        | #{result.message}
   article
    h2 Containers
    p Containers data

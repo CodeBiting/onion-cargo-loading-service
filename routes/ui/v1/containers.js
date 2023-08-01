@@ -16,31 +16,41 @@ router.get('/',async function(req, res, next){
 });
 
 router.post('/',async function(req,res,next){
-    let actions=`Error: We couldn't perform the actions.`;
-    if(req.body.method){
-        let containerDone;
-        if(req.body.method==1){
-            containerDone=await containerService.postContainer(req.body);
-            if(containerDone !== undefined){
-                actions = `Container ${containerDone.id} added.`;
-            }
-        } 
-        else if(req.body.method==2){
-            containerDone=containerService.putContainer(req.body.id,req.body);
-            if(containerDone !== undefined){
-                actions = `Container ${containerDone.id} modified.`;
-            }
-        }
-        else {
-            containerDone=containerService.deleteContainer(req.body.id);
-            if(containerDone !== undefined){
-                actions = `Container ${containerDone.id} deleted.`;
-            }
-        }
+    let result = {
+        message: ``,
+        level: 'INFO'
     }
+
+    try {
+      if(req.body.method){
+          let containerDone;
+          if(req.body.method==1){
+              containerDone = await containerService.postContainer(req.body);
+              if(containerDone !== undefined){
+                  result.message = `Container ${containerDone.id} added.`;
+              }
+          } 
+          else if(req.body.method==2){
+              containerDone = await containerService.putContainer(req.body.id,req.body);
+              if(containerDone !== undefined){
+                  result.message = `Container ${containerDone.id} modified.`;
+              }
+          }
+          else {
+              containerDone = await containerService.deleteContainer(req.body.id);
+              if(containerDone !== undefined){
+                  result.message = `Container ${containerDone.id} deleted.`;
+              }
+          }
+      }
+    } catch (ex) {
+        result.message =  `${ex.message}`;
+        result.level = 'ERROR';
+    }
+
     let pag=reqQuery.pagination({skip: req.body.skip, limit: req.body.limit-req.body.skip});
     query = await containerService.getContainers(pag,null,null);
-    res.render('containers', {title: 'Cargo Loading: Containers', gridColumns:JSON.stringify([{field:"id", initialWidth:ints},{field:"clientId", initialWidth:ints},{field:"code", initialWidth:strings},{field:"description", initialWidth:strings},{field:"width", initialWidth:ints},{field:"length", initialWidth:ints},{field:"height", initialWidth:ints},{field:"maxWeight", initialWidth:bigInts},]),rowData:JSON.stringify(query), skip:pag.skip, limit:pag.limit});
+    res.render('containers', {title: 'Cargo Loading: Containers', gridColumns:JSON.stringify([{field:"id", initialWidth:ints},{field:"clientId", initialWidth:ints},{field:"code", initialWidth:strings},{field:"description", initialWidth:strings},{field:"width", initialWidth:ints},{field:"length", initialWidth:ints},{field:"height", initialWidth:ints},{field:"maxWeight", initialWidth:bigInts},]),rowData:JSON.stringify(query), skip:pag.skip, limit:pag.limit, result: result});
 })
 
 module.exports = router;
