@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-const logger = require(`../../api/logger`);
-const ApiResult = require(`../../api/ApiResult`);
-const ApiError = require(`../../api/ApiError`);
-const registerService = require(`../../api/v1/registerService`);
-const reqQuery = require(`../../api/requestQuery`);
+const logger = require('../../api/logger');
+const ApiResult = require('../../api/ApiResult');
+const ApiError = require('../../api/ApiError');
+const registerService = require('../../api/v1/registerService');
+const reqQuery = require('../../api/requestQuery');
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -30,16 +30,16 @@ const API_NAME = 'register';
  *           example: 2023-12-25 12:45:32
  *         origin:
  *           type: string
- *         destiny: 
+ *         destiny:
  *           type: string
  *           description: url of the server to ask
- *         method: 
+ *         method:
  *           type: string
  *         requestId:
  *           type: string
- *         status: 
+ *         status:
  *           type: integer
- *         requestBody: 
+ *         requestBody:
  *           type: string
  *         responseData:
  *           type: string
@@ -78,15 +78,15 @@ const API_NAME = 'register';
  *               type: object
  *               $ref: '#/definitions/ApiResult'
   */
-router.get('/', async function(req, res, next) {
-  let errors = [];
+router.get('/', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let registers = null;
   try {
-    let pag = reqQuery.pagination(req.query);
-    let filter = reqQuery.filter(req.query);
-    let sort = reqQuery.sort(req.query);
-    registers = await registerService.getRegisters(pag,filter,sort);
+    const pag = reqQuery.pagination(req.query);
+    const filter = reqQuery.filter(req.query);
+    const sort = reqQuery.sort(req.query);
+    registers = await registerService.getRegisters(pag, filter, sort);
   } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
     status = 500;
@@ -138,13 +138,13 @@ router.get('/', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.get('/:id', async function(req, res, next) {
-  let errors = [];
+router.get('/:id', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let register = null;
   try {
     register = await registerService.getRegister(req.params.id);
-    if (register === undefined) {  
+    if (register === undefined) {
       status = 404;
       logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Register not found`);
       errors.push(
@@ -206,20 +206,20 @@ router.get('/:id', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.post('/', async function(req, res, next) {
-  let errors = [];
+router.post('/', async function (req, res, next) {
+  const errors = [];
   let status = 201;
   let registerCreated = null;
 
   try {
     registerCreated = await registerService.postRegister(req.body);
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
-    //console.log(ex);
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`);
+    // console.log(ex);
     status = 500;
     errors.push(new ApiError('REGISTER-001',
-      'Internal server error', 
-      ex.message, 
+      'Internal server error',
+      ex.message,
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/REGISTER-001`));
   }
 
@@ -267,8 +267,8 @@ router.post('/', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id', async function(req, res, next) {
-  let errors = [];
+router.put('/:id', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let registerUpdated = null;
 
@@ -337,8 +337,8 @@ router.put('/:id', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.delete('/:id', async function(req, res, next) {
-  let errors = [];
+router.delete('/:id', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let registerDeleted = null;
 
@@ -412,8 +412,8 @@ router.delete('/:id', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id/delete', async function(req, res, next) {
-  let errors = [];
+router.put('/:id/delete', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let registerDeleted = null;
 

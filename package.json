@@ -7,7 +7,7 @@
     "test": "node ./node_modules/mocha/bin/mocha",
     "test-apis": "node ./node_modules/mocha/bin/mocha ./test/api/",
     "test-routes": "node ./bin/www & P1=$! && sleep 2 && node ./node_modules/mocha/bin/mocha ./test/routes/v1/ && kill $P1",
-    "test-eslint": "node ./node_modules/.bin/eslint app.js",
+    "test-eslint": "node ./node_modules/.bin/eslint *.js bin/* api/*.js api/v1/*.js routes/v1/*.js routes/ui/v1/*.js",
     "nodemon": "nodemon ./bin/www"
   },
   "pre-commit": [

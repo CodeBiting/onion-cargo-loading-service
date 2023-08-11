@@ -1,12 +1,12 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-const logger = require(`../../api/logger`);
-const ApiResult = require(`../../api/ApiResult`);
-const ApiError = require(`../../api/ApiError`);
-const containerService = require(`../../api/v1/containerService`);
-const reqQuery = require(`../../api/requestQuery`);
-const volAnalysis = require(`../../api/VolumeAnalysis`);
+const logger = require('../../api/logger');
+const ApiResult = require('../../api/ApiResult');
+const ApiError = require('../../api/ApiError');
+const containerService = require('../../api/v1/containerService');
+const reqQuery = require('../../api/requestQuery');
+const volAnalysis = require('../../api/VolumeAnalysis');
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -87,18 +87,19 @@ const API_NAME = 'container';
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.get('/', async function(req, res, next) {
-  let errors = [];
+router.get('/', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let containers = null;
-  //logger.info(`test-message ${req.requestId}`);
+
+  // logger.info(`test-message ${req.requestId}`);
   try {
     if (req.query.clientId) {
       containers = await containerService.getClientContainers(req.query.clientId, req.query.skip, req.query.limit);
     } else {
-      let pag = reqQuery.pagination(req.query);
-      let filter = reqQuery.filter(req.query);
-      let sort = reqQuery.sort(req.query);
+      const pag = reqQuery.pagination(req.query);
+      const filter = reqQuery.filter(req.query);
+      const sort = reqQuery.sort(req.query);
       containers = await containerService.getContainers(pag, filter, sort);
     }
   } catch (ex) {
@@ -152,14 +153,15 @@ router.get('/', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
   */
-router.get('/:id', async function(req, res, next) {
-  let errors = [];
+router.get('/:id', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let container = null;
+
   try {
     container = await containerService.getContainer(req.params.id);
-    if (container === undefined) {  
-      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Container not found`)
+    if (container === undefined) {
+      logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: Container not found`);
       status = 404;
       errors.push(
         new ApiError(
@@ -201,7 +203,7 @@ router.get('/:id', async function(req, res, next) {
  *   post:
  *     tags:
  *       - Containers
- *     summary: Return the smallest container 
+ *     summary: Return the smallest container
  *     description: Return the smallest container where your products can fit
  *     produces:
  *       - application/json
@@ -227,33 +229,32 @@ router.get('/:id', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
   */
-router.post('/smallest/:clientId', async function(req, res, next) {
-  let errors = [];
+router.post('/smallest/:clientId', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let smallestContainerFound = null;
   let container = null;
+
   try {
-    let containers= await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
-    smallestContainerFound = volAnalysis.findPickingBox(containers,req.body);
-    if(smallestContainerFound){
-      if(smallestContainerFound.returnValue===0){
+    const containers = await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
+    smallestContainerFound = volAnalysis.findPickingBox(containers, req.body);
+    if (smallestContainerFound) {
+      if (smallestContainerFound.returnValue === 0) {
         container = [smallestContainerFound.boxFound];
-      }
-      else{
-        status=404;
+      } else {
+        status = 404;
         errors.push(
           new ApiError(
-          'CONTAINER-001',
-          'Smallest Container Not Found',
-          smallestContainerFound.message,
-          `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
-        ))
+            'CONTAINER-001',
+            'Smallest Container Not Found',
+            smallestContainerFound.message,
+            `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+          ));
       }
+    } else {
+      throw new Error('Expected result for findPickingBox but not found');
     }
-    else{
-     throw new Error('Expected result for findPickingBox but not found'); 
-    }
-  } catch(ex){
+  } catch (ex) {
     logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`);
     status = 500;
     errors.push(
@@ -300,11 +301,11 @@ router.post('/smallest/:clientId', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.post('/', async function(req, res, next) {
-  let errors = [];
+router.post('/', async function (req, res, next) {
+  const errors = [];
   let status = 201;
   let containerCreated = null;
-  
+
   try {
     containerCreated = await containerService.postContainer(req.body);
   } catch (ex) {
@@ -313,8 +314,8 @@ router.post('/', async function(req, res, next) {
     );
     status = 500;
     errors.push(new ApiError('CONTAINER-001',
-      'Internal server error', 
-      ex.message, 
+      'Internal server error',
+      ex.message,
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
   }
 
@@ -363,9 +364,9 @@ router.post('/', async function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', async function (req, res, next) {
   logger.info(`About to update client id: ${req.params.id}`);
-  let errors = [];
+  const errors = [];
   let status = 200;
   let containerUpdated = null;
 
@@ -389,14 +390,14 @@ router.put('/:id', async function(req, res, next) {
       );
     }
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`)
-    //console.log(ex);
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`);
+    // console.log(ex);
     status = 500;
     errors.push(new ApiError('CONTAINER-001',
       'Internal server error',
       'Server has an internal error with the request',
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`));
-    return res.status(500).json(new ApiResult("ERROR", containerUpdated === undefined, errors));
+    return res.status(500).json(new ApiResult('ERROR', containerUpdated === undefined, errors));
   }
 
   res
@@ -437,8 +438,8 @@ router.put('/:id', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.delete('/:id', async function(req, res, next) {
-  let errors = [];
+router.delete('/:id', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let containerDeleted = null;
 
@@ -512,10 +513,11 @@ router.delete('/:id', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id/delete', async function(req, res, next) {
-  let errors = [];
+router.put('/:id/delete', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let containerDeleted = null;
+
   try {
     containerDeleted = await containerService.dateDeleteContainer(req.params.id);
     if (containerDeleted === undefined) {

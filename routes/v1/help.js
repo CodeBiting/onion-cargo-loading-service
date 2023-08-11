@@ -1,10 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-const logger = require(`../../api/logger`);
-const ApiResult = require(`../../api/ApiResult`);
-const ApiError = require(`../../api/ApiError`);
-const helpData = require(`../..//api/v1/help.json`);
+const logger = require('../../api/logger');
+const ApiResult = require('../../api/ApiResult');
+const ApiError = require('../../api/ApiError');
+const helpData = require('../..//api/v1/help.json');
 
 // Constants to structure logs
 const API_NAME = 'help';
@@ -78,7 +78,7 @@ router.get('/error/', function (req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 router.get('/error/:code', function (req, res, next) {
-  let errors = [];
+  const errors = [];
   let status = 200;
   let helpFound = null;
 
@@ -93,7 +93,7 @@ router.get('/error/:code', function (req, res, next) {
         new ApiError(
           'HELP-001',
           'Incorrect code, this code does not exist',
-          'Ensure that the code included in the request are correct',
+          'Ensure that the code included in the request are correct'
         )
       );
     }
@@ -106,8 +106,8 @@ router.get('/error/:code', function (req, res, next) {
       new ApiError(
         'HELP-002',
         'Internal server error',
-        'Server has an internal error with the request',
-        
+        'Server has an internal error with the request'
+
       )
     );
   }

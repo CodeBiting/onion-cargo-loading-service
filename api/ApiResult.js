@@ -1,5 +1,3 @@
-const ApiError = require(`./ApiError`);
-
 /**
  * @swagger
  *   definitions:
@@ -18,7 +16,7 @@ const ApiError = require(`./ApiError`);
  *           type: "string"
  *         errors:
  *           type: "array"
- *           items: 
+ *           items:
  *             type : "object"
  *             description : "name of the object"
  *             properties:
@@ -34,21 +32,21 @@ const ApiError = require(`./ApiError`);
  */
 class ApiResult {
   /**
-   * 
-   * @param {*} status 
-   * @param {*} data 
+   *
+   * @param {*} status
+   * @param {*} data
    * @param {*} requestedId
    * @param {*} error : object from class ApiError
    */
-  constructor(status, data, requestId,  errors) {
+  constructor (status, data, requestId, errors) {
     this.status = status;
     this.data = data;
     this.requestId = requestId;
     this.errors = [];
 
-    if (errors && Array.isArray(errors) ) {
+    if (errors && Array.isArray(errors)) {
       this.errors = [...this.errors, ...errors];
-    }     
+    }
   }
 }
 

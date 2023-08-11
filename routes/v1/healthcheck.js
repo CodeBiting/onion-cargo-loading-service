@@ -1,10 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-const logger = require(`../../api/logger`);
-const ApiResult = require(`../../api/ApiResult`);
-const ApiError = require(`../../api/ApiError`);
-const containerService = require(`../../api/v1/containerService`);
+const logger = require('../../api/logger');
+const ApiResult = require('../../api/ApiResult');
+const ApiError = require('../../api/ApiError');
+const containerService = require('../../api/v1/containerService');
 
 const HELP_BASE_URL = '/help/error';
 
@@ -47,12 +47,12 @@ const API_NAME = 'container';
  */
 
 router.get('/', function (req, res, next) {
-  let errors = [];
+  const errors = [];
   let status = 200;
   let container = null;
   try {
-    //The call is correct when return status code 200 or 404 and incorrect when return 500
-    //When return 200 or 404 the container is running, its not important the return of the information
+    // The call is correct when return status code 200 or 404 and incorrect when return 500
+    // When return 200 or 404 the container is running, its not important the return of the information
     container = containerService.getContainer(1);
   } catch (ex) {
     logger.error(

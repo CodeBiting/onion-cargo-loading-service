@@ -1,12 +1,12 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-const logger = require(`../../api/logger`);
-const ApiResult = require(`../../api/ApiResult`);
-const ApiError = require(`../../api/ApiError`);
-const clientService = require(`../../api/v1/clientService`);
-const containerService = require(`../../api/v1/containerService`);
-const reqQuery = require(`../../api/requestQuery`);
+const logger = require('../../api/logger');
+const ApiResult = require('../../api/ApiResult');
+const ApiError = require('../../api/ApiError');
+const clientService = require('../../api/v1/clientService');
+const containerService = require('../../api/v1/containerService');
+const reqQuery = require('../../api/requestQuery');
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -75,14 +75,15 @@ const API_NAME = 'client';
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.get('/',async function(req, res, next) {
-  let errors = [];
+router.get('/', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let clients = null;
+
   try {
-    let pag = reqQuery.pagination(req.query);
-    let filter = reqQuery.filter(req.query);
-    let sort = reqQuery.sort(req.query);
+    const pag = reqQuery.pagination(req.query);
+    const filter = reqQuery.filter(req.query);
+    const sort = reqQuery.sort(req.query);
     clients = await clientService.getClients(pag, filter, sort);
   } catch (ex) {
     logger.error(
@@ -124,7 +125,7 @@ router.get('/',async function(req, res, next) {
  *     parameters:
  *       - in: query
  *         name: id
- *         description: Client ID to search your Containers 
+ *         description: Client ID to search your Containers
  *         schema:
  *           type: integer
  *         required: true
@@ -150,10 +151,11 @@ router.get('/',async function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 
-router.get('/:id/containers', async function(req, res, next) {
+router.get('/:id/containers', async function (req, res, next) {
   let status = 200;
   let containers = null;
-  let errors = [];
+  const errors = [];
+
   try {
     containers = await containerService.getClientContainers(req.query.id, req.query.skip, req.query.limit);
   } catch (ex) {
@@ -208,10 +210,11 @@ router.get('/:id/containers', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.get('/:id', async function(req, res, next) {
-  let errors = [];
+router.get('/:id', async function (req, res, next) {
+  const errors = [];
   let status = 200;
   let client = null;
+
   try {
     client = await clientService.getClient(req.params.id);
     if (client === undefined) {
@@ -281,19 +284,19 @@ router.get('/:id', async function(req, res, next) {
  *               $ref: '#/definitions/ApiResult'
  */
 
-router.post('/', async function(req, res, next) {
-  let errors = [];
+router.post('/', async function (req, res, next) {
+  const errors = [];
   let clientCreated = null;
   let status = 201;
+
   try {
     clientCreated = await clientService.postClient(req.body);
-    
   } catch (ex) {
-    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`)
+    logger.error(`${API_NAME}: [${req.method}] ${req.originalUrl}: ${ex}`);
     status = 500;
     errors.push(new ApiError('CLIENT-001',
-      'Internal server error', 
-      ex.message, 
+      'Internal server error',
+      ex.message,
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
   }
   res
@@ -340,12 +343,12 @@ router.post('/', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', async function (req, res, next) {
   logger.info(`About to update client id: ${req.params.id}`);
-  let errors = [];
+  const errors = [];
   let status = 200;
   let clientUpdated = null;
-  
+
   try {
     const id = req.params.id;
     const clientNewData = req.body;
@@ -391,7 +394,7 @@ router.put('/:id', async function(req, res, next) {
       'Internal server error',
       ex.message,
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
-    return res.status(500).json(new ApiResult("ERROR", clientUpdated === undefined, errors));
+    return res.status(500).json(new ApiResult('ERROR', clientUpdated === undefined, errors));
   }
   res
     .status(status)
@@ -431,11 +434,12 @@ router.put('/:id', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id', async function (req, res, next) {
   logger.info(`About to delete client id: ${req.params.id}`);
-  let errors = [];
+  const errors = [];
   let status = 200;
   let clientDeleted = null;
+
   try {
     const id = req.params.id;
 
@@ -463,7 +467,7 @@ router.delete('/:id', async function(req, res, next) {
       'Internal server error',
       ex.message,
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
-      return res.status(500).json(new ApiResult("ERROR", clientDeleted === undefined, errors));
+    return res.status(500).json(new ApiResult('ERROR', clientDeleted === undefined, errors));
   }
   res
     .status(status)
@@ -503,11 +507,12 @@ router.delete('/:id', async function(req, res, next) {
  *               type: object
  *               $ref: '#/definitions/ApiResult'
  */
-router.put('/:id/delete', async function(req, res, next) {
+router.put('/:id/delete', async function (req, res, next) {
   logger.info(`About to delete client id: ${req.params.id}`);
-  let errors = [];
+  const errors = [];
   let status = 200;
   let clientDeleted = null;
+
   try {
     const id = req.params.id;
 
@@ -535,7 +540,7 @@ router.put('/:id/delete', async function(req, res, next) {
       'Internal server error',
       ex.message,
       `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CLIENT-001`));
-      return res.status(500).json(new ApiResult("ERROR", clientDeleted === undefined, errors));
+    return res.status(500).json(new ApiResult('ERROR', clientDeleted === undefined, errors));
   }
   res
     .status(status)

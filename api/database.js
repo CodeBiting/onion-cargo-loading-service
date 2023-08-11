@@ -1,4 +1,4 @@
-var mysql = require('mysql2');
+const mysql = require('mysql2');
 
 // var pool = mysql.createPool({
 //   host: 'localhost',
@@ -11,10 +11,9 @@ var mysql = require('mysql2');
 //   queueLimit: 0
 // });
 
-//var config = require('../config/config');
+// var config = require('../config/config');
 
-
-var state = {
+const state = {
   pool: null,
   promisePool: null
 };
@@ -29,7 +28,6 @@ exports.connect = function (db, done) {
       database: db.database,
       connectionLimit: db.connectionLimit
     });
-    
   } else {
     state.pool = mysql.createPool({
       host: db.host,
