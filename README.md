@@ -252,8 +252,8 @@ Per tal d'assegurar que abans de cada commit es passen tots els tests i que no e
 
 Per això afegim els paquets:
 
-- (ESLInt)[https://github.com/eslint/eslint]
-- (pre-commit)[https://pre-commit.com/]
+- [ESLInt](https://github.com/eslint/eslint)
+- [pre-commit](https://pre-commit.com/)
 
 ### Configuració de eslint
 
