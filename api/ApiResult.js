@@ -1,4 +1,4 @@
-const ApiError = require(`${__base}api/ApiError`);
+const ApiError = require(`./ApiError`);
 
 /**
  * @swagger

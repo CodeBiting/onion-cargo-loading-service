@@ -1,8 +1,8 @@
 var express = require('express');
 //const { pagination } = require('../../../api/requestQuery');
 var router = express.Router();
-const clientService = require(`${__base}api/v1/clientService`);
-const reqQuery = require(`${__base}api/requestQuery`);
+const clientService = require(`../../../api/v1/clientService`);
+const reqQuery = require(`../../../api/requestQuery`);
 
 const ints = 100;
 const dates=250;

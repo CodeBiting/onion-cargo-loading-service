@@ -7,11 +7,13 @@
     "test": "node ./node_modules/mocha/bin/mocha",
     "test-apis": "node ./node_modules/mocha/bin/mocha ./test/api/",
     "test-routes": "node ./bin/www & P1=$! && sleep 2 && node ./node_modules/mocha/bin/mocha ./test/routes/v1/ && kill $P1",
+    "test-eslint": "node ./node_modules/.bin/eslint app.js",
     "nodemon": "nodemon ./bin/www"
   },
   "pre-commit": [
     "test-apis",
-    "test-routes"
+    "test-routes",
+    "test-eslint"
   ],
   "dependencies": {
     "body-parser": "^1.20.2",

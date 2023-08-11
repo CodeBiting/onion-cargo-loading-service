@@ -1,8 +1,8 @@
 const mysql = require('mysql2');
 const { log } = require('winston');
 
-const database = require(`${__base}api/database`);
-const requestQuery = require(`${__base}api/requestQuery`);
+const database = require(`../../api/database`);
+const requestQuery = require(`../../api/requestQuery`);
 const DEFAULT_SKIP = 0;
 const DEFAULT_LIMIT = 150;
 

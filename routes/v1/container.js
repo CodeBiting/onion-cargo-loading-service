@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-const logger = require(`${__base}api/logger`);
-const ApiResult = require(`${__base}api/ApiResult`);
-const ApiError = require(`${__base}api/ApiError`);
-const containerService = require(`${__base}api/v1/containerService`);
-const reqQuery = require(`${__base}api/requestQuery`);
-const volAnalysis = require(`${__base}api/VolumeAnalysis`);
+const logger = require(`../../api/logger`);
+const ApiResult = require(`../../api/ApiResult`);
+const ApiError = require(`../../api/ApiError`);
+const containerService = require(`../../api/v1/containerService`);
+const reqQuery = require(`../../api/requestQuery`);
+const volAnalysis = require(`../../api/VolumeAnalysis`);
 
 const HELP_BASE_URL = '/v1/help/error';
 

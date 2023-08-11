@@ -26,7 +26,6 @@ const swaggerOptions = {
       servers: ['http://localhost:8080']
     }
   },
-  //basePath: `${__base}`,
   // APIs to document
   apis: [
     './routes/v1/healthcheck.js',

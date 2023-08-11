@@ -246,6 +246,57 @@ Mes info a:
 - <https://www.freecodecamp.org/news/how-to-build-explicit-apis-with-openapi/>
 - <https://github.com/kogosoftwarellc/open-api/tree/master/packages/express-openapi#readme>
 
+## Configuració de tests i lintatge
+
+Per tal d'assegurar que abans de cada commit es passen tots els tests i que no es puja res a github que no funcioni s'afegeix un paquet que permet executar els tests en entron de desenvlupament [amb els git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
+
+Per això afegim els paquets:
+
+- (ESLInt)[https://github.com/eslint/eslint]
+- (pre-commit)[https://pre-commit.com/]
+
+### Configuració de eslint
+
+Hem de configurar el es-lint per assegurar que es respecta l'estil i no hi ha errors estàtics en el codi.
+Per defecte hem triat l'[estandarjs](https://standardjs.com). Les regles configurables es poden trobar [aquí](https://eslint.org/docs/latest/rules/indent#switchcase) Hi fem algunes modificacions específiques de CodeBiting.
+
+1. Creem el fitxer `.eslintrc.js`, aquest fitxer es crea quan configurem l'eslint amb la comanda `npm init @eslint/config`.
+2. Probem que funciona executant l'eslint d'un fitxer amb la comanda `node ./node_modules/.bin/eslint yourfile.js`
+
+### Configuració de pre-commit
+
+El paquet pre-commit executa els tests configurats al `package.json`, per això hem d'afegir una secció indicant les comandes que s'executaran:
+
+```json
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "node ./node_modules/mocha/bin/mocha",
+    "test-apis": "node ./node_modules/mocha/bin/mocha ./test/api/",
+    "test-routes": "node ./bin/www & P1=$! && sleep 2 && node ./node_modules/mocha/bin/mocha ./test/routes/v1/ && kill $P1",
+    "test-eslint": "node ./node_modules/.bin/eslint app.js",
+    "nodemon": "nodemon ./bin/www"
+  },
+  "pre-commit": [
+    "test-apis",
+    "test-routes",
+    "test-eslint"
+  ],
+```
+
+Podem veure que hem afegit els següents scripts:
+
+- test-apis: executa els tests de les api amb mocha
+- test-routes: executa els tests de les rutes amb mocha i chai-http, per aquest es següeixen els següents passos
+  1. Amb `node ./bin/www & P1=$!` aixequem el servei i ens guardem el PID
+  2. Amb `sleep 2` esperem 2 segons a que s'aixequi el servei
+  3. Amb `node ./node_modules/mocha/bin/mocha ./test/routes/v1/` executem els tests
+  4. Amb `kill $P1` tanquem el servei
+
+En la secció `pre-commit` cridem els scripts que s'executaran abans de fer un commit. Hem de tenir en compte que:
+
+1. S'executaran els test tant si fem un commit des de command line com de Visual Studio Code. Ex: `commit -a -m "missatge"`
+2. Si un dels tests falla no es realitza el commit.
+
 ## Desplegament
 
 ### Desplegar amb PM2 en un VPS

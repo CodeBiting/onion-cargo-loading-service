@@ -1,8 +1,8 @@
 var express = require('express');
 //const { pagination } = require('../../../api/requestQuery');
 var router = express.Router();
-const containerService = require(`${__base}api/v1/containerService`);
-const reqQuery = require(`${__base}api/requestQuery`);
+const containerService = require(`../../../api/v1/containerService`);
+const reqQuery = require(`../../../api/requestQuery`);
 
 const ints = 100;
 const bigInts = 150;

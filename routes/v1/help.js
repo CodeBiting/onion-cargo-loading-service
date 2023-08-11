@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-const logger = require(`${__base}api/logger`);
-const ApiResult = require(`${__base}api/ApiResult`);
-const ApiError = require(`${__base}api/ApiError`);
-const helpData = require(`${__base}/api/v1/help.json`);
+const logger = require(`../../api/logger`);
+const ApiResult = require(`../../api/ApiResult`);
+const ApiError = require(`../../api/ApiError`);
+const helpData = require(`../..//api/v1/help.json`);
 
 // Constants to structure logs
 const API_NAME = 'help';
