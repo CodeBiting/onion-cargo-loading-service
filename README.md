@@ -303,6 +303,8 @@ Per tal de que quan es puja el projecte es torni a passar els testos, a dins de 
 
 Ara cada vegada que fem commit, a part d'executar-se els tests pel git pre-commit es pujarà i s'executaran els tests al github.
 
+Per veure els logs d'aquesta acció, a dins del projecte, a la pestanya "Actions" es poden veure les execucions dels workflows i el motiu d'error, si n'hi ha.
+
 ## Desplegament
 
 ### Desplegar amb PM2 en un VPS

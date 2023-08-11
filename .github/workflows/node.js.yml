@@ -29,5 +29,5 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm run test-apis
-    - run: npm run test-routes
+    # - run: npm run test-routes # can not run beacuse there is no database and no config file
     - run: npm run test-eslint
