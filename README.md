@@ -301,7 +301,13 @@ En la secció `pre-commit` cridem els scripts que s'executaran abans de fer un c
 
 Per tal de que quan es puja el projecte es torni a passar els testos, a dins de hithub s'afegeix l'action "" que crea le fitxer `.github/workflows/node.js.yml` a on especifiquem els tests que s'han d'executar.
 
-Ara cada vegada que fem commit, a part d'executar-se els tests pel git pre-commit es pujarà i s'executaran els tests al github.
+Ara cada vegada que fem commit, a part d'executar-se els tests pel git pre-commit es pujarà i s'executaran els tests al github. Aquesta execució de tests es farà per triplicat, una per cada versió de Node.js especificada en el fitxer de configuració del workflow `.github/workflows/node.js.yml`.
+
+Veure:
+
+- [Entendre les actions de github](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions)
+- [Action testejar una applicació Node.js](https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs)
+- `npm ci` bypasses a package’s package.json to install modules from a package’s lockfile. This ensures reproducible builds—you are getting exactly what you expect on every install. [Mes info](https://blog.npmjs.org/post/171556855892/introducing-npm-ci-for-faster-more-reliable)
 
 Per veure els logs d'aquesta acció, a dins del projecte, a la pestanya "Actions" es poden veure les execucions dels workflows i el motiu d'error, si n'hi ha.
 

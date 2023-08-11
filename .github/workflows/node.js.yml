@@ -20,14 +20,15 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
+    # Checkout the source code
+    - name: Checkout
+      uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
     - run: npm run test-apis
-    # - run: npm run test-routes # can not run beacuse there is no database and no config file
+    # - run: npm run test-routes # can not run because there is no database and no config file //TODO: 
     - run: npm run test-eslint
