@@ -263,7 +263,7 @@ Per defecte hem triat l'[estandarjs](https://standardjs.com). Les regles configu
 1. Creem el fitxer `.eslintrc.js`, aquest fitxer es crea quan configurem l'eslint amb la comanda `npm init @eslint/config`.
 2. Probem que funciona executant l'eslint d'un fitxer amb la comanda `node ./node_modules/.bin/eslint yourfile.js`
 
-### Configuració de pre-commit
+### Configuració del git pre-commit
 
 El paquet pre-commit executa els tests configurats al `package.json`, per això hem d'afegir una secció indicant les comandes que s'executaran:
 
@@ -296,6 +296,12 @@ En la secció `pre-commit` cridem els scripts que s'executaran abans de fer un c
 
 1. S'executaran els test tant si fem un commit des de command line com de Visual Studio Code. Ex: `commit -a -m "missatge"`
 2. Si un dels tests falla no es realitza el commit.
+
+### Configuració d'una action de github
+
+Per tal de que quan es puja el projecte es torni a passar els testos, a dins de hithub s'afegeix l'action "" que crea le fitxer `.github/workflows/node.js.yml` a on especifiquem els tests que s'han d'executar.
+
+Ara cada vegada que fem commit, a part d'executar-se els tests pel git pre-commit es pujarà i s'executaran els tests al github.
 
 ## Desplegament
 
