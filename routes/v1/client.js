@@ -516,7 +516,7 @@ router.put('/:id/delete', async function (req, res, next) {
   try {
     const id = req.params.id;
 
-    clientDeleted = await clientService.dateDeleteClient(id);
+    clientDeleted = await clientService.desactivateClient(id);
 
     if (clientDeleted === undefined) {
       logger.info(`About to client not exist id: ${req.params.id}`);

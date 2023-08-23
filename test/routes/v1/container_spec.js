@@ -177,7 +177,7 @@ describe('API Container ', () => {
       });
   });
 
-  it('should return error because there is no container enoght big to save the product', (done) =>{
+  it('should return error because there is no container ', (done) =>{
     const clientId = 1;
     chai
       .request(URL)

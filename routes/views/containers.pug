@@ -1,155 +1,240 @@
 extends layout
 
 block content
-  header
-   h1 Cargo Loading Service
-   ul
-    li 
-     p Containers
-    li 
-     a(href='/ui/v1/clients') Clients
-    li 
-     a(href='/ui/v1/registers') Registers
-  if (result && result.message)
-    if (result.level === 'ERROR')
-      div.alert.error
-        strong Error!&nbsp;
-        | #{result.message}
-    else
-      div.alert.info
-        strong Success!&nbsp;
-        | #{result.message}
-  article
-   h2 Containers
-   p Containers data
-   section
-    form(action='/ui/v1/containers', method='post')
-     p 
-      label(for='skip') From 
-      input#skip(type='text', name='skip', value=`${skip}`) 
-     p
-      label(for='limit') to 
-      input#limit(type='text', name='limit', value=`${parseInt(skip)+parseInt(limit)}`)
-     button(onclick='submit') Search
-    .ag-theme-alpine-dark#myGrid(style='height: 500px;width: 90%;')
-    a.firstButton
-     button.add Add
-    a
-     button.mod Modify
-    a
-     button.del Delete
-  footer
-     span
-      a(href='https://github.com/CodeBiting', target='_blank') CodeBiting&copy
-  div.popup.add
-   a.close_btn &times;
-   h2 Add
-   form(action='/ui/v1/containers', method='post')
-    div.form_elemen
-     label(for='clientId') Client Id: 
-     input(type="number", name='clientId', required)
-    div.form_elemen
-     label(for='code') Code: 
-     input(type="text", name='code', required)
-    div.form_elemen
-     label(for='dateStart') Description: 
-     input(type="text", name='description')
-    div.form_elemen
-     label(for='width') Width: 
-     input(type="number", name='width', required)
-    div.form_elemen
-     label(for='length') Length: 
-     input(type="number", name='length', required)
-    div.form_elemen
-     label(for='height') Height: 
-     input(type="number", name='height', required)
-    div.form_elemen
-     label(for='maxWeight') Max. Weight: 
-     input(type="number", name='maxWeight')
-    input(type="hidden" name='method' value=1)
-    button() Submit
-  div.popup.mod
-   a.close_btn &times;
-   h2 Modify
-   form(action='/ui/v1/containers', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
-    div.form_elemen
-     label(for='id') ID: 
-     input(type="number", name='id', required)
-    div.form_elemen
-     label(for='clientId') Client Id: 
-     input(type="number", name='clientId', required)
-    div.form_elemen
-     label(for='code') Code: 
-     input(type="text", name='code', required)
-    div.form_elemen
-     label(for='description') Description: 
-     input(type="text", name='description')
-    div.form_elemen
-     label(for='width') Width: 
-     input(type="number", name='width', required)
-    div.form_elemen
-     label(for='length') Length: 
-     input(type="number", name='length', required)
-    div.form_elemen
-     label(for='height') Height: 
-     input(type="number", name='height', required)
-    div.form_elemen
-     label(for='maxWeight') Max. Weight: 
-     input(type="number", name='maxWeight')
-    input(type="hidden" name='method' value=2)
-    button() Submit
-  div.popup.del
-   a.close_btn &times;
-   h2 Delete
-   form(action='/ui/v1/containers', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
-    div.form_elemen
-     label(for='id') ID of the Container to delete: 
-     input(type="number", name='id', required)
-    input(type="hidden" name='method' value=3)
-    button() Submit
-
-  //Grid script
-  - var gridCols= gridColumns
-  - var gridData= rowData
-  script(type='text/javascript').
-     document.querySelector(".add").addEventListener("click", function(){
+   header
+      h1(data-test='service-heading') Cargo Loading Service
+      ul
+         li 
+            p Containers
+         li 
+            a(href='/ui/v1/clients') Clients
+         li 
+            a(href='/ui/v1/registers') Registers
+   if (result && result.message)
+      if (result.level === 'ERROR')
+         div(data-test='message-error').alert.error
+            strong Error!&nbsp;
+            | #{result.message}
+      else
+         div(data-test='message-info').alert.info
+            strong Success!&nbsp;
+            | #{result.message}
+   article#article
+      h2(data-test='container-heading') Containers
+      p Containers data
+      a.firstButton
+         button#buttonHelp(data-test='usage-info', type="button",onclick="showUsage()") Help
+      div#usage
+         h2 Usage
+         p Here we explain how to use this page:
+         ul 
+         li a
+         li a
+         li b 
+         li b 
+      section
+         form(data-test='pagination-form', action='/ui/v1/containers', method='post')
+            p 
+               label(for='skip') From 
+               input#skip(data-test='pagination-form-skip', type='text', name='skip', value=`${skip}`) 
+            p
+               label(for='limit') to 
+               input#limit(data-test='pagination-form-limit', type='text', name='limit', value=`${parseInt(skip)+parseInt(limit)}`)
+            button(data-test='pagination-form-submit', onclick='submit') Search
+         .ag-theme-alpine-dark#myGrid(data-test='data-grid', style='height: 500px;width: 90%;')
+         a.firstButton
+            button.add(data-test='add-button') Add
+         a
+            button.mod(data-test='modify-button') Modify
+         a
+            button.des(data-test='desactivate-button') Desactivate
+         a
+            button.del(data-test='delete-button') Delete
+   footer
+      span
+         a(href='https://github.com/CodeBiting', target='_blank') CodeBiting&copy
+   div.popup.add
+      a.close_btn &times;
+      h2 Add
+      form(data-test='add-form', action='/ui/v1/containers', method='post')
+         div.form_elemen
+            label(for='clientId') Client Id: 
+            input(data-test='add-form-clientId', type="number", name='clientId', placeholder='0')
+         div.form_elemen
+            label(for='code') Code: 
+            input(data-test='add-form-code', type="text", name='code', required)
+         div.form_elemen
+            label(for='description') Description: 
+            input(data-test='add-form-description', type="text", name='description')
+         div.form_elemen
+            label(for='width') Width: 
+            input(data-test='add-form-width', type="number", name='width', required, value='0')
+         div.form_elemen
+            label(for='length') Length: 
+            input(data-test='add-form-length', type="number", name='length', required, value='0')
+         div.form_elemen
+            label(for='height') Height: 
+            input(data-test='add-form-height', type="number", name='height', required, value='0')
+         div.form_elemen
+            label(for='maxWeight') Max. Weight: 
+            input(data-test='add-form-maxWeight', type="number", name='maxWeight', required, value='0')
+         input(data-test='add-form-method', type="hidden" name='method' value=1)
+         button(data-test='add-form-submit') Submit
+   div.popup.mod
+      a.close_btn &times;
+      h2 Modify
+      form(data-test='modify-form', action='/ui/v1/containers', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+         div.form_elemen
+            label(for='id') ID: 
+            input#containerIdMod(data-test='modify-form-id', type="number", name='id', required)
+         div.form_elemen
+            label(for='clientId') Client Id: 
+            input#clientId(data-test='modify-form-clientId', type="number", name='clientId', required)
+         div.form_elemen
+            label(for='code') Code: 
+            input#code(data-test='modify-form-code', type="text", name='code', required)
+         div.form_elemen
+            label(for='description') Description: 
+            input#description(data-test='modify-form-description', type="text", name='description')
+         div.form_elemen
+            label(for='width') Width: 
+            input#width(data-test='modify-form-width', type="number", name='width', required)
+         div.form_elemen
+            label(for='length') Length: 
+            input#length(data-test='modify-form-length', type="number", name='length', required)
+         div.form_elemen
+            label(for='height') Height: 
+            input#height(data-test='modify-form-height', type="number", name='height', required)
+         div.form_elemen
+            label(for='maxWeight') Max. Weight: 
+            input#maxWeight(data-test='modify-form-maxWeight', type="number", name='maxWeight')
+         input(data-test='modify-form-method', type="hidden" name='method' value=2)
+         button(data-test='modify-form-submit') Submit
+   div.popup.del
+      a.close_btn &times;
+      h2 Delete
+      form(data-test='delete-form',action='/ui/v1/containers', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+         div.form_elemen
+            label(for='id') ID of the Container to delete: 
+            input#idDelete(data-test='delete-form-id', type="number", name='id', required)
+         input(data-test='delete-form-method', type="hidden" name='method' value=3)
+         button(data-test='delete-form-submit') Submit
+   div.popup.des
+      a.close_btn &times;
+      h2 Desactivate
+      form(data-test='desactivate-form', action='/ui/v1/containers', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+         div.form_elemen
+            label(for='id') ID of the Container to desactivate: 
+            input#idDesactivate(data-test='desactivate-form-id', type="number", name='id', required)
+         input(data-test='desactivate-form-method', type="hidden" name='method' value=4)
+         button(data-test='desactivate-form-submit') Submit
+   if (desactivated !== false)
+      div.popup.active
+         h3 There's one Container with the same Code that is Desactivated. 
+         h3 Would you like to activate it?
+         form(data-test='active-form', action='/ui/v1/containers', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+            div.form_elemen
+               input(data-test='active-form-method', type="hidden" name='method' value=5)
+               input(data-test='active-form-id', type="hidden" name='id' value=`${idToActive}`)
+               button(data-test='active-form-submit') Accept
+            div.form_elemen
+               button(data-test='active-close', type='button')#active Cancel
+   - var gridCols= gridColumns
+   - var gridData= rowData
+   script(type='text/javascript').
+      //Open popups
+      //add
+      document.querySelector(".add").addEventListener("click", function(){
          document.querySelector(".popup.add").classList.add("active");
       });
+      //delete
       document.querySelector(".del").addEventListener("click", function(){
+         let selectedRows = gridOptions.api.getSelectedRows();
+         if(selectedRows){
+            document.getElementById("idDelete").value = `${selectedRows[0].id}`;
+         }
          document.querySelector(".popup.del").classList.add("active");
       });
+      //modify
       document.querySelector(".mod").addEventListener("click", function(){
+         let selectedRows = gridOptions.api.getSelectedRows();
+         if(selectedRows){
+            document.getElementById("containerIdMod").value = `${selectedRows[0].id}`;
+            document.getElementById("clientId").value = `${selectedRows[0].clientId}`;
+            document.getElementById("code").value = `${selectedRows[0].code}`;
+            document.getElementById("description").value = `${selectedRows[0].description}`;
+            document.getElementById("width").value = `${selectedRows[0].width}`;
+            document.getElementById("length").value = `${selectedRows[0].length}`;
+            document.getElementById("height").value = `${selectedRows[0].height}`;
+            document.getElementById("maxWeight").value = `${selectedRows[0].maxWeight}`;
+         }
          document.querySelector(".popup.mod").classList.add("active");
       });
-     document.querySelector(".popup.add .close_btn").addEventListener("click", function(){
-      document.querySelector(".popup.add").classList.remove("active");
-     });
-     document.querySelector(".popup.mod .close_btn").addEventListener("click", function(){
-      document.querySelector(".popup.mod").classList.remove("active");
-     });
-     document.querySelector(".popup.del .close_btn").addEventListener("click", function(){
-      document.querySelector(".popup.del").classList.remove("active");
-     });
-     function deselect(){
-         gridOptions.api.deselectAll()
+      //desactivate
+      document.querySelector(".des").addEventListener("click", function(){
+         let selectedRows = gridOptions.api.getSelectedRows();
+         if(selectedRows){
+            document.getElementById("idDesactivate").value = `${selectedRows[0].id}`;
+         }
+         document.querySelector(".popup.des").classList.add("active");
+      });
+      //Close popups
+      //add
+      document.querySelector(".popup.add .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.add").classList.remove("active");
+      });
+      //modify
+      document.querySelector(".popup.mod .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.mod").classList.remove("active");
+      });
+      //delete
+      document.querySelector(".popup.del .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.del").classList.remove("active");
+      });
+      //desactivate
+      document.querySelector(".popup.des .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.des").classList.remove("active");
+      });
+      //activate
+      if(!{desactivated} !== false){
+      document.querySelector(".popup.active #active").addEventListener("click", function(){
+         document.querySelector(".popup.active").classList.remove("active");
+      });
      }
+     //Usage
+     function showUsage() {
+         if(document.getElementById('usage').style.display === "block") {
+            document.getElementById('buttonHelp').innerHTML = "Help";
+            document.getElementById('usage').style.display = "none";
+            document.getElementById('article').style.height = "82.9vh";
+         }else {
+            document.getElementById('usage').style.display = "block";
+            document.getElementById('article').style.height = "100vh";
+            document.getElementById('buttonHelp').innerHTML = "Close";
+         }
+      }
+     /*function deselect() {
+         gridOptions.api.deselectAll()
+     }*/
      // get div to host the grid
      const eGridDiv = document.getElementById("myGrid");
      // Grid Options are properties passed to the grid
      const gridOptions = {
-          // each entry here represents one column
-          columnDefs: JSON.parse(JSON.stringify(!{gridCols})),
-          rowData: JSON.parse(JSON.stringify(!{gridData})),
-          // default col def properties get applied to all columns
-          defaultColDef: {sortable: true, filter: true},
-
-          //rowSelection: 'multiple', // allow rows to be selected
-          animateRows: true, // have rows animate to new positions when sorted
-          //pagination: true,
-          // example event handler
-          onCellClicked: params => {
-               console.log('cell was clicked', params)
-          }
+         // each entry here represents one column
+         columnDefs: JSON.parse(JSON.stringify(!{gridCols})),
+         // all the data that will be displayed
+         rowData: JSON.parse(JSON.stringify(!{gridData})),
+         // properties that get applied to all columns
+         defaultColDef: {sortable: true, filter: true},
+         // allow rows to be selected
+         rowSelection: 'single',
+         // have rows animate to new positions when sorted
+         animateRows: true,
+         //pagination: true,
+         // example event handler
+         /*onCellClicked: params => {
+            console.log('cell was clicked', params)
+         }*/
      };
      // new grid instance, passing in the hosting DIV and Grid Options
      new agGrid.Grid(eGridDiv, gridOptions);

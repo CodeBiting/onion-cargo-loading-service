@@ -1,161 +1,237 @@
 extends layout
 
 block content
-  header
-   h1(data-test='service-heading') Cargo Loading Service
-   ul
-    li 
-     a(href='/ui/v1/containers') Containers
-    li 
-     p Clients
-    li 
-     a(href='/ui/v1/registers') Registers
-  if (result && result.message)
-    if (result.level === 'ERROR')
-      div(data-test='message-error').alert.error
-        strong Error!&nbsp;
-        | #{result.message}
-    else
-      div(data-test='message-info').alert.info
-        strong Success!&nbsp;
-        | #{result.message}
-  article
-   h2(data-test='client-heading') Clients
-   p Clients data
-   section
-    form(data-test='pagination-form', action='/ui/v1/clients', method='post')
-     p 
-      label(for='skip') From 
-      input#skip(data-test='pagination-form-skip', type='text', name='skip', value=`${skip}`) 
-     p
-      label(for='limit') to 
-      input#limit(data-test='pagination-form-limit', type='text', name='limit', value=`${parseInt(skip)+parseInt(limit)}`)
-     button(data-test='pagination-form-submit', onclick='submit') Search
-    .ag-theme-alpine-dark#myGrid(data-test='data-grid', style='height: 500px;width: 90%;')
-    a.firstButton
-     button.add(data-test='add-button') Add
-    a
-     button.mod(data-test='modify-button') Modify
-    a
-     button.del(data-test='delete-button') Delete
-  div.popup.add
-   a.close_btn &times;
-   h2 Add
-   form(data-test='add-form', action='/ui/v1/clients', method='post')
-    div.form_elemen
-     label(for='code') Code: 
-     input(data-test='add-form-code', type="text", name='code')
-    div.form_elemen
-     label(for='dateStart') Date Start: 
-     input(data-test='add-form-dateStart', type="date", name='dateStart')
-    div.form_elemen
-     label(for='dateFinal') Date Final: 
-     input(data-test='add-form-dateFinal', type="date", name='dateFinal')
-    div.form_elemen
-     label(for='active') Active: 
-     input(data-test='add-form-active', type="checkbox", name='active')
-    div.form_elemen
-     label(for='token') Token: 
-     input(data-test='add-form-token', type="text", name='token')
-    div.form_elemen
-     label(for='notes') Notes: 
-     input(data-test='add-form-notes', type="text", name='notes')
-     input(data-test='add-form-method', type="hidden" name='method' value=1)
-    button(data-test='add-form-submit') Submit
-  div.popup.mod
-   a.close_btn &times;
-   h2 Modify
-   form(data-test='modify-form', action='/ui/v1/clients', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
-    div.form_elemen
-     label(for='id') ID: 
-     input#clientId(data-test='modify-form-id', type="number", name='id', required)
-    div.form_elemen
-     label(for='code') Code: 
-     input#code(data-test='modify-form-code', type="text", name='code')
-    div.form_elemen
-     label(for='dateStart') Date Start: 
-     input#dateStart(data-test='modify-form-dateStart', type="date", name='dateStart')
-    div.form_elemen
-     label(for='dateFinal') Date Final: 
-     input#dateFinal(data-test='modify-form-dateFinal', type="date", name='dateFinal')
-    div.form_elemen
-     label(for='active') Active: 
-     input#active(data-test='modify-form-active', type="checkbox", name='active')
-    div.form_elemen
-     label(for='token') Token: 
-     input#token(data-test='modify-form-token', type="text", name='token')
-    div.form_elemen
-     label(for='notes') Notes: 
-     input#notes(data-test='modify-form-notes', type="text", name='notes')
-     input(data-test='modify-form-method', type="hidden" name='method' value=2)
-    button(data-test='modify-form-submit') Submit
-  div.popup.del
-   a.close_btn &times;
-   h2 Delete
-   form(data-test='delete-form', action='/ui/v1/clients', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
-    div.form_elemen
-     label(for='id') ID of the Client to delete: 
-     input(data-test='delete-form-id', type="number", name='id', required)
-     input(data-test='delete-form-method', type="hidden" name='method' value=3)
-    button(data-test='delete-form-submit') Submit
-  footer
-     span
-      a(href='https://github.com/CodeBiting', target='_blank') CodeBiting&copy
-  //Grid script
-  - var gridCols= gridColumns
-  - var gridData= rowData
-  - var actions= action
-  //script(type='text/javascript', src=`/api/v1/clientService.js`).
-      function getValues(){
-         let id = document.getElementById('clientId');
-         client = getClient(id);
-         document.getElementById("code").placeholder = `${client.code}`;
-         document.getElementById("dateStart").placeholder = `${client.dateStart}`;
-         document.getElementById("dateFinal").placeholder = `${client.dateFinal}`;
-         document.getElementById("active").placeholder = `${client.active}`;
-         document.getElementById("token").placeholder = `${client.token}`;
-         document.getElementById("active").placeholder = `${client.active}`;
-         document.getElementById("notes").placeholder = `${client.notes}`;
-     };
-  script(type='text/javascript').
+   header
+      h1(data-test='service-heading') Cargo Loading Service
+      ul
+         li 
+            a(href='/ui/v1/containers') Containers
+         li 
+            p Clients
+         li 
+            a(href='/ui/v1/registers') Registers
+   if (result && result.message)
+      if (result.level === 'ERROR')
+         div(data-test='message-error').alert.error
+            strong Error!&nbsp;
+            | #{result.message}
+      else
+         div(data-test='message-info').alert.info
+            strong Success!&nbsp;
+            | #{result.message}
+   article#article
+      h2(data-test='client-heading') Clients
+      p Clients data
+      a.firstButton
+         button#buttonHelp(data-test='usage-info', type="button",onclick="showUsage()") Help
+      div#usage
+         h2 Usage
+         p Here we explain how to use this page:
+         ul 
+            li a
+            li a
+            li b 
+            li b 
+      section
+         form(data-test='pagination-form', action='/ui/v1/clients', method='post')
+            p 
+               label(for='skip') From 
+               input#skip(data-test='pagination-form-skip', type='text', name='skip', value=`${skip}`) 
+            p
+               label(for='limit') to 
+               input#limit(data-test='pagination-form-limit', type='text', name='limit', value=`${parseInt(skip)+parseInt(limit)}`)
+            button(data-test='pagination-form-submit', onclick='submit') Search
+         .ag-theme-alpine-dark#myGrid(data-test='data-grid', style='height: 500px;width: 90%;')
+         a.firstButton
+            button.add(data-test='add-button') Add
+         a
+            button.mod(data-test='modify-button') Modify
+         a
+            button.des(data-test='desactivate-button') Desactivate 
+         a
+            button.del(data-test='delete-button') Delete
+   div.popup.add
+      a.close_btn &times;
+      h2 Add
+      form(data-test='add-form', action='/ui/v1/clients', method='post')
+         div.form_elemen
+            label(for='code') Code: 
+            input(data-test='add-form-code', type="text", name='code', required)
+         div.form_elemen
+            label(for='dateStart') Date Start: 
+            input(data-test='add-form-dateStart', type="date", name='dateStart')
+         div.form_elemen
+            label(for='dateFinal') Date Final: 
+            input(data-test='add-form-dateFinal', type="date", name='dateFinal')
+         div.form_elemen
+            label(for='token') Token: 
+            input(data-test='add-form-token', type="text", name='token')
+         div.form_elemen
+            label(for='notes') Notes: 
+            input(data-test='add-form-notes', type="text", name='notes')
+         input(data-test='add-form-method', type="hidden" name='method' value=1)
+         button(data-test='add-form-submit') Submit
+   div.popup.mod
+      a.close_btn &times;
+      h2 Modify
+      form(data-test='modify-form', action='/ui/v1/clients', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+         div.form_elemen
+            label(for='id') ID: 
+            input#clientId(data-test='modify-form-id', type="number", name='id', required)
+         div.form_elemen
+            label(for='code') Code: 
+            input#code(data-test='modify-form-code', type="text", name='code')
+         div.form_elemen
+            label(for='dateStart') Date Start: 
+            input#dateStart(data-test='modify-form-dateStart', type="date", name='dateStart')
+         div.form_elemen
+            label(for='dateFinal') Date Final: 
+            input#dateFinal(data-test='modify-form-dateFinal', type="date", name='dateFinal')
+         div.form_elemen
+            label(for='active') Active: 
+            input#active(data-test='modify-form-active', type="checkbox", name='active')
+         div.form_elemen
+            label(for='token') Token: 
+            input#token(data-test='modify-form-token', type="text", name='token')
+         div.form_elemen
+            label(for='notes') Notes: 
+            input#notes(data-test='modify-form-notes', type="text", name='notes')
+         input(data-test='modify-form-method', type="hidden" name='method' value=2)
+         button(data-test='modify-form-submit') Submit
+   div.popup.del
+      a.close_btn &times;
+      h2 Delete
+      form(data-test='delete-form', action='/ui/v1/clients', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+         div.form_elemen
+            label(for='id') ID of the Client to delete: 
+            input#clientIdDelete(data-test='delete-form-id', type="number", name='id', required)
+         input(data-test='delete-form-method', type="hidden" name='method' value=3)
+         button(data-test='delete-form-submit') Submit
+   div.popup.des
+      a.close_btn &times;
+      h2 Desactivate
+      form(data-test='desactivate-form', action='/ui/v1/clients', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+         div.form_elemen
+            label(for='id') ID of the Client to desactivate: 
+            input#clientIdDesactivate(data-test='desactivate-form-id', type="number", name='id', required)
+         input(data-test='desactivate-form-method', type="hidden" name='method' value=4)
+         button(data-test='desactivate-form-submit') Submit
+   if (desactivated !== false)
+      div.popup.active
+         h3 There's one Client with the same Code that is Desactivated. 
+         h3 Would you like to activate it?
+      form(data-test='active-form', action='/ui/v1/clients', method='post', onSubmit="return confirm('Are you sure?\nThe actions can't be undone.')")
+         div.form_elemen
+            input(data-test='active-form-method', type="hidden" name='method' value=5)
+            input(data-test='active-form-id', type="hidden" name='id' value=`${idToActive}`)
+            button(data-test='active-form-submit') Accept
+         div.form_elemen
+            button(data-test='active-close', type='button')#active Cancel
+   footer
+      span
+         a(href='https://github.com/CodeBiting', target='_blank') CodeBiting&copy
+   - var gridCols= gridColumns
+   - var gridData= rowData
+   script(type='text/javascript').
+      //Open popups
+      //add
       document.querySelector(".add").addEventListener("click", function(){
          document.querySelector(".popup.add").classList.add("active");
       });
-      document.querySelector(".del").addEventListener("click", function(){
-         document.querySelector(".popup.del").classList.add("active");
-      });
+      //modify
       document.querySelector(".mod").addEventListener("click", function(){
+         let selectedRows = gridOptions.api.getSelectedRows();
+         if(selectedRows){
+            document.getElementById("clientId").value = `${selectedRows[0].id}`;
+            document.getElementById("code").value = `${selectedRows[0].code}`;
+            if(selectedRows[0].dateStart){
+               document.getElementById("dateStart").value = `${selectedRows[0].dateStart.substring(0,10)}`;
+            }
+            if(selectedRows[0].dateFinal){
+               document.getElementById("dateFinal").value = `${selectedRows[0].dateFinal.substring(0,10)}`;
+            }
+            if(selectedRows[0].active===1){
+               document.getElementById("active").checked = true;
+            }
+            document.getElementById("token").value = `${selectedRows[0].token}`;
+            document.getElementById("active").value = `${selectedRows[0].active}`;
+            document.getElementById("notes").value = `${selectedRows[0].notes}`;
+         }
          document.querySelector(".popup.mod").classList.add("active");
       });
-     document.querySelector(".popup.add .close_btn").addEventListener("click", function(){
-      document.querySelector(".popup.add").classList.remove("active");
-     });
-     document.querySelector(".popup.mod .close_btn").addEventListener("click", function(){
-      document.querySelector(".popup.mod").classList.remove("active");
-     });
-     document.querySelector(".popup.del .close_btn").addEventListener("click", function(){
-      document.querySelector(".popup.del").classList.remove("active");
-     });
-     function deselect(){
+      //delete
+      document.querySelector(".del").addEventListener("click", function(){
+         let selectedRows = gridOptions.api.getSelectedRows();
+         if(selectedRows){
+            document.getElementById("clientIdDelete").value = `${selectedRows[0].id}`;
+         }
+         document.querySelector(".popup.del").classList.add("active");
+      });
+      //desactivate
+      document.querySelector(".des").addEventListener("click", function(){
+         let selectedRows = gridOptions.api.getSelectedRows();
+         if(selectedRows){
+            document.getElementById("clientIdDesactivate").value = `${selectedRows[0].id}`;
+         }
+         document.querySelector(".popup.des").classList.add("active");
+      });
+      //Close popups
+      //add
+      document.querySelector(".popup.add .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.add").classList.remove("active");
+      });
+      //modify
+      document.querySelector(".popup.mod .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.mod").classList.remove("active");
+      });
+      //delete
+      document.querySelector(".popup.del .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.del").classList.remove("active");
+      });
+      //desactivate
+      document.querySelector(".popup.des .close_btn").addEventListener("click", function(){
+         document.querySelector(".popup.des").classList.remove("active");
+      });
+      //activate
+      if(!{desactivated} !== false){
+         document.querySelector(".popup.active #active").addEventListener("click", function(){
+            document.querySelector(".popup.active").classList.remove("active");
+         });
+      }
+      //Usage
+      function showUsage() {
+         if(document.getElementById('usage').style.display === "block"){
+            document.getElementById('buttonHelp').innerHTML = "Help";
+            document.getElementById('usage').style.display = "none";
+            document.getElementById('article').style.height = "82.9vh";
+         }else{
+            document.getElementById('usage').style.display = "block";
+            document.getElementById('article').style.height = "100vh";
+            document.getElementById('buttonHelp').innerHTML = "Close";
+         }
+      }
+      /*function deselect(){
          gridOptions.api.deselectAll()
-     }
-     // get div to host the grid
-     const eGridDiv = document.getElementById("myGrid");
-     // Grid Options are properties passed to the grid
-     const gridOptions = {
-          // each entry here represents one column
-          columnDefs: JSON.parse(JSON.stringify(!{gridCols})),
-          rowData: JSON.parse(JSON.stringify(!{gridData})),
-          // default col def properties get applied to all columns
-          defaultColDef: {sortable: true, filter: true},
-
-          //rowSelection: 'multiple', // allow rows to be selected
-          animateRows: true, // have rows animate to new positions when sorted
-          //pagination: true,
-          // example event handler
-          onCellClicked: params => {
-               console.log('cell was clicked', params)
-          }
-     };
-     // new grid instance, passing in the hosting DIV and Grid Options
-     new agGrid.Grid(eGridDiv, gridOptions);
+      }*/
+      // get div to host the grid
+      const eGridDiv = document.getElementById("myGrid");
+      // Grid Options are properties passed to the grid
+      const gridOptions = {
+         // each entry here represents one column
+         columnDefs: JSON.parse(JSON.stringify(!{gridCols})),
+         // all the data that will be displayed
+         rowData: JSON.parse(JSON.stringify(!{gridData})),
+         // properties that get applied to all columns
+         defaultColDef: {sortable: true, filter: true},
+         // allow rows to be selected
+         rowSelection: 'single',
+         // have rows animate to new positions when sorted
+         animateRows: true,
+         //pagination: true,
+         // example event handler
+         /*onCellClicked: params => {
+            console.log('cell was clicked', params)
+         }*/
+      };
+      // new grid instance, passing in the hosting DIV and Grid Options
+      new agGrid.Grid(eGridDiv, gridOptions);

@@ -105,3 +105,6 @@ dist
 
 # Specific from this project
 config/config.js
+
+# Ignore Cypress files
+cypress/videos/

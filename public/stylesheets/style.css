@@ -71,7 +71,7 @@ article{
 section{
   width: 90%;
   margin: auto;
-  margin-top: 20px;
+  margin-top: 12px;
   background-color: #2C6181;
   padding-top: 20px;
   padding-bottom: 25px;
@@ -84,17 +84,21 @@ h2{
     font-family: 'Montserrat', sans-serif;
     font-size: 2em;
 }
-article > h2{
+article > h2,article > p, article > div h2{
   padding-left: 5%;
   margin: 0px;
 }
-article > p{
+article > p, article > div p,article > div  ul{
   font-family: 'Montserrat', sans-serif;
   padding-left: 5.5%;
   font-size: 1.3em;
   margin: 0%;
 
 }
+article > div  ul{
+  padding-left: 7.5%;
+}
+
 form {
   font-family: "Space Grotesk",-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   padding: 0;
@@ -138,7 +142,7 @@ section > p{
   margin-bottom: 1px;
 }
 /* CSS */
-button {
+button{
   background-color: #5686A3;
   border-radius: 2px;
   border: 0;
@@ -249,6 +253,38 @@ footer{
   width: 81%;
 }
 
+button{
+  background-color: #5686A3;
+  border-radius: 2px;
+  border: 0;
+  box-shadow: rgba(1,60,136,.5) 0 -1px 3px 0 inset,rgba(0,44,97,.1) 0 3px 6px 0;
+  box-sizing: border-box;
+  color: aliceblue;
+  cursor: pointer;
+  font-family: "Space Grotesk",-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1.2em;
+  font-weight: 700;
+  line-height: 28px;
+  margin: 0;
+  min-height: 28px;
+  margin-top: 10px;
+  min-width: 90px;
+  padding: 1px 10px;
+  position: relative;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  transition: all .2s cubic-bezier(.22, .61, .36, 1);
+}
+
+button:hover {
+  background-color: #1B4965;
+  transform: translateY(-2px);
+  color: white;
+}
+
 /* Estils perls missatges d'error */
 .alert {
   padding: 20px;
@@ -272,4 +308,14 @@ footer{
 }
 .closebtn:hover {
   color: black;
+}
+/*USAGE */
+#buttonHelp{
+  margin-top: 10px;
+}
+#usage{
+  display: none;
+}
+#register{
+  padding-bottom: 65px;
 }

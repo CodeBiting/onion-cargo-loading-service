@@ -7,13 +7,15 @@
     "test": "node ./node_modules/mocha/bin/mocha",
     "test-apis": "node ./node_modules/mocha/bin/mocha ./test/api/",
     "test-routes": "node ./bin/www & P1=$! && sleep 2 && node ./node_modules/mocha/bin/mocha ./test/routes/v1/ && kill $P1",
+    "test-cypress": "node ./bin/www & P1=$! && sleep 2 && npx cypress run --spec 'cypress/e2e/*.js' && kill $P1",
     "test-eslint": "node ./node_modules/.bin/eslint *.js bin/* api/*.js api/v1/*.js routes/v1/*.js routes/ui/v1/*.js",
     "nodemon": "nodemon ./bin/www"
   },
   "pre-commit": [
     "test-apis",
     "test-routes",
-    "test-eslint"
+    "test-eslint",
+    "test-cypress"
   ],
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -33,7 +35,7 @@
   "devDependencies": {
     "chai": "^4.3.7",
     "chai-http": "^4.3.0",
-    "cypress": "^12.17.2",
+    "cypress": "^12.17.3",
     "eslint": "^8.46.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-standard": "^17.1.0",
