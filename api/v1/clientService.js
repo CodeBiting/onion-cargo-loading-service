@@ -19,7 +19,8 @@ const clientService = {
             CONVERT_TZ(date_final, '+00:00', @@session.time_zone) AS dateFinal, 
             active, 
             token, 
-            notes 
+            notes,
+            deleted_at 
         FROM client ${requestQuery.getWheres(filter)} ${requestQuery.getOrderBy(sort)} ${requestQuery.getLimit(pag)};`;
     const [rows] = await database.getPromise().query(sql);
     return rows;
@@ -35,7 +36,7 @@ const clientService = {
             CONVERT_TZ(date_final, '+00:00', @@session.time_zone) AS dateFinal,
             active, 
             token, 
-            notes 
+            notes
         FROM client cl
         LEFT JOIN container c ON cl.id = c.client_id
         LEFT JOIN register r ON cl.id = r.client_id
@@ -56,23 +57,32 @@ const clientService = {
    */
   async postClient (client) {
     const sql = `INSERT INTO client(code, date_start, date_final, active, token, notes, deleted_at)
-               VALUES(?, 
-                      CONVERT_TZ(?, @@session.time_zone, '+00:00'), 
-                      CONVERT_TZ(?, @@session.time_zone, '+00:00'), 
-                      ?, ?, ?, null)`;
-    const active = parseActive(client.active);
+               VALUES(?,
+                CONVERT_TZ(?, @@session.time_zone, '+00:00'),
+                CONVERT_TZ(?, @@session.time_zone, '+00:00'),
+                ?, ?, ?, null)`;
+    if (!client.code) {
+      throw new Error('Error creating client, the client code was null');
+    }
+    const dateStart = parseDate(client.dateStart);
+    const dateFinal = parseDate(client.dateFinal);
+    let token;
+    if (!client.token) token = null;
+    else token = client.token;
+
     const values = [
       client.code,
-      client.dateStart,
-      client.dateFinal,
-      active,
-      client.token,
-      client.notes];
+      dateStart,
+      dateFinal,
+      1,
+      token,
+      client.notes
+    ];
 
     let [rows] = await database.getPromise().query(sql, values);
 
     [rows] = await selectClient(rows.insertId);
-
+    console.log('VALUES:' + values);
     return rows[0];
   },
 
@@ -136,7 +146,7 @@ const clientService = {
 
     const clientToDelete = rows[0];
 
-    const sql = 'DELETE FROM client WHERE id = ?';
+    const sql = 'DELETE FROM client WHERE id = ?;';
     [rows] = await database.getPromise().query(sql, [id]);
 
     if (rows.affectedRows < 1) {
@@ -152,23 +162,54 @@ const clientService = {
    * @param {*} id
    * @returns
    */
-  async dateDeleteClient (id) {
+  async desactivateClient (id, containers, registers) {
     let [rows] = await selectClient(id);
 
     if (rows.length !== 1) {
       return undefined;
     } else if (rows[0].deleted_at) {
-      return 'This client is alredy deleted.';
+      return 'This client is alredy been desactivated.';
     }
+
     const clientToDelete = rows[0];
-    const sql = `UPDATE client 
-    JOIN container ON (client.id = container.client_id) 
-    JOIN register ON (client.id = register.client_id) 
-    SET client.deleted_at = now(), container.deleted_at = now(), register.deleted_at = now() 
-    WHERE client.id = ? AND  container.deleted_at IS NULL AND register.deleted_at IS NULL;`;
+    let sql = 'UPDATE client ';
+    if (containers) sql += 'JOIN container ON (client.id = container.client_id) ';
+    if (registers) sql += 'JOIN register ON (client.id = register.client_id) ';
+    sql += 'SET client.deleted_at = now()';
+    if (containers) sql += ', container.deleted_at = now()';
+    if (registers) sql += ', register.deleted_at = now()';
+    sql += ' WHERE client.id = ?';
+    if (containers) sql += ' AND container.deleted_at IS NULL';
+    if (registers) sql += ' AND register.deleted_at IS NULL';
+    sql += ';';
+    [rows] = await database.getPromise().query(sql, [id]);
+    return clientToDelete;
+  },
+
+  async activateClient (id, containers, registers) {
+    let [rows] = await selectClient(id);
+
+    if (rows.length !== 1) {
+      return undefined;
+    }
+
+    const clientToAct = rows[0];
+
+    let sql = 'UPDATE client ';
+    if (containers) sql += 'JOIN container ON (client.id = container.client_id) ';
+    if (registers) sql += 'JOIN register ON (client.id = register.client_id) ';
+    sql += 'SET client.deleted_at = NULL';
+    if (containers) sql += ', container.deleted_at = NULL';
+    if (registers) sql += ', register.deleted_at = NULL';
+    sql += ' WHERE client.id = ?;';
+
     [rows] = await database.getPromise().query(sql, [id]);
 
-    return clientToDelete;
+    if (rows.affectedRows < 1) {
+      throw new Error(`Error activating client, affected rows = ${rows.affectedRows}`);
+    }
+
+    return clientToAct;
   },
 
   /**

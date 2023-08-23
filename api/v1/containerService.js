@@ -20,7 +20,8 @@ const containerService = {
           width, 
           length, 
           height, 
-          max_weight as maxWeight 
+          max_weight as maxWeight,
+          deleted_at 
         FROM container  ${requestQuery.getWheres(filter)} ${requestQuery.getOrderBy(sort)} ${requestQuery.getLimit(pag)};`;
     const [rows] = await database.getPromise().query(sql);
     return rows;
@@ -97,18 +98,34 @@ const containerService = {
     return containerToDelete;
   },
 
-  async dateDeleteContainer (id) {
+  async desactivateContainer (id) {
     let [rows] = await selectContainer(id);
 
     if (rows.length !== 1) {
       return undefined;
     } else if (rows[0].deleted_at) {
-      return 'This Container is alredy deleted.';
+      return 'This Container is alredy desactivated.';
     }
 
     const containerToDelete = rows[0];
-    const sql = `UPDATE container SET deleted_at = now() WHERE id = ${id}`;
-    [rows] = await database.getPromise().query(sql, []);
+    const sql = `UPDATE container SET deleted_at = now() WHERE id = ${id};`;
+    [rows] = await database.getPromise().query(sql, [id]);
+    if (rows.affectedRows !== 1) {
+      throw new Error(`Error deleting container, affected rows = ${rows.affectedRows}`);
+    }
+    return containerToDelete;
+  },
+
+  async activateContainer (id) {
+    let [rows] = await selectContainer(id);
+
+    if (rows.length !== 1) {
+      return undefined;
+    }
+
+    const containerToDelete = rows[0];
+    const sql = `UPDATE container SET deleted_at = null WHERE id = ${id};`;
+    [rows] = await database.getPromise().query(sql, [id]);
     if (rows.affectedRows !== 1) {
       throw new Error(`Error deleting container, affected rows = ${rows.affectedRows}`);
     }

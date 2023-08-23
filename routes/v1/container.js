@@ -519,7 +519,7 @@ router.put('/:id/delete', async function (req, res, next) {
   let containerDeleted = null;
 
   try {
-    containerDeleted = await containerService.dateDeleteContainer(req.params.id);
+    containerDeleted = await containerService.desactivateContainer(req.params.id);
     if (containerDeleted === undefined) {
       logger.error(
         `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Container not found`
