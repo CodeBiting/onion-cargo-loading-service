@@ -5,6 +5,8 @@ const logger = require('../../api/logger');
 const ApiResult = require('../../api/ApiResult');
 const ApiError = require('../../api/ApiError');
 const containerService = require('../../api/v1/containerService');
+const registerService = require('../../api/v1/registerService');
+
 const reqQuery = require('../../api/requestQuery');
 const volAnalysis = require('../../api/VolumeAnalysis');
 
@@ -266,15 +268,29 @@ router.post('/smallest/:clientId', async function (req, res, next) {
       )
     );
   }
+  const apiRes = new ApiResult(
+    status === 200 ? 'OK' : 'ERROR',
+    container,
+    req.requestId,
+    errors
+  );
+  // Add register
+  const newRegister = {
+    clientId: req.params.clientId,
+    date: new Date(),
+    origin: req._remoteAddress,
+    destiny: req.originalUrl,
+    method: req.method,
+    requestId: req.requestId,
+    status,
+    requestBody: JSON.stringify(req.body),
+    responseData: JSON.stringify(apiRes)
+  };
+  registerService.postRegister(newRegister);
   res
     .status(status)
     .json(
-      new ApiResult(
-        status === 200 ? 'OK' : 'ERROR',
-        container,
-        req.requestId,
-        errors
-      )
+      apiRes
     );
 });
 
