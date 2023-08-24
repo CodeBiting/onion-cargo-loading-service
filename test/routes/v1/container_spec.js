@@ -8,6 +8,12 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 const expect = require('chai').expect;
+const uniqid = require('uniqid');
+/*
+let requestId = uniqid();
+...
+.set('x-request-id', requestId)
+*/ 
 
 chai.use(chaiHttp);
 
@@ -141,25 +147,51 @@ describe('API Container ', () => {
 
   it('should return the smallest container to save one product', (done) =>{
     const clientId = 1;
+    let requestId = uniqid();
     chai
       .request(URL)
       .post(`/container/smallest/${clientId}`)
+      .set('x-request-id', requestId)
       .send([PRODUCT_NEW])
       .end(function (err, res){
+        //console.log([PRODUCT_NEW]);
         //console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.have.status('OK');
         expect(res.body.data).to.be.an('array');
         expect(res.body.data).to.have.length(1);
-        done();
+        chai
+          .request(URL)
+          .get(`/register?skip=0&limit=1&filter=request_id:eq:"${requestId}"`)
+          .end(function (err, res){
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.status('OK');
+            expect(res.body.data).to.be.an('array');
+            expect(res.body.data).to.have.length(1);
+            chai
+              .request(URL)
+              .delete(`/register/${res.body.data[0].id}`)
+              .end(function (err, res) {
+                //console.log(res.status);
+                //console.log(res.body);
+                expect(res).to.have.status(200);
+                expect(res.body).to.have.status('OK');
+                expect(res.body.data).not.to.be.an('array');
+                expect(res.body.errors).to.be.an('array');
+                expect(res.body.errors).to.deep.equal([]);
+                done();
+              });
+          });
       });
   });
   
   it('should return error because there is no container enoght big to save the product', (done) =>{
     const clientId = 1;
+    let requestId = uniqid();
     chai
       .request(URL)
       .post(`/container/smallest/${clientId}`)
+      .set('x-request-id', requestId)
       .send([PRODUCT_NEW_2])
       .end(function (err, res){
         expect(res).to.have.status(404);
@@ -173,15 +205,38 @@ describe('API Container ', () => {
             "help": "http://localhost:8080/v1/help/error/CONTAINER-001"
           }
         ]);
-        done();
+        chai
+          .request(URL)
+          .get(`/register?skip=0&limit=1&filter=request_id:eq:"${requestId}"`)
+          .end(function (err, res){
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.status('OK');
+            expect(res.body.data).to.be.an('array');
+            expect(res.body.data).to.have.length(1);
+            chai
+              .request(URL)
+              .delete(`/register/${res.body.data[0].id}`)
+              .end(function (err, res) {
+                //console.log(res.status);
+                //console.log(res.body);
+                expect(res).to.have.status(200);
+                expect(res.body).to.have.status('OK');
+                expect(res.body.data).not.to.be.an('array');
+                expect(res.body.errors).to.be.an('array');
+                expect(res.body.errors).to.deep.equal([]);
+                done();
+              });
+          });
       });
   });
 
   it('should return error because there is no container ', (done) =>{
     const clientId = 1;
+    let requestId = uniqid();
     chai
       .request(URL)
       .post(`/container/smallest/${clientId}`)
+      .set('x-request-id', requestId)
       .send()
       .end(function (err, res){
         expect(res).to.have.status(404);
@@ -192,7 +247,28 @@ describe('API Container ', () => {
             "detail": "Not found any product combination that can be fit into the boxes",
             "help": "http://localhost:8080/v1/help/error/CONTAINER-001"
         }]);
-        done();
+        chai
+          .request(URL)
+          .get(`/register?skip=0&limit=1&filter=request_id:eq:"${requestId}"`)
+          .end(function (err, res){
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.status('OK');
+            expect(res.body.data).to.be.an('array');
+            expect(res.body.data).to.have.length(1);
+            chai
+              .request(URL)
+              .delete(`/register/${res.body.data[0].id}`)
+              .end(function (err, res) {
+                //console.log(res.status);
+                //console.log(res.body);
+                expect(res).to.have.status(200);
+                expect(res.body).to.have.status('OK');
+                expect(res.body.data).not.to.be.an('array');
+                expect(res.body.errors).to.be.an('array');
+                expect(res.body.errors).to.deep.equal([]);
+                done();
+              });
+          });
       });
   });
 
