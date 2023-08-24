@@ -268,21 +268,21 @@ router.post('/smallest/:clientId', async function (req, res, next) {
       )
     );
   }
-  let apiRes = new ApiResult(
+  const apiRes = new ApiResult(
     status === 200 ? 'OK' : 'ERROR',
     container,
     req.requestId,
     errors
   );
-  //Add register 
-  let newRegister = {
-    clientId: req.params.clientId, 
-    date: new Date(), 
-    origin: req._remoteAddress, 
-    destiny: req.originalUrl, 
-    method: req.method, 
-    requestId: req.requestId, 
-    status: status,
+  // Add register
+  const newRegister = {
+    clientId: req.params.clientId,
+    date: new Date(),
+    origin: req._remoteAddress,
+    destiny: req.originalUrl,
+    method: req.method,
+    requestId: req.requestId,
+    status,
     requestBody: JSON.stringify(req.body),
     responseData: JSON.stringify(apiRes)
   };
