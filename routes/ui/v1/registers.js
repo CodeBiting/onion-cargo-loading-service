@@ -7,7 +7,7 @@ const reqQuery = require('../../../api/requestQuery');
 const ints = 100;
 const bigInts = 150;
 const dates = 205;
-const strings = 200; 
+const strings = 200;
 
 let query = null;
 router.get('/', async function (req, res, next) {
@@ -25,8 +25,8 @@ router.get('/', async function (req, res, next) {
         { field: 'method', initialWidth: ints },
         { field: 'requestId', initialWidth: bigInts },
         { field: 'status', initialWidth: ints },
-        { field: 'requestBody', resizable: true},
-        { field: 'responseData', resizable: true}
+        { field: 'requestBody', resizable: true },
+        { field: 'responseData', resizable: true }
       ]),
       rowData: JSON.stringify(query),
       skip: pag.skip,
