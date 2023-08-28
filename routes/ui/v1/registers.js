@@ -7,7 +7,7 @@ const reqQuery = require('../../../api/requestQuery');
 const ints = 100;
 const bigInts = 150;
 const dates = 205;
-const strings = 200;
+const strings = 200; 
 
 let query = null;
 router.get('/', async function (req, res, next) {
@@ -18,15 +18,15 @@ router.get('/', async function (req, res, next) {
       title: 'Cargo Loading: Registers',
       gridColumns: JSON.stringify([
         { field: 'id', initialWidth: ints },
-        { field: 'clientId', initialWidth: bigInts },
+        { field: 'clientId', initialWidth: ints },
         { field: 'date', initialWidth: dates },
         { field: 'origin', initialWidth: strings },
         { field: 'destiny', initialWidth: strings },
         { field: 'method', initialWidth: ints },
         { field: 'requestId', initialWidth: bigInts },
         { field: 'status', initialWidth: ints },
-        { field: 'requestBody', initialWidth: strings },
-        { field: 'responseData', initialWidth: strings }
+        { field: 'requestBody', resizable: true},
+        { field: 'responseData', resizable: true}
       ]),
       rowData: JSON.stringify(query),
       skip: pag.skip,
@@ -46,15 +46,15 @@ router.post('/', async function (req, res, next) {
       title: 'Cargo Loading: Registers',
       gridColumns: JSON.stringify([
         { field: 'id', initialWidth: ints },
-        { field: 'clientId', initialWidth: bigInts },
+        { field: 'clientId', initialWidth: ints },
         { field: 'date', initialWidth: dates },
         { field: 'origin', initialWidth: strings },
         { field: 'destiny', initialWidth: strings },
         { field: 'method', initialWidth: ints },
         { field: 'requestId', initialWidth: bigInts },
         { field: 'status', initialWidth: ints },
-        { field: 'requestBody', initialWidth: strings },
-        { field: 'responseData', initialWidth: strings }
+        { field: 'requestBody', resizable: true },
+        { field: 'responseData', resizable: true }
       ]),
       rowData: JSON.stringify(query),
       skip: pag.skip,

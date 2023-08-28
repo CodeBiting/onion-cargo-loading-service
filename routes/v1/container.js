@@ -278,10 +278,10 @@ router.post('/smallest/:clientId', async function (req, res, next) {
   const newRegister = {
     clientId: req.params.clientId,
     date: new Date(),
-    origin: req._remoteAddress,
-    destiny: req.originalUrl,
-    method: req.method,
-    requestId: req.requestId,
+    origin: req._remoteAddress ? req._remoteAddress : 'Field not found in req',
+    destiny: req.originalUrl ? req.originalUrl : 'Field not found in req',
+    method: req.method ? req.method : 'Field not found in req',
+    requestId: req.requestId ? req.requestId : 'Field not found in req',
     status,
     requestBody: JSON.stringify(req.body),
     responseData: JSON.stringify(apiRes)
