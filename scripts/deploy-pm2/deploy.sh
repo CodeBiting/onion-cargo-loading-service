@@ -138,10 +138,11 @@ printf "\n*** PAS 2: Per cada aplicació, descarreguem el projecte de GitHub a d
 
 printf "\n --> Descarreguem de github el projecte del ONION\n"
 #git clone https://$githubUsername:$githubPassword@github.com/CodeBiting/XXXXXX.git
+cd /home/root/onion/
 git clone https://github.com/CodeBiting/onion-cargo-loading-service.git
-
+cd /home/root/onion/onion-cargo-loading-service
 printf "\n Creem el fitxer de configuració del projecte\n"
-touch /home/root/onion/onion-cargo-loading-service/config/config.js 
+touch config/config.js 
 echo 'module.exports = {' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 echo '    client: "TEST",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 echo '    service: "onion-cargo-loading-service",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
@@ -155,25 +156,12 @@ echo '      connectionLimit: 10' >> /home/root/onion/onion-cargo-loading-service
 echo '    }' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 echo '}' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 
-
-
-printf "\n*** PAS 3: Copiem les carpetes pujades al seu detí final\n"
-
-printf "\n --> Copiem/movem les carpetes a la carpeta /home/root/onion\n"
-# Copiem les carpetes que formen part del projecte infraestructure ja que si estem desplegant en local no volem que desapareguin del projecte
-# Movem les carpetes baixades des del github ja que no formen part del projecte infraestructure
-# Ho hem de moure amb elmateix usuari que hem pujat aquestes carpetes ja que es guarden a la carpeta home
-#ls -l
-#cp -r ./apps-conf /var/lib/onion/apps-conf
-sudo mv onion-cargo-loading-service/ /home/root/onion/onion-cargo-loading-service/
-
-printf "\n*** PAS 4: Instal·lació de dependències\n"
+printf "\n*** PAS 3: Instal·lació de dependències\n"
 
 printf "\n -->Instal·lem les dependències de onion-cargo-loading-service\n"
-cd /home/root/onion/onion-cargo-loading-service
 npm install
 
-printf "\n*** PAS 5: Instal·lació de NGINX\n"
+printf "\n*** PAS 4: Instal·lació de NGINX\n"
 
 # Revisar els ports que es fan servir
 # $ netstat -plnt  
@@ -250,7 +238,7 @@ fi
 
 sudo systemctl restart nginx
 
-printf "\n*** PAS 6: Creació de la BD i els usuaris de BD\n"
+printf "\n*** PAS 5: Creació de la BD i els usuaris de BD\n"
 # Executem al contenidor de la BD la importació del script que es troba al projecte descarregat de github del host
 #printf "\n --> Creem les BD\n"
 #printf "\n --> Esperem uns segons que el contenidor amb la BD estigui funcionant\n"
@@ -269,7 +257,7 @@ mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$mysqlUsername'@'localhost' WITH GRANT
 
 
 printf "\n*** PAS 6: Creem els serveis al pm2\n"
-cd /var/lib/onion/onion-cargo-loading-service
+cd /home/root/onion/onion-cargo-loading-service
 # Creem el servei pm2
 NODE_ENV=production PORT=8080 pm2 start ./bin/www --name OnionCargoLoading --max-memory-restart 1G
 pm2 save
