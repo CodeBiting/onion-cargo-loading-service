@@ -1,0 +1,35 @@
+config:
+  # This is a test server run by team Artillery
+  # It's designed to be highly scalable
+  target: "http://localhost:8080"
+  phases:
+    - duration: 30
+      arrivalRate: 200
+      
+      name: "Case: 150 virtual users to 300 in 30 seconds"
+scenarios:
+  - flow:
+        - log: "get the smallest container"
+        - post:
+            url: "/v1/container/smallest/1"
+            json: 
+              [{
+                code: "test1", 
+                x: 0.0001, 
+                y: 0.0001, 
+                z: 0.0001, 
+                volume: 0.0005,
+                allowedRotations: ["x", "y"] 
+              }]
+            capture:
+              json: "req.data.id"
+              as: "id"
+              strict: false
+        - log: "get the container returned"
+        - get: 
+            url: "/v1/container/1"
+after:
+  flow:
+    - log: "finally get all the registers done with skip 6 and limit 1500"
+    - get:
+        url: "/v1/register?skip=6&limit=3000"

@@ -123,7 +123,7 @@ router.get('/', async function (req, res, next) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: id
  *         description: Client ID to search your Containers
  *         schema:
@@ -157,7 +157,7 @@ router.get('/:id/containers', async function (req, res, next) {
   const errors = [];
 
   try {
-    containers = await containerService.getClientContainers(req.query.id, req.query.skip, req.query.limit);
+    containers = await containerService.getClientContainers(req.params.id, req.query.skip, req.query.limit);
   } catch (ex) {
     logger.error(
       `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId}: ${ex}`

@@ -1,0 +1,56 @@
+# to run the this test type:
+# "artillery run test/artillery/cargoLoading.yml"
+# if want to generate a JSON report
+# "artillery run --output report.json test/artillery/cargoLoading.yml"
+# once the test is done the file "report.json" will be created then to generate an HTML
+# "artillery report report.json"
+
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 60
+      arrivalRate: 150
+      rampTo: 600
+      name: "Case: 150 virtual users to 600 in 60 seconds"
+  payload:
+    path: "products.csv"
+    loadAll: true
+    skipHeader: true
+    order: sequence
+    delimeter: ","
+    skipEmptyLines: true
+    fields:
+      - "code"
+      - "x"
+      - "y"
+      - "z"
+      - "volume"
+scenarios:
+  - flow:
+    #Loop two times, 
+    #this mean that every vuser will do the next requests the number of loops you configure with the "count" value
+    - loop:
+      - log: "get all containers from client 1"
+      - get:
+          url: "/v1/client/1/containers"
+      - log: "get the smallest container"
+      - post:
+          url: "/v1/container/smallest/1"
+          json: 
+            [{
+              code: "{{ code }}", 
+              x: "{{ x }}", 
+              y: "{{ y }}", 
+              z: "{{ z }}", 
+              volume: "{{ volume }}",
+              allowedRotations: ["x","y"]
+            },
+            {
+              code: "{{ code }}", 
+              x: "{{ x }}", 
+              y: "{{ y }}", 
+              z: "{{ z }}", 
+              volume: "{{ volume }}",
+              allowedRotations: ["x","y"]
+            }]
+      count: 2
