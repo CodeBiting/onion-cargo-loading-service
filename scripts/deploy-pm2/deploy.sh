@@ -20,7 +20,7 @@ printf "\n*** PAS 1: Configuració de la màquina i el S.O.\n"
 printf "\n --> Creem les carpetes destí si no existeixen\n"
 # Note that this will also create any intermediate directories that don't exist; for instance,
 # will create directories foo, foo/bar, and foo/bar/baz if they don't exist.
-mkdir -p /var/lib/onion
+mkdir -p /home/root/onion
 
 printf "\n --> Configurem PERL per que no aparegui l'error 'warning: Falling back to a fallback locale'\n"
 sudo locale-gen ca_ES.UTF-8 
@@ -82,7 +82,7 @@ printf "\n - sudo systemctl restart mysql"
 #   g = global (i.e. replace all and not just the first occurrence)
 # file.txt = the file name
 sudo sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mysql.conf.d/mysqld.cnf
-# Afegim nous paràmetres alfitxer de configuració de mysql
+# Afegim nous paràmetres al fitxer de configuració de mysql
 # Here you can see queries with especially long duration
 echo '' >> /etc/mysql/mysql.conf.d/mysqld.cnf
 echo '# Custom Parameters' >> /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -140,22 +140,37 @@ printf "\n --> Descarreguem de github el projecte del ONION\n"
 #git clone https://$githubUsername:$githubPassword@github.com/CodeBiting/XXXXXX.git
 git clone https://github.com/CodeBiting/onion-cargo-loading-service.git
 
+printf "\n Creem el fitxer de configuració del projecte\n"
+touch /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo 'module.exports = {' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '    client: "TEST",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '    service: "onion-cargo-loading-service",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '    db: {' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '      host: "localhost",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '      port: 3306,' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '      database: "cargo_loading",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo "      user: '$mysqlUsername'," >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo "      password: '$mysqlPassword'," >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '      connectionLimit: 10' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '    }' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '}' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+
 
 
 printf "\n*** PAS 3: Copiem les carpetes pujades al seu detí final\n"
 
-printf "\n --> Copiem/movem les carpetes a la carpeta /var/lib/onion\n"
+printf "\n --> Copiem/movem les carpetes a la carpeta /home/root/onion\n"
 # Copiem les carpetes que formen part del projecte infraestructure ja que si estem desplegant en local no volem que desapareguin del projecte
 # Movem les carpetes baixades des del github ja que no formen part del projecte infraestructure
 # Ho hem de moure amb elmateix usuari que hem pujat aquestes carpetes ja que es guarden a la carpeta home
 #ls -l
 #cp -r ./apps-conf /var/lib/onion/apps-conf
-sudo mv onion-cargo-loading-service/ /var/lib/onion/onion-cargo-loading-service/
+sudo mv onion-cargo-loading-service/ /home/root/onion/onion-cargo-loading-service/
 
 printf "\n*** PAS 4: Instal·lació de dependències\n"
 
 printf "\n -->Instal·lem les dependències de onion-cargo-loading-service\n"
-cd /var/lib/onion/onion-cargo-loading-service
+cd /home/root/onion/onion-cargo-loading-service
 npm install
 
 printf "\n*** PAS 5: Instal·lació de NGINX\n"
@@ -222,7 +237,7 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/cert
 # Configure nginx
 # ===============
 # Override the configuration of: /etc/nginx/sites-available/default
-cp /var/lib/onion/onion-cargo-loading-service/scripts/deploy-pm2/nginx-default /etc/nginx/sites-available/default
+cp /home/root/onion/onion-cargo-loading-service/scripts/deploy-pm2/nginx-default /etc/nginx/sites-available/default
 
 # Test and apply changes: 
 sudo nginx -t
@@ -245,7 +260,7 @@ printf "\n --> Creem la BD pel servei\n"
 # Per defecte creem el charset utf8mb4 que té com a default collation utf8mb4_0900_ai_ci (afecta a temes de cerca: ai=accent insensitive, ci=case insensitive)
 # només fem servir la opció -i (interactive) però no la (-t) de input device. Contrassenya sense $ ja que sinó no crea la contrasenya correctament
 mysql -e "CREATE SCHEMA `cargo-loading` DEFAULT CHARACTER SET utf8mb4;"
-mysql -e "GRANT ALL PRIVILEGES ON cargo-loading.* TO '$mysqlUsername'@'localhost' WITH GRANT OPTION;"
+mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$mysqlUsername'@'localhost' WITH GRANT OPTION;"
 #printf "\n --> Importem un dump amb el clientID ja establert per l'Onion. Aquesta BD ha de ser diferent per cada client\n"
 # NOTA: Aquesta importació no acaba de funcionar, quan onion s'hi connecta falla
 # S'executa amb l'usuari onion per tenir permisos
