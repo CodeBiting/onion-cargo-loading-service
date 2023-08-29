@@ -147,7 +147,7 @@ echo 'module.exports = {' >> /home/root/onion/onion-cargo-loading-service/config
 echo '    client: "TEST",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 echo '    service: "onion-cargo-loading-service",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 echo '    db: {' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
-echo '      host: "localhost",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
+echo '      host: "127.0.0.1",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 echo '      port: 3306,' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 echo '      database: "cargo_loading",' >> /home/root/onion/onion-cargo-loading-service/config/config.js 
 echo "      user: '$mysqlUsername'," >> /home/root/onion/onion-cargo-loading-service/config/config.js 
@@ -247,13 +247,13 @@ printf "\n --> Creem la BD pel servei\n"
 # Creem la BD i donem permisos a l'usuari onion
 # Per defecte creem el charset utf8mb4 que té com a default collation utf8mb4_0900_ai_ci (afecta a temes de cerca: ai=accent insensitive, ci=case insensitive)
 # només fem servir la opció -i (interactive) però no la (-t) de input device. Contrassenya sense $ ja que sinó no crea la contrasenya correctament
-mysql -e "CREATE SCHEMA `cargo-loading` DEFAULT CHARACTER SET utf8mb4;"
+mysql -e "CREATE SCHEMA cargo_loading DEFAULT CHARACTER SET utf8mb4;"
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$mysqlUsername'@'localhost' WITH GRANT OPTION;"
 #printf "\n --> Importem un dump amb el clientID ja establert per l'Onion. Aquesta BD ha de ser diferent per cada client\n"
 # NOTA: Aquesta importació no acaba de funcionar, quan onion s'hi connecta falla
 # S'executa amb l'usuari onion per tenir permisos
 #mysql < /var/lib/onion/apps-conf/onion/cbwms-dump-v16.114.sql
-
+mysql < /home/root/onion/onion-cargo-loading-service/scripts/sql/database.sql
 
 
 printf "\n*** PAS 6: Creem els serveis al pm2\n"
