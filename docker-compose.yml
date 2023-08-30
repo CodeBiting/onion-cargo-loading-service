@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  cargo-loading:
+    build: .
+    image: cargo-loading
+    ports:
+      - "8080"
+  mysql:
+    image: mysql:8.1
+    environment:
+      - MYSQL_ROOT_PASSWORD: Ex@mple
+  nginx: 
+    image: nginx:apline-slim
+    ports:
+      - "80"
