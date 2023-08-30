@@ -139,7 +139,7 @@ printf "\n*** PAS 2: Per cada aplicació, descarreguem el projecte de GitHub a d
 printf "\n --> Descarreguem de github el projecte del ONION\n"
 #git clone https://$githubUsername:$githubPassword@github.com/CodeBiting/XXXXXX.git
 cd /home/root/onion/
-git clone https://github.com/CodeBiting/onion-cargo-loading-service.git
+git clone https://github.com/Arcedo/onion-cargo-loading-service.git
 cd /home/root/onion/onion-cargo-loading-service
 printf "\n Creem el fitxer de configuració del projecte\n"
 touch config/config.js 
