@@ -46,6 +46,10 @@ echo "      password: '$mypass'," >> config/config.js
 echo '      connectionLimit: 10' >> config/config.js 
 echo '    }' >> config/config.js 
 echo '}' >> config/config.js 
+
+# DB_User password
+sed -i "s/mypass123/'$mypass'/g" docker-compose.yml
+
 # Give permissions to "MYSQL_USER"
 #docker-compose 
 #echo "GRANT ALL PRIVILEGES ON cargo_loading.* TO '$myuser'@'localhost' WITH GRANT OPTION;" >> scripts/sql/database.sql

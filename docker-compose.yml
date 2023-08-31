@@ -5,7 +5,7 @@ services:
     image: mysql:8.1
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: mypass123
     volumes:
       - ./scripts/sql:/docker-entrypoint-initdb.d
     ports:
