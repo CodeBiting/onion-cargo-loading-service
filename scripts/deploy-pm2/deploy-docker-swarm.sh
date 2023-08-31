@@ -38,18 +38,19 @@ echo 'module.exports = {' >> config/config.js
 echo '    client: "TEST",' >> config/config.js 
 echo '    service: "onion-cargo-loading-service",' >> config/config.js 
 echo '    db: {' >> config/config.js 
-echo '      host: "127.0.0.1",' >> config/config.js 
+echo '      host: "mysql",' >> config/config.js 
 echo '      port: 3306,' >> config/config.js 
 echo '      database: "cargo_loading",' >> config/config.js 
-echo "      user: '$myuser'," >> config/config.js 
-echo "      password: '$mypass'," >> config/config.js 
+echo "      user: 'root'," >> config/config.js 
+echo "      password: 'Mypass123'," >> config/config.js 
 echo '      connectionLimit: 10' >> config/config.js 
 echo '    }' >> config/config.js 
 echo '}' >> config/config.js 
 # Give permissions to "MYSQL_USER"
-echo "GRANT ALL PRIVILEGES ON cargo_loading.* TO '$myuser'@'localhost' WITH GRANT OPTION;" >> scripts/sql/database.sql
-# Install docker-compose
+#docker-compose 
+#echo "GRANT ALL PRIVILEGES ON cargo_loading.* TO '$myuser'@'localhost' WITH GRANT OPTION;" >> scripts/sql/database.sql
 
+# Install docker-compose
 printf "\n** Installation docker-compose **\n"
 sudo apt update -y
 sudo apt install docker-compose -y
