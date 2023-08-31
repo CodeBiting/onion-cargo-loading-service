@@ -5,9 +5,7 @@ services:
     image: mysql:8.1
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: Mypass123
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./scripts/sql:/docker-entrypoint-initdb.d
     ports:
@@ -24,3 +22,5 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - ./scripts/deploy-pm2/nginx-default:/etc/nginx/sites-available/default
