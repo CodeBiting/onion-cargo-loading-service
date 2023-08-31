@@ -1,5 +1,5 @@
 # Partim d’una imatge mínima de node 18.12.1 LTS https://hub.docker.com/_/node
-FROM node:lts-alpine3.16
+FROM node:lts-alpine
 # Indicar el creador
 LABEL maintainer="Codebiting - JDH"
 # Instalem wget

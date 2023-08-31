@@ -12,20 +12,23 @@ printf "\n\nConfiguration data:"
 #read -p "  Usuari de GitHub: " githubUsername
 #read -sp "  Contrasenya:" githubPassword
 printf "\n Data for MySQL\n"
-read -p "  User: " MYSQL_USER
-read -sp "  Passoword: " MYSQL_PASSWORD
-#Comprovate if the evniroment variables are empty (no username or password)
-if [ -z "$MYSQL_USER" ]; then
-  MYSQL_USER=default
+read -p "  User: " myuser
+read -sp "  Passoword: " mypass
+# Comprovate if the evniroment variables are empty (no username or password)
+if [ -z "$myuser" ]; then
+  myuser=default
   printf "\n -- No user entry\n  ---> DEFAULT USERNAME: default"
 fi
-if [ -z "$MYSQL_PASSWORD" ]; then
-  MYSQL_PASSWORD=Mypass123
+if [ -z "$mypass" ]; then
+  mypass=Mypass123
   printf "\n -- No password entry.\n  ---> DEFAULT PASSWORD: Mypass123"
 fi
+# Export values for MySQL docker image
+export MYSQL_USER=myuser
+export MYSQL_PASSWORD=mypass
 
 printf "\n** GET PROJECT REPOSITORY **\n"
-git clone https://github.com/CodeBiting/onion-cargo-loading-service.git
+git clone https://github.com/Arcedo/onion-cargo-loading-service.git
 cd onion-cargo-loading-service/
 
 printf "\n** CREATE/MODIFY CONFIGURATION DB **\n"
@@ -38,16 +41,17 @@ echo '    db: {' >> config/config.js
 echo '      host: "127.0.0.1",' >> config/config.js 
 echo '      port: 3306,' >> config/config.js 
 echo '      database: "cargo_loading",' >> config/config.js 
-echo "      user: '$MYSQL_USER'," >> config/config.js 
-echo "      password: '$MYSQL_PASSWORD'," >> config/config.js 
+echo "      user: '$myuser'," >> config/config.js 
+echo "      password: '$mypass'," >> config/config.js 
 echo '      connectionLimit: 10' >> config/config.js 
 echo '    }' >> config/config.js 
 echo '}' >> config/config.js 
 # Give permissions to "MYSQL_USER"
-echo "GRANT ALL PRIVILEGES ON cargo_loading.* TO '$MYSQL_USER'@'localhost' WITH GRANT OPTION;" >> scripts/sql/database.sql
+echo "GRANT ALL PRIVILEGES ON cargo_loading.* TO '$myuser'@'localhost' WITH GRANT OPTION;" >> scripts/sql/database.sql
 # Install docker-compose
 
 printf "\n** Installation docker-compose **\n"
+sudo apt update -y
 sudo apt install docker-compose -y
 
 printf "\n** Building/Starting docker-compose **\n"
