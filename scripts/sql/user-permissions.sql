@@ -1,1 +1,0 @@
-GRANT ALL PRIVILEGES ON cargo_loading.* TO 'your_user'@'localhost' WITH GRANT OPTION;
