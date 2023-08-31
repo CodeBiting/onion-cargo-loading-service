@@ -1,16 +1,22 @@
 version: "3"
 
 services:
-  cargo-loading:
-    build: .
-    image: cargo-loading
-    ports:
-      - "8080"
   mysql:
     image: mysql:8.1
     environment:
-      - MYSQL_ROOT_PASSWORD: Ex@mple
-  nginx: 
-    image: nginx:apline-slim
+      MYSQL_ROOT_PASSWORD: Mypass123
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./scripts/sql:/docker-entrypoint-initdb.d
+  app:
+    build: .
+    image: cargo-loading
     ports:
-      - "80"
+      - "8080:8080"
+  nginx: 
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
