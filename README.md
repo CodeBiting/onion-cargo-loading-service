@@ -260,11 +260,31 @@ Per això afegim els paquets:
 Hem de configurar el es-lint per assegurar que es respecta l'estil i no hi ha errors estàtics en el codi.
 Per defecte hem triat l'[estandarjs](https://standardjs.com). Les regles configurables es poden trobar [aquí](https://eslint.org/docs/latest/rules/indent#switchcase) Hi fem algunes modificacions específiques de CodeBiting.
 
-1. Creem el fitxer `.eslintrc.js`, aquest fitxer es crea quan configurem l'eslint amb la comanda `npm init @eslint/config`.
-2. Probem que funciona executant l'eslint d'un fitxer amb la comanda `node ./node_modules/.bin/eslint yourfile.js`
+1. Instal·lem i configurem l'eslint amb la comanda `npm init @eslint/config`.
+   1. Triem `To check syntax, find problems, and enforce code style`
+   2. What type of modules does your project use? `CommonJS (require/exports)`
+   3. Which framework does your project use? `None of these`
+   4. Does your project use TypeScript? `No`
+   5. Where does your code run? `Node`
+   6. Use a popular style guide `Standard: https://github.com/standard/standard`
+   7. What format do you want your config file to be in? `JavaScript`
+   8. Which package manager do you want to use? `npm`
+2. Verifiquem que s'ha creat el fitxer `.eslintrc.js`
+3. Afegim les següents regles al fitxer `.eslintrc.js` en l'apartat `rules`
+
+```javascript
+    // Use 4 space identation to get the code more compact
+    // In switch-case ident case https://eslint.org/docs/latest/rules/indent#switchcase
+    indent: ['error', 4, { SwitchCase: 1 }],
+    // Use semicolons to make the code easier to read
+    semi: ['error', 'always']
+```
+
+Probem que funciona executant l'eslint d'un fitxer amb la comanda `node ./node_modules/.bin/eslint yourfile.js`
 
 ### Configuració del git pre-commit
 
+Instal·lem el paquet precommit: `npm install pre-commit --save-dev`
 El paquet pre-commit executa els tests configurats al `package.json`, per això hem d'afegir una secció indicant les comandes que s'executaran:
 
 ```json

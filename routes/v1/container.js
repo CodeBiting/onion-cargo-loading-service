@@ -237,6 +237,7 @@ router.post('/smallest/:clientId', async function (req, res, next) {
   let smallestContainerFound = null;
   let container = null;
 
+  // console.log('A-1');
   try {
     const containers = await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
     smallestContainerFound = volAnalysis.findPickingBox(containers, req.body);
@@ -268,6 +269,7 @@ router.post('/smallest/:clientId', async function (req, res, next) {
       )
     );
   }
+  // console.log('A-2');
   const apiRes = new ApiResult(
     status === 200 ? 'OK' : 'ERROR',
     container,
@@ -286,7 +288,19 @@ router.post('/smallest/:clientId', async function (req, res, next) {
     requestBody: JSON.stringify(req.body),
     responseData: JSON.stringify(apiRes)
   };
-  registerService.postRegister(newRegister);
+  // console.log('A-3');
+  const registerCreated = await registerService.postRegister(newRegister);
+  // console.log('A-4');
+  if (registerCreated === undefined || registerCreated === null) {
+    logger.error(
+      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : register not created`
+    );
+  } else {
+    logger.info(
+      `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : register created ok ${JSON.stringify(registerCreated)}`
+    );
+  }
+  // console.log('A-5');
   res
     .status(status)
     .json(
