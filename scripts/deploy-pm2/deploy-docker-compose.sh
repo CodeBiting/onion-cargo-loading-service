@@ -57,12 +57,12 @@ sed -i "s/mypass123/'$mypass'/g" docker-compose.yml
 # Install docker-compose
 printf "\n** Installation docker-compose **\n"
 sudo apt update -y
-sudo apt install docker -y
+sudo apt install docker-compose -y
 
 printf "\n** Creating SSL **\n"
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./cert.key -out ./cert.crt
 
 printf "\n** Building/Starting docker-compose **\n"
-docker stack deploy -c docker-swarm-compose.yml onion-cargo-loading
-docker stack
+docker-compose up -d
+docker-compose
 printf "\n*** END ***\n"
