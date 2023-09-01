@@ -34,11 +34,11 @@ cd onion-cargo-loading-service/
 printf "\n** CREATE/MODIFY CONFIGURATION DB **\n"
 # Create the "config.js" to acces the DB
 touch config/config.js 
-echo 'module.exports = {' >> config/config.js 
+echo 'module.exports = {' > config/config.js 
 echo '    client: "TEST",' >> config/config.js 
 echo '    service: "onion-cargo-loading-service",' >> config/config.js 
 echo '    db: {' >> config/config.js 
-echo '      host: "mysql",' >> config/config.js 
+echo '      host: "onion-cargo-loading_mysql",' >> config/config.js 
 echo '      port: 3306,' >> config/config.js 
 echo '      database: "cargo_loading",' >> config/config.js 
 echo "      user: 'root'," >> config/config.js 
@@ -48,21 +48,27 @@ echo '    }' >> config/config.js
 echo '}' >> config/config.js 
 
 # DB_User password
-sed -i "s/mypass123/'$mypass'/g" docker-compose.yml
+sed -i "s/mypass123/'$mypass'/g" docker-swarm-compose.yml
 
 # Give permissions to "MYSQL_USER"
 #docker-compose 
-#echo "GRANT ALL PRIVILEGES ON cargo_loading.* TO '$myuser'@'localhost' WITH GRANT OPTION;" >> scripts/sql/database.sql
+echo "" >> scripts/sql/database.sql
+echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;" >> scripts/sql/database.sql
+echo "FLUSH PRIVILEGES;" >> scripts/sql/database.sql
 
 # Install docker-compose
 printf "\n** Installation docker-compose **\n"
 sudo apt update -y
 sudo apt install docker -y
+sudo apt install docker.io -y
+sudo apt install docker-compose -y 
 
 printf "\n** Creating SSL **\n"
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./cert.key -out ./cert.crt
 
 printf "\n** Building/Starting docker-compose **\n"
+docker-compose build docker-swarm-compose.yml
+docker swarm init
 docker stack deploy -c docker-swarm-compose.yml onion-cargo-loading
 docker stack
 printf "\n*** END ***\n"
