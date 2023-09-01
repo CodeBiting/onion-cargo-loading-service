@@ -59,6 +59,9 @@ printf "\n** Installation docker-compose **\n"
 sudo apt update -y
 sudo apt install docker-compose -y
 
+printf "\n** Creating SSL **\n"
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./cert.key -out ./cert.crt
+
 printf "\n** Building/Starting docker-compose **\n"
 docker-compose up -d
 docker-compose
