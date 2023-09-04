@@ -7,11 +7,26 @@ const uniqid = require('uniqid');
 const logger = require('./api/logger');
 const ApiResult = require('./api/ApiResult');
 const ApiError = require('./api/ApiError');
-const config = require('./config/config');
+// const config = require('./config/config');
 const database = require('./api/database');
+const fs = require('fs');
 
 // Connect MySQL
-database.connect(config.db, function (err) {
+let db = {};
+
+if (fs.existsSync('./config/config.js')) {
+  const config = require('./config/config');
+  db = config.db;
+} else {
+  db.host = process.env.DB_HOST;
+  db.port = process.env.DB_PORT;
+  db.database = process.env.DB_DATABASE;
+  db.user = process.env.DB_USER;
+  db.password = process.env.DB_PASSWORD;
+  db.connectionLimit = process.env.DB_CONNECTION_LIMIT;
+}
+
+database.connect(db, function (err) {
   if (err) {
     console.error('Unable to connect to MySQL: ' + err);
     process.exit(1);
@@ -21,7 +36,7 @@ database.connect(config.db, function (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         process.exit(1);
       } else {
-        console.log(`Connected to MySQL ${config.db.database} successfully`);
+        console.log(`Connected to MySQL ${db.database} successfully`);
       }
     });
   }

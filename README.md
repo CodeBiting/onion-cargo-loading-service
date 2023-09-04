@@ -460,6 +460,12 @@ Característiques:
 
 ### Executem el contenidor amb Cloud Run
 
+Fem servir variables d'entorn enlloc de fitxer de configuració:
+
+```bash
+CLIENT_CODE="TEST" SERVICE_CODE="onion-cargo-loading-service" DB_HOST='localhost' DB_PORT=3306 DB_DATABASE='cargo_loading' DB_USER='cbwms' DB_PASSWORD='xxxxx' DB_CONNECTION_LIMIT=10 npm start
+```
+
 ## Comparativa dels diferents modes de desplegament
 
 | Mode de desplegament | Màxima escalabilitat | Temps per canviar l'escalabilitat |

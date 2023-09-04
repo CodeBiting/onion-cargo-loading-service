@@ -1,5 +1,5 @@
-const config = require('../config/config.js');
 const { createLogger, format, transports } = require('winston');
+const fs = require('fs');
 
 const level = process.env.LOG_LEVEL || 'debug';
 
@@ -36,6 +36,15 @@ const transportsCustom = [
   // (also the error log that are also printed inside the error.log(
   // new transports.File({ filename: 'logs/all.log' }),
 ];
+
+let config = {};
+
+if (fs.existsSync('./config/config.js')) {
+  config = require('../config/config.js');
+} else {
+  config.service = process.env.SERVICE_CODE;
+  config.client = process.env.CLIENT_CODE;
+}
 
 if (process.env.NODE_ENV !== 'production') {
   logger = createLogger({
