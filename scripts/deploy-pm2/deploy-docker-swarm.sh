@@ -38,7 +38,7 @@ echo 'module.exports = {' > config/config.js
 echo '    client: "TEST",' >> config/config.js 
 echo '    service: "onion-cargo-loading-service",' >> config/config.js 
 echo '    db: {' >> config/config.js 
-echo '      host: "onion-cargo-loading_mysql",' >> config/config.js 
+echo '      host: "mysql",' >> config/config.js 
 echo '      port: 3306,' >> config/config.js 
 echo '      database: "cargo_loading",' >> config/config.js 
 echo "      user: 'root'," >> config/config.js 
@@ -67,8 +67,16 @@ printf "\n** Creating SSL **\n"
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./cert.key -out ./cert.crt
 
 printf "\n** Building/Starting docker-compose **\n"
-docker-compose build docker-swarm-compose.yml
 docker swarm init
+docker-compose build
 docker stack deploy -c docker-swarm-compose.yml onion-cargo-loading
+# This update takes around 6min to complete 
+docker service update onion-cargo-loading_app
+docker service ls
 docker stack
+# DELETE the depoy: docker stack rm onion-cargo-loading
+# CREATE the deploy: docker stack deploy -c docker-swarm-compose.yml onion-cargo-loading
+# LIST containers in swarm: docker service ls
+# LOGS containers: docker service logs onion-cargo-loading_app
+# REPLICATE the app: docker service scale onion-cargo-loading_app=2
 printf "\n*** END ***\n"
