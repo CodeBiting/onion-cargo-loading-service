@@ -9,22 +9,16 @@ const ApiResult = require('./api/ApiResult');
 const ApiError = require('./api/ApiError');
 // const config = require('./config/config');
 const database = require('./api/database');
-const fs = require('fs');
 
 // Connect MySQL
-let db = {};
-
-if (fs.existsSync('./config/config.js')) {
-  const config = require('./config/config');
-  db = config.db;
-} else {
-  db.host = process.env.DB_HOST;
-  db.port = process.env.DB_PORT;
-  db.database = process.env.DB_DATABASE;
-  db.user = process.env.DB_USER;
-  db.password = process.env.DB_PASSWORD;
-  db.connectionLimit = process.env.DB_CONNECTION_LIMIT;
-}
+const db = {
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 3306,
+  database: process.env.DB_DATABASE || 'cargo_loading',
+  user: process.env.DB_USER || 'cbwms',
+  password: process.env.DB_PASSWORD || '1qaz2wsx',
+  connectionLimit: process.env.DB_CONNECTION_LIMIT || 10
+};
 
 database.connect(db, function (err) {
   if (err) {
