@@ -1,7 +1,8 @@
 const { createLogger, format, transports } = require('winston');
-const fs = require('fs');
 
 const level = process.env.LOG_LEVEL || 'debug';
+const clientName = process.env.CLIENT_CODE || 'TEST_CLIENT';
+const serviceName = process.env.SERVICE_CODE || 'cargo-loading-service';
 
 function formatParams (info) {
   const { timestamp, level, message, ...args } = info;
@@ -37,15 +38,6 @@ const transportsCustom = [
   // new transports.File({ filename: 'logs/all.log' }),
 ];
 
-let config = {};
-
-if (fs.existsSync('./config/config.js')) {
-  config = require('../config/config.js');
-} else {
-  config.service = process.env.SERVICE_CODE;
-  config.client = process.env.CLIENT_CODE;
-}
-
 if (process.env.NODE_ENV !== 'production') {
   logger = createLogger({
     level,
@@ -59,8 +51,8 @@ if (process.env.NODE_ENV !== 'production') {
     format: productionFormat,
     // En entorn de producció indiquem el servei i el client
     defaultMeta: {
-      service: config.service,
-      client: config.client
+      service: serviceName,
+      client: clientName
     },
     transports: transportsCustom
   });
