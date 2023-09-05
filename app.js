@@ -10,6 +10,10 @@ const ApiError = require('./api/ApiError');
 // const config = require('./config/config');
 const database = require('./api/database');
 
+// Load .env file to provess.env variables, if the file does not exist does nothing
+require('dotenv').config();
+// console.log(process.env);
+
 // Connect MySQL
 const db = {
   host: process.env.DB_HOST || 'localhost',
