@@ -10,10 +10,9 @@ const registerService = require('../../api/v1/registerService');
 const reqQuery = require('../../api/requestQuery');
 const volAnalysis = require('../../api/VolumeAnalysis');
 
-let redisContainers=null;
+let redisContainers = null;
 require('dotenv').config();
-if (process.env.HAS_REDIS){
-
+if (process.env.HAS_REDIS) {
   const hostRedis = process.env.REDIS_HOST || 'localhost';
   const portRedis = process.env.REDIS_PORT || 6379;
   const redis = require('redis');
@@ -24,7 +23,7 @@ if (process.env.HAS_REDIS){
   (async () => {
     await redisContainers.connect();
   })();
-  
+
   redisContainers.on('connect', () => console.log('::> Redis Client Connected'));
   redisContainers.on('error', (err) => console.log('<:: Redis Client Error', err));
 }
@@ -258,7 +257,7 @@ router.post('/smallest/:clientId', async function (req, res, next) {
   let containers;
 
   try {
-    if(redisContainers){
+    if (redisContainers) {
       const reply = await redisContainers.get(`containersFrom${req.params.clientId}`);
       if (reply) {
         containers = JSON.parse(reply);
@@ -266,8 +265,7 @@ router.post('/smallest/:clientId', async function (req, res, next) {
         containers = await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
         await redisContainers.set(`containersFrom${req.params.clientId}`, JSON.stringify(containers));
       }
-    }
-    else{
+    } else {
       containers = await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
     }
     smallestContainerFound = volAnalysis.findPickingBox(containers, req.body);
