@@ -10,6 +10,11 @@ services:
       - ./scripts/sql:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
   app:
     build: .
     restart: unless-stopped
@@ -28,9 +33,4 @@ services:
       - ./scripts/deploy-pm2/nginx-default:/etc/nginx/sites-available/default
       - ./cert.key:/etc/nginx/cert.key
       - ./cert.crt:/etc/nginx/cert.crt
-  redis:
-    image: redis:7.2-alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
     
