@@ -15,7 +15,9 @@ require('dotenv').config();
 const hostRedis = process.env.REDIS_HOST || 'localhost';
 const portRedis = process.env.REDIS_PORT || 6379;
 const redis = require('redis');
-const redisContainers = redis.createClient(portRedis, hostRedis, redis);
+const redisContainers = redis.createClient({
+  url: `redis://${hostRedis}:${portRedis}`
+});
 
 (async () => {
   await redisContainers.connect();

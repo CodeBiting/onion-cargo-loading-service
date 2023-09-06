@@ -13,7 +13,6 @@ services:
   redis:
     image: redis:7.2-alpine
     restart: unless-stopped
-    command: [ "redis-server" ]
     ports:
       - "6379:6379"
   app:
@@ -23,7 +22,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./config/config.js:/onion-cargo-loading-service/config/config.js
+      - ./.env:/onion-cargo-loading-service/.env
   nginx: 
     image: nginx:stable-alpine
     restart: unless-stopped
