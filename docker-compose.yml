@@ -13,6 +13,7 @@ services:
   redis:
     image: redis:7.2-alpine
     restart: unless-stopped
+    command: [ "redis-server" ]
     ports:
       - "6379:6379"
   app:
