@@ -10,21 +10,24 @@ const registerService = require('../../api/v1/registerService');
 const reqQuery = require('../../api/requestQuery');
 const volAnalysis = require('../../api/VolumeAnalysis');
 
+let redisContainers=null;
 require('dotenv').config();
+if (process.env.HAS_REDIS){
 
-const hostRedis = process.env.REDIS_HOST || 'localhost';
-const portRedis = process.env.REDIS_PORT || 6379;
-const redis = require('redis');
-const redisContainers = redis.createClient({
-  url: `redis://${hostRedis}:${portRedis}`
-});
+  const hostRedis = process.env.REDIS_HOST || 'localhost';
+  const portRedis = process.env.REDIS_PORT || 6379;
+  const redis = require('redis');
+  redisContainers = redis.createClient({
+    url: `redis://${hostRedis}:${portRedis}`
+  });
 
-(async () => {
-  await redisContainers.connect();
-})();
-
-redisContainers.on('connect', () => console.log('::> Redis Client Connected'));
-redisContainers.on('error', (err) => console.log('<:: Redis Client Error', err));
+  (async () => {
+    await redisContainers.connect();
+  })();
+  
+  redisContainers.on('connect', () => console.log('::> Redis Client Connected'));
+  redisContainers.on('error', (err) => console.log('<:: Redis Client Error', err));
+}
 
 const HELP_BASE_URL = '/v1/help/error';
 
@@ -255,12 +258,17 @@ router.post('/smallest/:clientId', async function (req, res, next) {
   let containers;
 
   try {
-    const reply = await redisContainers.get(`containersFrom${req.params.clientId}`);
-    if (reply) {
-      containers = JSON.parse(reply);
-    } else {
+    if(redisContainers){
+      const reply = await redisContainers.get(`containersFrom${req.params.clientId}`);
+      if (reply) {
+        containers = JSON.parse(reply);
+      } else {
+        containers = await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
+        await redisContainers.set(`containersFrom${req.params.clientId}`, JSON.stringify(containers));
+      }
+    }
+    else{
       containers = await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
-      await redisContainers.set(`containersFrom${req.params.clientId}`, JSON.stringify(containers));
     }
     smallestContainerFound = volAnalysis.findPickingBox(containers, req.body);
     if (smallestContainerFound) {
@@ -360,7 +368,7 @@ router.post('/', async function (req, res, next) {
 
   try {
     containerCreated = await containerService.postContainer(req.body);
-    if (containerCreated) await redisContainers.del(`containerFrom${req.body.clientId}`);
+    if (containerCreated && redisContainers) await redisContainers.del(`containerFrom${req.body.clientId}`);
   } catch (ex) {
     logger.error(
       `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : ${ex}`
@@ -428,7 +436,7 @@ router.put('/:id', async function (req, res, next) {
     const containerNewData = req.body;
 
     containerUpdated = await containerService.putContainer(id, containerNewData);
-    if (containerUpdated) await redisContainers.del(`containerFrom${containerUpdated.clientId}`);
+    if (containerUpdated && redisContainers) await redisContainers.del(`containerFrom${containerUpdated.clientId}`);
     if (containerUpdated === undefined) {
       logger.error(
         `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Container not found`
@@ -501,7 +509,7 @@ router.delete('/:id', async function (req, res, next) {
     const id = req.params.id;
 
     containerDeleted = await containerService.deleteContainer(id);
-    if (containerDeleted) await redisContainers.del(`containerFrom${containerDeleted.clientId}`);
+    if (containerDeleted && redisContainers) await redisContainers.del(`containerFrom${containerDeleted.clientId}`);
     if (containerDeleted === undefined) {
       logger.error(
         `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Container not found`
@@ -575,7 +583,7 @@ router.put('/:id/delete', async function (req, res, next) {
 
   try {
     containerDeleted = await containerService.desactivateContainer(req.params.id);
-    if (containerDeleted) await redisContainers.del(`containerFrom${containerDeleted.clientId}`);
+    if (containerDeleted && redisContainers) await redisContainers.del(`containerFrom${containerDeleted.clientId}`);
     if (containerDeleted === undefined) {
       logger.error(
         `${API_NAME}: [${req.method}] ${req.originalUrl}: reqId=${req.requestId} : Container not found`

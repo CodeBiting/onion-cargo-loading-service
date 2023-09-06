@@ -10,11 +10,6 @@ services:
       - ./scripts/sql:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
-  redis:
-    image: redis:7.2-alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
   app:
     build: .
     restart: unless-stopped

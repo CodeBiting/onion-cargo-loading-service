@@ -22,7 +22,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./config/config.js:/onion-cargo-loading-service/config/config.js
+      - ./.env:/onion-cargo-loading-service/.env
   nginx: 
     image: nginx:stable-alpine
     restart: unless-stopped
@@ -33,4 +33,3 @@ services:
       - ./scripts/deploy-pm2/nginx-default:/etc/nginx/sites-available/default
       - ./cert.key:/etc/nginx/cert.key
       - ./cert.crt:/etc/nginx/cert.crt
-    

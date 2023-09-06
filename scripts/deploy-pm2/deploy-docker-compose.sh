@@ -37,7 +37,6 @@ touch .env
 echo 'DB_HOST="mysql"' > .env 
 echo 'DB_USER="root"' >> .env 
 echo "DB_PASSWORD='$mypass'" >> .env
-echo 'REDIS_HOST="redis"' >> .env
 
 # DB_User password
 sed -i "s/mypass123/'$mypass'/g" docker-compose.yml
