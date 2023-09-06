@@ -1,10 +1,10 @@
 # to run the this test type:
-# "artillery run test/artillery/cargoLoading.yml"
+# "artillery run test/artillery/artillery-cargoLoading.yml"
 # if want to generate a JSON report
 # "artillery run --output report.json test/artillery/artillery-cargoLoading.yml"
 # once the test is done the file "report.json" will be created then to generate an HTML
 # "artillery report report.json"
-
+# on insecure pages add: "-k" 
 config:
   target: "http://localhost:8080"
   phases:

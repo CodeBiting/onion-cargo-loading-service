@@ -16,6 +16,8 @@ services:
     image: cargo-loading
     ports:
       - "8080:8080"
+    volumes:
+      - ./config/config.js:/onion-cargo-loading-service/config/config.js
   nginx: 
     image: nginx:stable-alpine
     restart: unless-stopped
@@ -26,3 +28,8 @@ services:
       - ./scripts/deploy-pm2/nginx-default:/etc/nginx/sites-available/default
       - ./cert.key:/etc/nginx/cert.key
       - ./cert.crt:/etc/nginx/cert.crt
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"

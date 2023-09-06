@@ -69,7 +69,7 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./cert.key -out
 printf "\n** Building/Starting docker-compose **\n"
 docker swarm init
 docker-compose build
-docker stack deploy -c docker-swarm-compose.yml onion-cargo-loading
+docker stack deploy -c docker-compose.yml onion-cargo-loading
 # This update takes around 6min to complete 
 docker service update onion-cargo-loading_app
 docker service ls

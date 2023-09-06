@@ -133,6 +133,9 @@ sudo apt install percona-xtrabackup-80 -y
 sudo apt install qpress -y
 sudo apt install zstd -y
 
+# Redis
+printf "\n Instal·lació de Redis"
+sudo apt install redis
 
 printf "\n*** PAS 2: Per cada aplicació, descarreguem el projecte de GitHub a dins del host (contenen un fitxer Dockerfile i .dockerignore que copia el projecte a dins del contenidor)\n"
 
