@@ -7,11 +7,24 @@ const uniqid = require('uniqid');
 const logger = require('./api/logger');
 const ApiResult = require('./api/ApiResult');
 const ApiError = require('./api/ApiError');
-const config = require('./config/config');
+// const config = require('./config/config');
 const database = require('./api/database');
 
+// Load .env file to provess.env variables, if the file does not exist does nothing
+require('dotenv').config();
+// console.log(process.env);
+
 // Connect MySQL
-database.connect(config.db, function (err) {
+const db = {
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 3306,
+  database: process.env.DB_DATABASE || 'cargo_loading',
+  user: process.env.DB_USER || 'cbwms',
+  password: process.env.DB_PASSWORD || '1qaz2wsx',
+  connectionLimit: process.env.DB_CONNECTION_LIMIT || 10
+};
+
+database.connect(db, function (err) {
   if (err) {
     console.error('Unable to connect to MySQL: ' + err);
     process.exit(1);
@@ -21,7 +34,7 @@ database.connect(config.db, function (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         process.exit(1);
       } else {
-        console.log(`Connected to MySQL ${config.db.database} successfully`);
+        console.log(`Connected to MySQL ${db.database} successfully`);
       }
     });
   }

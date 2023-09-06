@@ -1,7 +1,8 @@
-const config = require('../config/config.js');
 const { createLogger, format, transports } = require('winston');
 
 const level = process.env.LOG_LEVEL || 'debug';
+const clientName = process.env.CLIENT_CODE || 'TEST_CLIENT';
+const serviceName = process.env.SERVICE_CODE || 'cargo-loading-service';
 
 function formatParams (info) {
   const { timestamp, level, message, ...args } = info;
@@ -50,8 +51,8 @@ if (process.env.NODE_ENV !== 'production') {
     format: productionFormat,
     // En entorn de producció indiquem el servei i el client
     defaultMeta: {
-      service: config.service,
-      client: config.client
+      service: serviceName,
+      client: clientName
     },
     transports: transportsCustom
   });
