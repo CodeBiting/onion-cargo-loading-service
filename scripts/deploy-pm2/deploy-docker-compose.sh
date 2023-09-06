@@ -34,7 +34,7 @@ cd onion-cargo-loading-service/
 printf "\n** CREATE/MODIFY CONFIGURATION DB **\n"
 # Create the "config.js" to acces the DB
 touch .env 
-echo 'DB_HOST="localhost"' > .env 
+echo 'DB_HOST="mysql"' > .env 
 echo 'DB_USER="root"' >> .env 
 echo "DB_PASSWORD='$mypass'" >> .env
 echo 'REDIS_HOST="redis"' >> .env
