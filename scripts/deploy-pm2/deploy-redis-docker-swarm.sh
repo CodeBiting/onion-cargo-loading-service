@@ -25,7 +25,7 @@ if [ -z "$mypass" ]; then
 fi
 # Export values for MySQL docker image
 #export MYSQL_USER=myuser
-export MYSQL_PASSWORD=mypass
+# export MYSQL_PASSWORD=mypass
 
 printf "\n** GET PROJECT REPOSITORY **\n"
 git clone https://github.com/Arcedo/onion-cargo-loading-service.git
@@ -41,7 +41,7 @@ echo 'REDIS_HOST="redis"' >> .env
 echo "HAS_REDIS=true" >> .env
 
 # DB_User password
-sed -i "s/mypass123/'$mypass'/g" docker-compose.yml
+sed -i "s/mypass123/'$mypass'/g" docker-compose-redis.yml
 
 # Give permissions to "MYSQL_USER"
 #docker-compose 
