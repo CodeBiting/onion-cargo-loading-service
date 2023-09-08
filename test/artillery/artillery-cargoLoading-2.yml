@@ -14,11 +14,18 @@ config:
       name: "Case 1: 0 virtual users to 50 in 20 seconds"
     - duration: 20
       arrivalRate: 50
-      name: "Case 2: 50 virtual in 20 seconds"
+      name: "Case 2: 50 virtual users in 20 seconds"
     - duration: 40
       arrivalRate: 50
       rampTo: 300
       name: "Case 3: 50 virtual users to 300 in 40 seconds"
+    - duration: 20
+      arrivalRate: 300
+      name: "Case 4: 300 virtual users in 20 seconds"
+    - duration: 20
+      arrivalRate: 300
+      rampTo: 500
+      name: "Case 5: 300 virtual users to 500 in 20 seconds"
   payload:
     path: "products.csv"
     loadAll: true
