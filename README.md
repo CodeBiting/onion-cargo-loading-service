@@ -215,7 +215,7 @@ Pojecte hostatjat al GitHub, per col·laborar treballar de la següent manera:
 
 1. Fer un fork del projecte al teu GitHub
 2. Clona el codi en local
-3. Crea el fitxer config/config.js amb la configuració del servei:
+3. Crea el fitxer `.env` amb la configuració del servei com a variables d'entorn
 4. Crea una branca, posa-li un bon nom, que indiqui el tipus de canvi (bug,
    fix, feat, doc) i expliqui de que es tracta.
    Ex: "bug:error when array is null"
@@ -226,13 +226,17 @@ Pojecte hostatjat al GitHub, per col·laborar treballar de la següent manera:
 7. Guarda els canvis al teu GitHub
 8. Crea el pull request
 
-Fitxer config/config.js d'exemple:
+Fitxer `.env` d'exemple:
 
 ```javascript
-module.exports = {
-    client: "nom del client que el té desplegat",
-    service: "nom del servei"
-}
+CLIENT_CODE="TEST" 
+SERVICE_CODE="onion-cargo-loading-service" 
+DB_HOST='localhost' 
+DB_PORT=3306 
+DB_DATABASE='cargo_loading' 
+DB_USER='user' 
+DB_PASSWORD='xxxxx' 
+DB_CONNECTION_LIMIT=10
 ```
 
 Per veure totes les rutes del projecte executar-lo amb la camanda:
@@ -453,18 +457,113 @@ Característiques:
 
 1. Un o diversos servidors
 2. Configuració complexa
-3. Escalabilitat
+3. Escalabilitat: podem afegirm més rèpliques manualment
 4. Entorns aïllats
 
 ### Executem el contenidor amb kubernetes
 
 ### Executem el contenidor amb Cloud Run
 
-Fem servir variables d'entorn enlloc de fitxer de configuració:
+Característiques:
+
+1. Ens despreocupem de la infraestructura
+2. Configuració complexa
+3. Escalabilitat automàtica en base als paràmetres establerts durant la configuració
+4. CI/CD
+
+<https://www.youtube.com/watch?v=jvZXbJv6qJ4>
+<https://towardsdatascience.com/how-to-connect-to-gcp-cloud-sql-instances-in-cloud-run-servies-1e60a908e8f2>
+
+Idea: API Gateway -> Cloud RUN -> VPC Network (Private IP) -> Cloud SQL (MySQL)
+
+**Step 1 - Set permissions**:
+
+1. Enable "Cloud SQL Admin API"
+2. Grant permision "Cloud SQL Client" to service account (Goto IAM, find google cloud service account and add the role "Cloud SQL CLient")
+
+**Step 2 - Set up Cloud MySQL**:
+
+- Instance ID: cargo-loading
+- Password: XXXXXXXXXX
+- Networking: default
+- User: onion / xxxxxxxxx
+- db: cargo_loading
+- IP Public: 35.189.194.232
+- IP Private: 10.127.112.5 => es necessari configurar un VPC per connectar-hi (VPC, private ip, 10.127.112.3)
+- Create an authorized network to access to database from outside => search MyPublicIP to find the current IP
+
+Step 2.1 - Set up a Redis (5GB => US$295.65/month)
+
+- Enable "Google Cloud Memorystore for Redis API"
+- Create a Redis Memorystore Instance:
+  - Instance ID:
+  - Display name:
+  - Capacity in GB
+  - Replicas
+  - Setup connection: select VPC
+  - 
+
+**Step 3 - Setup VPC**:
+
+**Step 4 - Cloud RUN**:
+
+- Allow public access (unauthentication invocations)
+- Require authentication: How to authenticate calls to a Cloud Run Service?
+  - If the service is a backend of a web or mobile app => authenticate using [custom audiences](https://cloud.google.com/run/docs/configuring/custom-audiences): use firebase authentication, send the JWT from your client, and validate it in your Cloud Run Service code
+  - If the service is a backend and don't want to validate the JWT in your code
+    - [API Gateway to validate the JWT](https://cloud.google.com/api-gateway/docs/authenticate-service-account) with short-lived tokens with OAuth2 authentication
+    - [API Gateway using API Keys](https://cloud.google.com/api-gateway/docs/authenticate-api-keys) with long-lived tokens vulnerable to man in the middle attacks
+  - If the service only be reacheable from other services in your google cloud project => set ingress to allow internal traffic only
+  - If the service only be reacheable from other services and may run outside Google Cloud => download a key file from Google Cloud and set Require Authentication
+  - If the service only be reacheable by people in your organization => set up a load balancer, identity aware proxy and set ingress accordingly
+
+Container:
+
+- Add variable:
+  - DB_HOST: Private IP
+  - DB_USER: onion
+  - DB_PASSWORD: x^iH5F6J2ZT'lk:m
+Networking:
+- Connect to the VCP for outbound traffic
+
+Exemple de com fer servir variables d'entorn enlloc de fitxer de configuració durant la crida d'inici de la app:
 
 ```bash
 CLIENT_CODE="TEST" SERVICE_CODE="onion-cargo-loading-service" DB_HOST='localhost' DB_PORT=3306 DB_DATABASE='cargo_loading' DB_USER='cbwms' DB_PASSWORD='xxxxx' DB_CONNECTION_LIMIT=10 npm start
 ```
+
+**Step 5 - Configure an API Gateway using API Keys**:
+
+Docs:
+
+- Create an API Gateway: <https://cloud.google.com/api-gateway/docs/get-started-cloud-run>
+- Authenticate: <https://cloud.google.com/api-gateway/docs/authentication-method>
+
+Create an API Gateway public without API Key:
+
+1. Go to "API Gateway->Gateway", Enable API Gateway API, Service Control API and Service Management API
+2. Create an API Gateway, it needes an OpenApi 2 definition in yaml format. Go to "API gateway->gateway"
+3. Copy the external URL generated by Google, ex: `https://g2l-integration-8g7k8sqn.ew.gateway.dev/`
+4. Copy the managed service name so secure the API with a key, ex: `cloudrunapigateway-18rkveyi5hupp.apigateway.g2l-integration.cloud.goog`
+5. Go to "API Gateway->Gateway", select the created API Gateway, edit the API config and set the service account for the API
+6. Test the API with a browser, ex: `https://g2l-integration-8g7k8sqn.ew.gateway.dev/v1/products`
+
+Create an API Gateway public with an API Key:
+
+1. Create an API Key in "APIs and services->Credentials" <https://cloud.google.com/docs/authentication/api-keys#creating_an_api_key>, by default the API can call any enabled API and has no restrictions
+2. Enable the API in "APIs and services" searching by the managed service name
+3. Modify the OpenAPI spec used to create your API config to include instructions to enforce an API key validation security policy on all traffic
+4. Create an API Gateway, it needes the OpenApi 2 definition in yaml format. Go to "API gateway->gateway".
+   1. The value of the title field is used when minting API keys that grant access to this API. See API ID requirements for API naming guidelines
+5. Copy the external URL generated by Google, ex: `https://g2l-integration-secured-8g7k8sqn.ew.gateway.dev`
+6. Copy the managed service name so secure the API with a key, ex: `cloudrunapigatewaysecured-3fgqzb33trv87.apigateway.g2l-integration.cloud.goog`
+7. Go to "API Gateway->Gateway", select the created API Gateway, edit the API config and set the service account for the API
+8. Enable API Key support for the managed service, ex: `gcloud services enable cloudrunapigatewaysecured-3fgqzb33trv87.apigateway.g2l-integration.cloud.goog`
+9. Test the API with a browser
+   1. Without a key header it will fail with an UNAUTHENTICATED error, ex: `https://g2l-integration-secured-8g7k8sqn.ew.gateway.dev/v1/products`
+   2. With a key header it will succeed, ex: `https://g2l-integration-secured-8g7k8sqn.ew.gateway.dev/v1/products`
+
+Secure the APY key with restrictions <https://cloud.google.com/docs/authentication/api-keys#creating_an_api_key>:
 
 ## Comparativa dels diferents modes de desplegament
 

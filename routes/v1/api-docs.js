@@ -6,6 +6,9 @@ const app = express();
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
+const yaml = require('js-yaml');
+const fs = require('fs');
+
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
@@ -39,5 +42,12 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
+// Export the Open API specification to a file
+// To convert between format versions use: https://lucybot-inc.github.io/api-spec-converter/
+if (process.env.GEN_OPENAPI_SPEC === 1) {
+  const swaggerSpecYaml = yaml.dump(swaggerDocs);
+  fs.writeFileSync('./openapi-spec.yaml', swaggerSpecYaml);
+}
 
 module.exports = app;
