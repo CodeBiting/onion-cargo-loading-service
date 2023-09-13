@@ -10,6 +10,7 @@
     "test-routes": "node ./bin/www & P1=$! && sleep 2 && node ./node_modules/mocha/bin/mocha ./test/routes/v1/ && kill $P1",
     "test-cypress": "node ./bin/www & P1=$! && sleep 2 && npx cypress run --spec 'cypress/e2e/*.js' && kill $P1",
     "test-eslint": "node ./node_modules/.bin/eslint *.js bin/* api/*.js api/v1/*.js routes/v1/*.js routes/ui/v1/*.js test/routes/v1/*.js test/api/*.js",
+    "fix-eslint":"node ./node_modules/.bin/eslint *.js bin/* api/*.js api/v1/*.js routes/v1/*.js routes/ui/v1/*.js test/routes/v1/*.js test/api/*.js --fix",
     "nodemon": "nodemon ./bin/www"
   },
   "pre-commit": [
@@ -29,6 +30,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.2.0",
     "pug": "^3.0.2",
+    "redis": "^4.6.8",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",
     "uniqid": "^5.4.0",

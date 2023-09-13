@@ -152,7 +152,7 @@ describe('API Container ', () => {
       });
   });
 
-  it('should return the smallest container to save one product', (done) => {
+  it('should return the smallest container to save one product, the second request should be using redis data', (done) => {
     const clientId = 1;
     const requestId = uniqid();
     chai
@@ -189,7 +189,21 @@ describe('API Container ', () => {
                 expect(res.body.data).not.to.be.an('array');
                 expect(res.body.errors).to.be.an('array');
                 expect(res.body.errors).to.deep.equal([]);
-                done();
+                chai
+                  .request(URL)
+                  .post(`/container/smallest/${clientId}`)
+                  .set('x-request-id', requestId)
+                  .send([PRODUCT_NEW])
+                  .end(function (err, res) {
+                    // console.log([PRODUCT_NEW]);
+                    // console.log(res.body);
+                    expect(err).to.equal(null);
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.status('OK');
+                    expect(res.body.data).to.be.an('array');
+                    expect(res.body.data).to.have.length(1);
+                    done();
+                  });
               });
           });
       });

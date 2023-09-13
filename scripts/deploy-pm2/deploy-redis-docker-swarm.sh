@@ -25,7 +25,7 @@ if [ -z "$mypass" ]; then
 fi
 # Export values for MySQL docker image
 #export MYSQL_USER=myuser
-export MYSQL_PASSWORD=mypass
+# export MYSQL_PASSWORD=mypass
 
 printf "\n** GET PROJECT REPOSITORY **\n"
 git clone https://github.com/Arcedo/onion-cargo-loading-service.git
@@ -37,9 +37,11 @@ touch .env
 echo 'DB_HOST="mysql"' > .env 
 echo 'DB_USER="root"' >> .env 
 echo "DB_PASSWORD='$mypass'" >> .env
+echo 'REDIS_HOST="redis"' >> .env
+echo "HAS_REDIS=true" >> .env
 
 # DB_User password
-sed -i "s/mypass123/'$mypass'/g" docker-compose.yml
+sed -i "s/mypass123/'$mypass'/g" docker-compose-redis.yml
 
 # Give permissions to "MYSQL_USER"
 #docker-compose 
@@ -59,8 +61,8 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./cert.key -out
 
 printf "\n** Building/Starting docker-compose **\n"
 docker swarm init
-docker-compose build
-docker stack deploy -c docker-compose.yml onion-cargo-loading
+docker-compose -f docker-compose-redis.yml build
+docker stack deploy -c docker-compose-redis.yml onion-cargo-loading
 # This update takes around 6min to complete 
 docker service update onion-cargo-loading_app
 docker service ls

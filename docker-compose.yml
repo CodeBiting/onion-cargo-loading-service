@@ -16,6 +16,8 @@ services:
     image: cargo-loading
     ports:
       - "8080:8080"
+    volumes:
+      - ./.env:/onion-cargo-loading-service/.env
   nginx: 
     image: nginx:stable-alpine
     restart: unless-stopped

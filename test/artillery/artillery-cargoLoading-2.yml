@@ -1,17 +1,31 @@
 # to run the this test type:
 # "artillery run test/artillery/artillery-cargoLoading.yml"
 # if want to generate a JSON report
-# "artillery run --output report.json test/artillery/artillery-cargoLoading.yml"
+# "artillery run --output report.json test/artillery/artillery-cargoLoading-2.yml"
 # once the test is done the file "report.json" will be created then to generate an HTML
 # "artillery report report.json"
 # on insecure pages add: "-k" 
 config:
-  target: "http://79.143.93.100:8080"
+  target: "http://localhost:8080"
   phases:
-    - duration: 60
-      arrivalRate: 150
-      rampTo: 600
-      name: "Case: 150 virtual users to 600 in 60 seconds"
+    - duration: 20
+      arrivalRate: 0
+      rampTo: 50
+      name: "Case 1: 0 virtual users to 50 in 20 seconds"
+    - duration: 20
+      arrivalRate: 50
+      name: "Case 2: 50 virtual users in 20 seconds"
+    - duration: 40
+      arrivalRate: 50
+      rampTo: 300
+      name: "Case 3: 50 virtual users to 300 in 40 seconds"
+    - duration: 20
+      arrivalRate: 300
+      name: "Case 4: 300 virtual users in 20 seconds"
+    - duration: 20
+      arrivalRate: 300
+      rampTo: 500
+      name: "Case 5: 300 virtual users to 500 in 20 seconds"
   payload:
     path: "products.csv"
     loadAll: true

@@ -20,7 +20,7 @@ read -sp "  Root Passoword: " mypass
 #  printf "\n -- No user entry\n  ---> DEFAULT USERNAME: default"
 #fi
 if [ -z "$mypass" ]; then
-  mypass=Mypass123
+  mypass=mypass123
   printf "\n -- No password entry.\n  ---> DEFAULT PASSWORD: Mypass123"
 fi
 # Export values for MySQL docker image
@@ -33,19 +33,10 @@ cd onion-cargo-loading-service/
 
 printf "\n** CREATE/MODIFY CONFIGURATION DB **\n"
 # Create the "config.js" to acces the DB
-touch config/config.js 
-echo 'module.exports = {' >> config/config.js 
-echo '    client: "TEST",' >> config/config.js 
-echo '    service: "onion-cargo-loading-service",' >> config/config.js 
-echo '    db: {' >> config/config.js 
-echo '      host: "mysql",' >> config/config.js 
-echo '      port: 3306,' >> config/config.js 
-echo '      database: "cargo_loading",' >> config/config.js 
-echo "      user: 'root'," >> config/config.js 
-echo "      password: '$mypass'," >> config/config.js 
-echo '      connectionLimit: 10' >> config/config.js 
-echo '    }' >> config/config.js 
-echo '}' >> config/config.js 
+touch .env 
+echo 'DB_HOST="mysql"' > .env 
+echo 'DB_USER="root"' >> .env 
+echo "DB_PASSWORD='$mypass'" >> .env
 
 # DB_User password
 sed -i "s/mypass123/'$mypass'/g" docker-compose.yml
