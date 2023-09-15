@@ -20,12 +20,12 @@ read -sp "  Root Passoword: " mypass
 #  printf "\n -- No user entry\n  ---> DEFAULT USERNAME: default"
 #fi
 if [ -z "$mypass" ]; then
-  mypass=Mypass123
+  mypass=mypass123
   printf "\n -- No password entry.\n  ---> DEFAULT PASSWORD: Mypass123"
 fi
 # Export values for MySQL docker image
 #export MYSQL_USER=myuser
-export MYSQL_PASSWORD=mypass
+#export MYSQL_PASSWORD=mypass
 
 printf "\n** GET PROJECT REPOSITORY **\n"
 git clone https://github.com/Arcedo/onion-cargo-loading-service.git
@@ -37,37 +37,25 @@ touch .env
 echo 'DB_HOST="mysql"' > .env 
 echo 'DB_USER="root"' >> .env 
 echo "DB_PASSWORD='$mypass'" >> .env
+echo 'REDIS_HOST="redis"' >> .env
+echo "HAS_REDIS=true" >> .env
 
 # DB_User password
-sed -i "s/mypass123/'$mypass'/g" docker-compose.yml
+sed -i "s/mypass123/'$mypass'/g" docker-compose-redis.yml
 
 # Give permissions to "MYSQL_USER"
 #docker-compose 
-echo "" >> scripts/sql/database.sql
-echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;" >> scripts/sql/database.sql
-echo "FLUSH PRIVILEGES;" >> scripts/sql/database.sql
+#echo "GRANT ALL PRIVILEGES ON cargo_loading.* TO '$myuser'@'localhost' WITH GRANT OPTION;" >> scripts/sql/database.sql
 
 # Install docker-compose
 printf "\n** Installation docker-compose **\n"
 sudo apt update -y
-sudo apt install docker -y
-sudo apt install docker.io -y
-sudo apt install docker-compose -y 
+sudo apt install docker-compose -y
 
 printf "\n** Creating SSL **\n"
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./cert.key -out ./cert.crt
 
 printf "\n** Building/Starting docker-compose **\n"
-docker swarm init
-docker-compose build
-docker stack deploy -c docker-compose.yml onion-cargo-loading
-# This update takes around 6min to complete 
-docker service update onion-cargo-loading_app
-docker service ls
-docker stack
-# DELETE the depoy: docker stack rm onion-cargo-loading
-# CREATE the deploy: docker stack deploy -c docker-swarm-compose.yml onion-cargo-loading
-# LIST containers in swarm: docker service ls
-# LOGS containers: docker service logs onion-cargo-loading_app
-# REPLICATE the app: docker service scale onion-cargo-loading_app=2
+docker-compose -f docker-compose-redis.yml up -d
+docker-compose
 printf "\n*** END ***\n"
