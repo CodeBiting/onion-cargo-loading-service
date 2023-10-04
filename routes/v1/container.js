@@ -259,7 +259,6 @@ router.post('/smallest/:clientId', async function (req, res, next) {
   try {
     if (redisContainers) {
       const reply = await redisContainers.get(`containersFrom${req.params.clientId}`);
-      let prova =JSON.parse(reply);
       if (reply) {
         containers = JSON.parse(reply);
       } else {
