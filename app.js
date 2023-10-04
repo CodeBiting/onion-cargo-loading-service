@@ -100,7 +100,14 @@ app.use(async (req, res, next) => {
   // Save the requestId or create a new one if not exists
   req.requestId = requestId || uniqid();
   // Call the next function in the middleware
-
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Request-Method', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  //res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Cambia esto según la URL de tu aplicación Nuxt
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  //res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  //res.setHeader('Access-Control-Allow-Headers', 'Content-Type, application/json');
+  
   next();
 });
 
