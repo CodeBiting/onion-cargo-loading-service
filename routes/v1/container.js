@@ -268,6 +268,22 @@ router.post('/smallest/:clientId', async function (req, res, next) {
     } else {
       containers = await containerService.selectContainerForVolumeAnalysis(req.params.clientId);
     }
+    if (!containers || containers.length <= 0) {
+      status = 404;
+      const error = new ApiError(
+        'CONTAINER-001',
+        `Containers Not Found for client with ID ${req.params.clientId}`,
+        '',
+        `${req.protocol}://${req.get('host')}${HELP_BASE_URL}/CONTAINER-001`
+      );
+      const apiRes = new ApiResult(
+        status === 200 ? 'OK' : 'ERROR',
+        container,
+        req.requestId,
+        [error]
+      );
+      return res.status(status).json(apiRes);
+    }
     smallestContainerFound = volAnalysis.findPickingBox(containers, req.body);
     if (smallestContainerFound) {
       if (smallestContainerFound.returnValue === 0) {
