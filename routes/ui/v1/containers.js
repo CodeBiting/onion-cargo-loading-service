@@ -51,7 +51,7 @@ router.post('/', async function (req, res, next) {
       let containerDone;
       if (req.body.method === POST || req.body.method === `${POST}`) {
         const repeatCode = await containerService.getContainers({ skip: 0, limit: 1 }, [{ property: 'code', rule: 'eq', value: `'${req.body.code}'` }], null);
-        // if there is one container with the same code as the submited and has a date in the delete_at cell (desactivated)
+        // if there is one container with the same code as the submitted and has a date in the delete_at cell (desactivated)
         if (repeatCode.length === 1 && repeatCode[0].deleted_at) {
           desactivated = true;
           idToActive = repeatCode[0].id;
