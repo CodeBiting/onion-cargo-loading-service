@@ -109,8 +109,8 @@ const getWhere = function (filter) {
   else if (filter.rule === FilterRule.GREATER_THAN_OR_EQUALS) return `${filter.property} >= ${filter.value}`;
   else if (filter.rule === FilterRule.LESS_THAN) return `${filter.property} < ${filter.value}`;
   else if (filter.rule === FilterRule.LESS_THAN_OR_EQUALS) return `${filter.property} <= ${filter.value}`;
-  else if (filter.rule === FilterRule.LIKE) return `${filter.property} LIKE ${filter.value}`;
-  else if (filter.rule === FilterRule.NOT_LIKE) return `${filter.property} NOT LIKE ${filter.value}`;
+  else if (filter.rule === FilterRule.LIKE) return `${filter.property} LIKE '${filter.value}'`;
+  else if (filter.rule === FilterRule.NOT_LIKE) return `${filter.property} NOT LIKE '${filter.value}'`;
   else if (filter.rule === FilterRule.IN) return `${filter.property} IN (${filter.value.split(',')})`;
   else if (filter.rule === FilterRule.NOT_IN) return `${filter.property} NOT IN (${filter.value.split(',')})`;
 };
