@@ -600,6 +600,12 @@ Escenaris:
 | Kubernetes + Redis | | |  |  |
 | Cloud Run + Redis | | |  |  |
 
+## Idees per a noves funcionalitats
+
+### Crear un algoritme per determinar com posar i en quin ordre contenidors a dins d'altres contenidors
+
+Idea treta de la imatge [Quants palets caben en un contenidor](doc/1753273693925.jpeg)
+
 ## Log de canvis
 
 V 0.0.0 - Característiques
