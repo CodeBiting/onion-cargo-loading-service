@@ -606,6 +606,15 @@ Escenaris:
 
 Idea treta de la imatge [Quants palets caben en un contenidor](doc/1753273693925.jpeg)
 
+Altres algoritmes:
+
+- <https://github.com/luisgarciar/3D-bin-packing>
+- <https://github.com/krris/3d-bin-packing>
+- <https://github.com/SoftwareImpacts/SIMPAC-2024-311>
+- <https://github.com/gedex/bp3d>
+- <https://github.com/dwave-examples/3d-bin-packing>
+- <https://supplychaindatascientistcom.wordpress.com/2020/12/19/putting-boxes-in-boxes-from-knapsack-to-3d-bin-packing/>
+
 ## Log de canvis
 
 V 0.0.0 - Característiques
