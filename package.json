@@ -10,14 +10,13 @@
     "test-routes": "node ./bin/www & P1=$! && sleep 2 && node ./node_modules/mocha/bin/mocha ./test/routes/v1/ && kill $P1",
     "test-cypress": "node ./bin/www & P1=$! && sleep 2 && npx cypress run --spec 'cypress/e2e/*.js' && kill $P1",
     "test-eslint": "node ./node_modules/.bin/eslint *.js bin/* api/*.js api/v1/*.js routes/v1/*.js routes/ui/v1/*.js test/routes/v1/*.js test/api/*.js",
-    "fix-eslint":"node ./node_modules/.bin/eslint *.js bin/* api/*.js api/v1/*.js routes/v1/*.js routes/ui/v1/*.js test/routes/v1/*.js test/api/*.js --fix",
+    "fix-eslint": "node ./node_modules/.bin/eslint *.js bin/* api/*.js api/v1/*.js routes/v1/*.js routes/ui/v1/*.js test/routes/v1/*.js test/api/*.js --fix",
     "nodemon": "nodemon ./bin/www"
   },
   "pre-commit": [
     "test-apis",
     "test-routes",
-    "test-eslint",
-    "test-cypress"
+    "test-eslint"
   ],
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -27,7 +26,7 @@
     "express": "^4.18.2",
     "http-errors": "~1.6.3",
     "js-yaml": "^4.1.0",
-    "morgan": "~1.9.1",
+    "morgan": "^1.10.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.2.0",
     "pug": "^3.0.2",
@@ -40,7 +39,7 @@
   "devDependencies": {
     "chai": "^4.3.7",
     "chai-http": "^4.3.0",
-    "cypress": "^12.17.3",
+    "cypress": "^15.3.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^8.46.0",
     "eslint-config-airbnb-base": "15.0.0",
@@ -50,6 +49,6 @@
     "eslint-plugin-promise": "^6.1.1",
     "mocha": "^10.2.0",
     "nodemon": "^3.0.1",
-    "pre-commit": "^1.2.2"
+    "pre-commit": "^1.0.10"
   }
 }

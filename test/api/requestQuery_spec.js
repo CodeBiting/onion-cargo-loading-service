@@ -3,6 +3,7 @@
  *
  * To run the test:
  * $ mocha test/api/requestQuery_spec.js
+ * $ node ./node_modules/mocha/bin/mocha.js test/api/requestQuery_spec.js
  */
 'use strict';
 
